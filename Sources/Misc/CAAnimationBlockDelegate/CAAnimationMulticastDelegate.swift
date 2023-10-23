@@ -10,9 +10,7 @@ import UIKit
 
 public class CAAnimationMulticastDelegate: NSObject, CAAnimationDelegate {
   
-  public var emitter: RNIMulticastDelegate =
-    RNIMulticastDelegate<CAAnimationDelegate>();
-    
+  public var emitter = MulticastDelegate<CAAnimationDelegate>();
   
   public func animationDidStart(_ anim: CAAnimation) {
     self.emitter.invoke {

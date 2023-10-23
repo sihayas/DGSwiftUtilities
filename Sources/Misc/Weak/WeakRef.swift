@@ -1,5 +1,5 @@
 //
-//  RNIWeakRef.swift
+//  WeakRef.swift
 //  react-native-ios-modal
 //
 //  Created by Dominic Go on 3/11/23.

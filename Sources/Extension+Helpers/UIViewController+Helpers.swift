@@ -7,7 +7,11 @@
 
 import UIKit
 
-internal extension UIViewController {
+public extension UIViewController {
+
+  // MARK: - Functions
+  // -----------------
+
   func attachChildVC(_ child: UIViewController) {
     self.addChild(child);
     self.view.addSubview(child.view);

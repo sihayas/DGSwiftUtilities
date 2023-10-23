@@ -1,5 +1,5 @@
 //
-//  RNIAnimatorSize.swift
+//  DisplayLinkAnimatorSize.swift
 //  react-native-ios-modal
 //
 //  Created by Dominic Go on 4/19/23.
@@ -20,7 +20,7 @@ fileprivate extension CGSize {
   };
 };
 
-public class RNIAnimatorSize: RNIAnimator {
+public class DisplayLinkAnimatorSize: DisplayLinkAnimator {
   
   public init?(
     durationSeconds: CFTimeInterval,

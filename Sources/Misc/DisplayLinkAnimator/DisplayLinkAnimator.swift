@@ -1,5 +1,5 @@
 //
-//  RNIAnimator.swift
+//  DisplayLinkAnimator.swift
 //  react-native-ios-modal
 //
 //  Created by Dominic Go on 4/19/23.
@@ -8,7 +8,7 @@
 import UIKit
 
 
-public class RNIAnimator {
+public class DisplayLinkAnimator {
   
   // MARK: - Embedded Types
   // ----------------------

@@ -1,5 +1,5 @@
 //
-//  RNIWeakArray.swift
+//  WeakArray.swift
 //  react-native-ios-modal
 //
 //  Created by Dominic Go on 3/15/23.
@@ -8,7 +8,7 @@
 import UIKit
 
 
-public class RNIWeakArray<T> {
+public class WeakArray<T> {
   
   public var rawArray: [RNIWeakRef<T>] = [];
   

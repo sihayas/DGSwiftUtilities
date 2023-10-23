@@ -8,6 +8,7 @@
 import UIKit
 
 extension UIGestureRecognizer.State: CustomStringConvertible {
+
   public var description: String {
     switch self {
       case .possible : return "possible";

@@ -8,7 +8,7 @@
 import UIKit
 
 
-public class RNIWeakDictionary<K: Hashable, T> {
+public class WeakDictionary<K: Hashable, T> {
   
   public var rawDict: [K: RNIWeakRef<T>] = [:];
   
