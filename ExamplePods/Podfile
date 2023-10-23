@@ -1,13 +1,7 @@
 use_frameworks!
 
-platform :ios, '10.0'
+platform :ios, '12.0'
 
 target 'SwiftUtilities_Example' do
-  pod 'SwiftUtilities', :path => '../'
-
-  target 'SwiftUtilities_Tests' do
-    inherit! :search_paths
-
-    
-  end
+  pod 'DGSwiftUtilities', :path => '../'
 end
