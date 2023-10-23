@@ -8,14 +8,17 @@
 import Foundation
 
 
-class ObjectWrapperBase<WrapperType, EncodedString: ObjectWrappingEncodedString> {
-  var objectWrapper: ObjectWrapper<WrapperType>;
+public class ObjectWrapperBase<
+  WrapperType,
+  EncodedString: ObjectWrappingEncodedString
+> {
+  public var objectWrapper: ObjectWrapper<WrapperType>;
   
-  var wrappedObject: WrapperType? {
+  public var wrappedObject: WrapperType? {
     self.objectWrapper.object;
   }; 
   
-  init?(
+  public init?(
     objectToWrap sourceObject: AnyObject?,
     shouldRetainObject: Bool = false
   ){
@@ -31,7 +34,7 @@ class ObjectWrapperBase<WrapperType, EncodedString: ObjectWrappingEncodedString>
     );
   };
   
-  func debugPrintWrappedObject(){
+  public func debugPrintWrappedObject(){
     #if DEBUG
     print(self.wrappedObject.debugDescription);
     #endif

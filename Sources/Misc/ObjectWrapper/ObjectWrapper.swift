@@ -8,24 +8,24 @@
 import Foundation
 
 
-class ObjectWrapper<T> {
+public class ObjectWrapper<T> {
   
   private let shouldRetainObject: Bool;
 
   private var retainedObject: AnyObject?;
   @objc private weak var unretainedObject: AnyObject?;
   
-  var objectRaw: AnyObject? {
+  public var objectRaw: AnyObject? {
     self.shouldRetainObject
       ? self.retainedObject
       : unretainedObject;
   };
   
-  var object: T? {
+  public var object: T? {
     self.objectRaw as? T;
   };
   
-  init(
+  public init(
     objectToWrap object: AnyObject?,
     shouldRetainObject: Bool
   ) {

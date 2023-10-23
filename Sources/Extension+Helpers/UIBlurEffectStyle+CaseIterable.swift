@@ -44,5 +44,4 @@ extension UIBlurEffect.Style: CaseIterable {
     
     return blurEffects;
   };
-  
 };

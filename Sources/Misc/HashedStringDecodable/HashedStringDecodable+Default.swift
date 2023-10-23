@@ -9,7 +9,7 @@ import Foundation
 
 fileprivate var decodedStringCache: Dictionary<String, String> = [:];
 
-extension HashedStringDecodable {
+public extension HashedStringDecodable {
 
   var decodedString: String? {
     let encodedString = self.encodedString;
