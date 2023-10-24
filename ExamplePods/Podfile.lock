@@ -1,16 +1,16 @@
 PODS:
-  - SwiftUtilities (0.1.0)
+  - DGSwiftUtilities (0.1.0)
 
 DEPENDENCIES:
-  - SwiftUtilities (from `../`)
+  - DGSwiftUtilities (from `../`)
 
 EXTERNAL SOURCES:
-  SwiftUtilities:
+  DGSwiftUtilities:
     :path: "../"
 
 SPEC CHECKSUMS:
-  SwiftUtilities: 1ae1dd076a6205f5fc3a10402e3e3447c3d39a40
+  DGSwiftUtilities: e04f2c8a6782592c09be299c411749ebfc4b1cc2
 
-PODFILE CHECKSUM: d7467ae13fcb1b87868dc05e1638c0611684b3fd
+PODFILE CHECKSUM: 9c0ae3f1eadaa1a98f2e28f947006ede2c0e6778
 
 COCOAPODS: 1.12.0
