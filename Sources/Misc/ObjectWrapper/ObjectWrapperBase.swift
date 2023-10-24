@@ -8,7 +8,7 @@
 import Foundation
 
 
-public class ObjectWrapperBase<
+open class ObjectWrapperBase<
   WrapperType,
   EncodedString: ObjectWrappingEncodedString
 > {
