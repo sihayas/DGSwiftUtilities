@@ -12,7 +12,7 @@
 		88987A032AE66D9D0020D7C6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88987A022AE66D9D0020D7C6 /* ViewController.swift */; };
 		88987A082AE66D9F0020D7C6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88987A072AE66D9F0020D7C6 /* Assets.xcassets */; };
 		88987A0B2AE66D9F0020D7C6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 88987A092AE66D9F0020D7C6 /* LaunchScreen.storyboard */; };
-		88987BC42AE672D90020D7C6 /* SwiftUtilities in Frameworks */ = {isa = PBXBuildFile; productRef = 88987BC32AE672D90020D7C6 /* SwiftUtilities */; };
+		88987BC72AE741ED0020D7C6 /* DGSwiftUtilities in Frameworks */ = {isa = PBXBuildFile; productRef = 88987BC62AE741ED0020D7C6 /* DGSwiftUtilities */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,7 +23,7 @@
 		88987A072AE66D9F0020D7C6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		88987A0A2AE66D9F0020D7C6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		88987A0C2AE66D9F0020D7C6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		88987BC12AE6724A0020D7C6 /* SwiftUtilities */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SwiftUtilities; path = ../..; sourceTree = "<group>"; };
+		88987BC52AE741D20020D7C6 /* DGSwiftUtilities */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = DGSwiftUtilities; path = ../..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,7 +31,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				88987BC42AE672D90020D7C6 /* SwiftUtilities in Frameworks */,
+				88987BC72AE741ED0020D7C6 /* DGSwiftUtilities in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -41,7 +41,7 @@
 		889879F22AE66D9D0020D7C6 = {
 			isa = PBXGroup;
 			children = (
-				88987BC12AE6724A0020D7C6 /* SwiftUtilities */,
+				88987BC52AE741D20020D7C6 /* DGSwiftUtilities */,
 				889879FD2AE66D9D0020D7C6 /* SwiftUtilitiesExample */,
 				889879FC2AE66D9D0020D7C6 /* Products */,
 				88987BC22AE672D90020D7C6 /* Frameworks */,
@@ -93,7 +93,7 @@
 			);
 			name = SwiftUtilitiesExample;
 			packageProductDependencies = (
-				88987BC32AE672D90020D7C6 /* SwiftUtilities */,
+				88987BC62AE741ED0020D7C6 /* DGSwiftUtilities */,
 			);
 			productName = SwiftUtilitiesExample;
 			productReference = 889879FB2AE66D9D0020D7C6 /* SwiftUtilitiesExample.app */;
@@ -370,9 +370,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		88987BC32AE672D90020D7C6 /* SwiftUtilities */ = {
+		88987BC62AE741ED0020D7C6 /* DGSwiftUtilities */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = SwiftUtilities;
+			productName = DGSwiftUtilities;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
