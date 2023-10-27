@@ -58,7 +58,7 @@ public enum AnimationConfig: Equatable {
   // MARK: - Computed Properties
   // ---------------------------
   
-  var duration: TimeInterval {
+  public var duration: TimeInterval {
     switch self {
       case let .animator(animator):
         return animator.duration;
@@ -86,7 +86,7 @@ public enum AnimationConfig: Equatable {
   // MARK: - Functions
   // -----------------
   
-  func createAnimator(
+  public func createAnimator(
     gestureInitialVelocity: CGVector
   ) -> UIViewPropertyAnimator {
     
