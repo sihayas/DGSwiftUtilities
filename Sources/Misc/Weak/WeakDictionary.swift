@@ -34,7 +34,7 @@ public class WeakDictionary<K: Hashable, T> {
   };
   
   public func get(for key: K) -> T? {
-    guard let ref = self.rawDict[key]?.synthesizedRef else {
+    guard let ref = self.rawDict[key]?.ref else {
       self.rawDict.removeValue(forKey: key);
       return nil;
     };

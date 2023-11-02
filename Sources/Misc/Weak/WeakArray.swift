@@ -14,7 +14,7 @@ public class WeakArray<T> {
   
   public var purgedArray: [WeakRef<T>] {
     self.rawArray.compactMap {
-      $0.synthesizedRef == nil ? nil : $0;
+      $0.ref == nil ? nil : $0;
     };
   };
   
@@ -23,13 +23,13 @@ public class WeakArray<T> {
     self.rawArray = purgedArray;
     
     return purgedArray.compactMap {
-      $0.synthesizedRef;
+      $0.ref;
     };
   };
   
   public init(initialItems: [T] = []){
     self.rawArray = initialItems.compactMap {
-      RNIWeakRef(with: $0)
+      WeakRef(with: $0)
     };
   };
   
@@ -38,7 +38,7 @@ public class WeakArray<T> {
       return nil
     };
     
-    guard let ref = self.rawArray[index].synthesizedRef else {
+    guard let ref = self.rawArray[index].ref else {
       self.rawArray.remove(at: index);
       return nil;
     };
@@ -51,13 +51,13 @@ public class WeakArray<T> {
       return;
     };
     
-    self.rawArray[index] = RNIWeakRef(with: element);
+    self.rawArray[index] = WeakRef(with: element);
   };
 
   
   public func append(element: T){
     self.rawArray.append(
-      RNIWeakRef(with: element)
+      WeakRef(with: element)
     );
   };
 };

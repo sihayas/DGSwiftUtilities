@@ -11,7 +11,7 @@ import UIKit
 public class WeakRef<T> {
   public weak var rawRef: AnyObject?;
   
-  public var synthesizedRef: T? {
+  public var ref: T? {
     self.rawRef as? T;
   };
   
