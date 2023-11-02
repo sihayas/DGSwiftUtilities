@@ -71,22 +71,30 @@ extension UIApplication {
     return windows;
   };
   
-  public var keyWindow: UIWindow? {
+  public var activeWindow: UIWindow? {
     guard #available(iOS 13.0, *) else {
       // Using iOS 12 and below
       return UIApplication.shared.windows.first;
     };
     
-  // Get connected scenes
-  return self.connectedScenes
-    // Keep only active scenes, onscreen and visible to the user
-    .filter { $0.activationState == .foregroundActive }
-    // Keep only the first `UIWindowScene`
-    .first(where: { $0 is UIWindowScene })
-    // Get its associated windows
-    .flatMap({ $0 as? UIWindowScene })?.windows
-    // Finally, keep only the key window
-    .first(where: \.isKeyWindow);
+    // Get connected scenes
+    return self.connectedScenes
+      // Keep only active scenes, onscreen and visible to the user
+      .filter { $0.activationState == .foregroundActive }
+      
+      // Keep only the first `UIWindowScene`
+      .first(where: { $0 is UIWindowScene })
+      
+      // Get its associated windows
+      .flatMap({ $0 as? UIWindowScene })?.windows
+      
+      // Finally, keep only the key window
+      .first(where: \.isKeyWindow);
+  };
+  
+  // alias
+  public var keyWindow: UIWindow? {
+    self.activeWindow;
   };
 
   public var presentedViewControllerForKeyWindow: UIViewController? {
