@@ -10,9 +10,9 @@ import UIKit
 
 public class WeakDictionary<K: Hashable, T> {
   
-  public var rawDict: [K: RNIWeakRef<T>] = [:];
+  public var rawDict: [K: WeakRef<T>] = [:];
   
-  public var purgedDict: [K: RNIWeakRef<T>] {
+  public var purgedDict: [K: WeakRef<T>] {
     get {
       self.rawDict.compactMapValues {
         $0.rawRef != nil ? $0 : nil;
@@ -20,7 +20,7 @@ public class WeakDictionary<K: Hashable, T> {
     }
   };
   
-  public var dict: [K: RNIWeakRef<T>] {
+  public var dict: [K: WeakRef<T>] {
     get {
       let purgedDict = self.purgedDict;
       self.rawDict = purgedDict;
@@ -30,7 +30,7 @@ public class WeakDictionary<K: Hashable, T> {
   }
   
   public func set(for key: K, with value: T){
-    self.rawDict[key] = RNIWeakRef(with: value);
+    self.rawDict[key] = WeakRef(with: value);
   };
   
   public func get(for key: K) -> T? {

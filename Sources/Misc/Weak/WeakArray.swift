@@ -10,9 +10,9 @@ import UIKit
 
 public class WeakArray<T> {
   
-  public var rawArray: [RNIWeakRef<T>] = [];
+  public var rawArray: [WeakRef<T>] = [];
   
-  public var purgedArray: [RNIWeakRef<T>] {
+  public var purgedArray: [WeakRef<T>] {
     self.rawArray.compactMap {
       $0.synthesizedRef == nil ? nil : $0;
     };

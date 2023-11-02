@@ -8,7 +8,7 @@
 import UIKit
 
 
-public class RNIWeakRef<T> {
+public class WeakRef<T> {
   public weak var rawRef: AnyObject?;
   
   public var synthesizedRef: T? {
