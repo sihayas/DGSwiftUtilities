@@ -23,7 +23,7 @@ extension UIGestureRecognizer.State: CustomStringConvertible {
   };
 };
 
-extension UIGestureRecognizer {
+public extension UIGestureRecognizer {
   
   func cancelTouch(){
     self.isEnabled.toggle();
