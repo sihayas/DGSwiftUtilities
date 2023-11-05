@@ -12,7 +12,8 @@ open class ObjectWrapperBase<
   WrapperType,
   EncodedString: ObjectWrappingEncodedString
 > {
-  public var objectWrapper: ObjectWrapper<WrapperType>;
+
+  public var objectWrapper: ObjectContainer<WrapperType>;
   
   public var wrappedObject: WrapperType? {
     self.objectWrapper.object;
