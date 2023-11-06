@@ -15,7 +15,7 @@ public class ObjectWrapperHelpers {
     selector: Selector,
     withArg1 arg1: Any? = nil,
     withArg2 arg2: Any? = nil,
-    type: T.Type = AnyObject.self,
+    type: T.Type = Any.self,
     shouldRetainValue: Bool = false
   ) -> T? {
   
@@ -50,19 +50,20 @@ public class ObjectWrapperHelpers {
     selectorFromHashedString hashedString: any HashedStringDecodable,
     withArg1 arg1: Any? = nil,
     withArg2 arg2: Any? = nil,
-    type: T.Type = AnyObject.self,
+    type: T.Type = Any.self,
     shouldRetainValue: Bool = false
-  ) -> T? {
+  ) throws -> T? {
   
     guard let decodedString = hashedString.decodedString else {
-      #if DEBUG
-      print(
-        "VisualEffectBlurHelpers.performSelector",
-        "- failed to decode string w/ rawValue:", hashedString.rawValue,
-        "- encodedString:", hashedString.encodedString
+      throw GenericError(
+        errorCode: .guardCheckFailed,
+        description: "Failed to decode string for HashedStringDecodable",
+        extraDebugValues: [
+          "typeName": String(describing: hashedString.self),
+          "rawValue:": hashedString.rawValue,
+          "encodedString:": hashedString.encodedString,
+        ]
       );
-      #endif
-      return nil;
     };
     
     let selector = NSSelectorFromString(decodedString);
