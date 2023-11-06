@@ -11,16 +11,13 @@ import Foundation
 open class PrivateObjectWrapper<
   WrapperType,
   EncodedString: PrivateObjectWrappingEncodedString
+>: ObjectWrapper<
+  WrapperType,
+  EncodedString
 > {
 
-  public var objectWrapper: ObjectContainer<WrapperType>;
-  
-  public var wrappedObject: WrapperType? {
-    self.objectWrapper.object;
-  }; 
-  
-  public init?(
-    objectToWrap sourceObject: AnyObject?,
+  public override init?(
+    objectToWrap sourceObject: AnyObject,
     shouldRetainObject: Bool = false
   ){
     
@@ -28,17 +25,11 @@ open class PrivateObjectWrapper<
           let className = EncodedString.className.decodedString,
           sourceObject.className == className
     else { return nil };
-  
-    self.objectWrapper = .init(
+    
+    super.init(
       objectToWrap: sourceObject,
       shouldRetainObject: shouldRetainObject
     );
-  };
-  
-  public func debugPrintWrappedObject(){
-    #if DEBUG
-    print(self.wrappedObject.debugDescription);
-    #endif
   };
 };
 
