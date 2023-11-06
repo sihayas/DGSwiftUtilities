@@ -9,7 +9,7 @@ import Foundation
 
 
 open class ObjectWrapper<
-  WrapperType,
+  WrapperType: AnyObject,
   EncodedString: HashedStringDecodable
 > {
 
@@ -29,6 +29,31 @@ open class ObjectWrapper<
     self.objectWrapper = .init(
       objectToWrap: sourceObject,
       shouldRetainObject: shouldRetainObject
+    );
+  };
+  
+  public func performSelector<T>(
+    usingEncodedString encodedString: EncodedString,
+    withArg1 arg1: Any? = nil,
+    withArg2 arg2: Any? = nil,
+    type: T.Type = Any.self,
+    shouldRetainValue: Bool = false
+  ) throws -> T? {
+  
+    guard let wrappedObject = self.wrappedObject else {
+      throw GenericError(
+        errorCode: .unexpectedNilValue,
+        description: "Could not get wrapped object"
+      );
+    };
+    
+    return try ObjectWrapperHelpers.performSelector(
+      forObject: wrappedObject,
+      selectorFromHashedString: encodedString,
+      withArg1: arg1,
+      withArg2: arg2,
+      type: type,
+      shouldRetainValue: shouldRetainValue
     );
   };
   

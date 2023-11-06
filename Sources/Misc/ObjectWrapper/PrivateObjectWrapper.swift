@@ -9,7 +9,7 @@ import Foundation
 
 
 open class PrivateObjectWrapper<
-  WrapperType,
+  WrapperType: AnyObject,
   EncodedString: PrivateObjectWrappingEncodedString
 >: ObjectWrapper<
   WrapperType,
