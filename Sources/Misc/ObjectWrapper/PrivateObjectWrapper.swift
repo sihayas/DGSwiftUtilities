@@ -10,7 +10,7 @@ import Foundation
 
 open class PrivateObjectWrapper<
   WrapperType,
-  EncodedString: ObjectWrappingEncodedString
+  EncodedString: PrivateObjectWrappingEncodedString
 > {
 
   public var objectWrapper: ObjectContainer<WrapperType>;

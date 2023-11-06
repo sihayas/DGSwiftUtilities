@@ -7,6 +7,6 @@
 
 import Foundation
 
-public protocol ObjectWrappingEncodedString: HashedStringDecodable {
+public protocol PrivateObjectWrappingEncodedString: HashedStringDecodable {
   static var className: Self { get };
 };
