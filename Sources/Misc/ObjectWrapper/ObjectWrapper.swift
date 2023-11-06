@@ -32,6 +32,7 @@ open class ObjectWrapper<
     );
   };
   
+  @discardableResult
   public func performSelector<T>(
     usingEncodedString encodedString: EncodedString,
     withArg1 arg1: Any? = nil,
