@@ -197,7 +197,6 @@ public struct Transform3D: Equatable {
     }
   };
   
-  
   // MARK: - Computed Properties
   // ---------------------------
   
@@ -249,7 +248,7 @@ public struct Transform3D: Equatable {
     return transform;
   };
   
-  var isAllValueSet: Bool {
+  public var isAllValueSet: Bool {
     Self.keys.allSatisfy {
       let value = self[keyPath: $0];
       
@@ -327,7 +326,7 @@ public struct Transform3D: Equatable {
   // MARK: - Functions
   // -----------------
   
-  mutating func setNonNilValues(with otherValue: Self) {
+  public mutating func setNonNilValues(with otherValue: Self) {
     Self.keys.forEach {
       let value = self[keyPath: $0];
       
