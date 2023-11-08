@@ -49,6 +49,16 @@ public extension UIView {
       self.recursivelyGetAllGestureRecognizersFromSubviews
   };
   
+  var globalFrame: CGRect? {
+    guard let superview = self.superview else { return nil };
+    let absoluteOrigin = superview.convert(self.frame.origin, from: nil);
+    
+    return .init(
+      origin: absoluteOrigin,
+      size: self.frame.size
+    );
+  };
+  
   // MARK: - Functions
   // -----------------
   
