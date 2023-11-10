@@ -51,7 +51,7 @@ public extension UIView {
   
   var globalFrame: CGRect? {
     guard let superview = self.superview else { return nil };
-    let absoluteOrigin = superview.convert(self.frame.origin, from: nil);
+    let absoluteOrigin = superview.convert(self.frame.origin, to: nil);
     
     return .init(
       origin: absoluteOrigin,
