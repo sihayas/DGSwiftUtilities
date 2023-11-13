@@ -8,21 +8,21 @@
 import Foundation
 
 
-protocol OptionalUnwrappable {
+public protocol OptionalUnwrappable {
   func isSome() -> Bool;
   func unwrap() -> Any;
 }
 
 extension Optional: OptionalUnwrappable {
 
-  func isSome() -> Bool {
+  public func isSome() -> Bool {
     switch self {
       case .none: return false;
       case .some: return true;
     };
   };
 
-  func unwrap() -> Any {
+  public func unwrap() -> Any {
     switch self {
       case .none:
         preconditionFailure("trying to unwrap nil");
