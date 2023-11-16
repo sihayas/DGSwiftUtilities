@@ -107,11 +107,12 @@ public extension UIView {
     var currentView = self;
     
     while true {
-      guard let superview = self.superview else { return nil };
+      if currentView !== self && predicate(currentView) {
+        return currentView;
+      };
+
+      guard let superview = currentView.superview else { return nil };
       currentView = superview;
-      
-      guard predicate(currentView) else { continue };
-      return currentView;
     };
   };
   
