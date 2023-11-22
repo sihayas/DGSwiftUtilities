@@ -8,7 +8,7 @@
 import Foundation
 
 
-public enum Angle<T: FloatingPoint>: Equatable {
+public enum Angle<T: BinaryFloatingPoint>: Equatable {
 
   case zero;
   case radians(T);
