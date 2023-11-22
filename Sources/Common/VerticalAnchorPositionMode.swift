@@ -7,14 +7,13 @@
 
 import Foundation
 
-// TODO: Move to `DGSwiftUtilities`
 /// Note: `VerticalAnchorPositionMode` -> `VerticalAnchorPosition`
 public enum VerticalAnchorPositionMode: String {
   case top;
   case bottom;
   case automatic;
   
-  var verticalAnchorPosition: VerticalAnchorPosition? {
+  public var verticalAnchorPosition: VerticalAnchorPosition? {
     switch self {
       case .top:
         return .top;
