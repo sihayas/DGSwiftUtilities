@@ -58,6 +58,18 @@ public extension UIView {
       size: self.frame.size
     );
   };
+    
+  var heightConstraint: NSLayoutConstraint? {
+    self.constraints.first {
+      $0.firstAttribute == .height
+    };
+  };
+  
+  var widthConstraint: NSLayoutConstraint? {
+    self.constraints.first {
+      $0.firstAttribute == .width
+    };
+  };
   
   // MARK: - Functions
   // -----------------
