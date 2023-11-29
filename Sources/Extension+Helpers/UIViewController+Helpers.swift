@@ -12,9 +12,16 @@ public extension UIViewController {
   // MARK: - Functions
   // -----------------
 
-  func attachChildVC(_ child: UIViewController) {
+  func attachChildVC(
+    _ child: UIViewController,
+    toView targetView: UIView? = nil
+  ) {
+  
     self.addChild(child);
-    self.view.addSubview(child.view);
+    
+    let targetView = targetView ?? self.view;
+    targetView?.addSubview(child.view);
+    
     child.didMove(toParent: self);
   };
 
