@@ -18,6 +18,10 @@ public class MulticastDelegate<T> {
     self._delegates.allObjects.count;
   };
   
+  public init() {
+    // no-op
+  };
+  
   public func add(_ delegate: T) {
     self._delegates.add(delegate as AnyObject);
   };
