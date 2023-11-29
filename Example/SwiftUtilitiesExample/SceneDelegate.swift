@@ -29,7 +29,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     let window = UIWindow(windowScene: windowScene);
     self.window = window;
     
-    let rootVC = ViewController();
+    let rootVC = RouteManagerShared.currentRoute.viewController;
     
     window.rootViewController = rootVC;
     window.makeKeyAndVisible();
