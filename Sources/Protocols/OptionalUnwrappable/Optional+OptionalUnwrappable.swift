@@ -8,11 +8,6 @@
 import Foundation
 
 
-public protocol OptionalUnwrappable {
-  func isSome() -> Bool;
-  func unwrap() -> Any;
-}
-
 extension Optional: OptionalUnwrappable {
 
   public func isSome() -> Bool {
