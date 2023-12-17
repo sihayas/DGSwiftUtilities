@@ -8,15 +8,13 @@
 import UIKit
 
 extension UIDeviceOrientation: CaseIterable {
-  public static var allCases: [Self] {
-    [
-      .unknown,
-      .portrait,
-      .portraitUpsideDown,
-      .landscapeLeft,
-      .landscapeRight,
-      .faceUp,
-      .faceDown,
-    ]
-  };
+  public static let allCases: [Self] = [
+    .unknown,
+    .portrait,
+    .portraitUpsideDown,
+    .landscapeLeft,
+    .landscapeRight,
+    .faceUp,
+    .faceDown,
+  ];
 };

@@ -10,12 +10,10 @@ import UIKit
 
 extension UIUserInterfaceStyle: CaseIterable {
   
-  public static var allCases: [Self] {
-    [
-      .unspecified,
-      .light,
-      .dark,
-    ];
-  };
+  public static let allCases: [Self] = [
+    .unspecified,
+    .light,
+    .dark,
+  ];
 };
 

@@ -8,13 +8,11 @@
 import UIKit
 
 extension UIDevice.BatteryState: CaseIterable {
-  public static var allCases: [Self] {
-    [
-      .unknown,
-      .unplugged,
-      .charging,
-      .full,
-    ];
-  };
+  public static let allCases: [Self] = [
+    .unknown,
+    .unplugged,
+    .charging,
+    .full,
+  ];
 };
 
