@@ -1,16 +1,15 @@
 //
-//  File.swift
+//  UIBlurEffectStyle+EnumCaseStringRepresentable.swift
 //  
 //
-//  Created by Dominic Go on 9/16/23.
+//  Created by Dominic Go on 12/17/23.
 //
 
 import UIKit
 
+extension UIBlurEffect.Style: EnumCaseStringRepresentable, CustomStringConvertible {
 
-extension UIBlurEffect.Style: CustomStringConvertible {
-  
-  public var description: String {
+  public var caseString: String {
     switch self {
       case .extraLight:
         return "extraLight";
