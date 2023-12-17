@@ -9,7 +9,7 @@ import UIKit
 
 extension UIUserInterfaceIdiom: CaseIterable {
 
-  public static var allCases: [UIUserInterfaceIdiom] {
+  public static var allCases: [Self] {
     var cases: [Self] = [
       .unspecified,
     ];

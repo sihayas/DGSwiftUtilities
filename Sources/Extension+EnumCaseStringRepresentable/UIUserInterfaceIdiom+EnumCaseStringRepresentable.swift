@@ -8,7 +8,8 @@
 import UIKit
 
 
-extension UIUserInterfaceIdiom: EnumCaseStringRepresentable {
+extension UIUserInterfaceIdiom: EnumCaseStringRepresentable, CustomStringConvertible {
+
   public var caseString: String {
     switch self {
       case .unspecified:
@@ -34,8 +35,9 @@ extension UIUserInterfaceIdiom: EnumCaseStringRepresentable {
       
       @unknown default:
         #if DEBUG
-        print("Runtime Warning - Not implemented");
+        print("Runtime Warning - Not implemented -", #file);
         #endif
+        
         return "";
     };
   };

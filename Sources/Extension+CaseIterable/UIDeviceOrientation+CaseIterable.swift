@@ -8,7 +8,7 @@
 import UIKit
 
 extension UIDeviceOrientation: CaseIterable {
-  public static var allCases: [UIDeviceOrientation] {
+  public static var allCases: [Self] {
     [
       .unknown,
       .portrait,

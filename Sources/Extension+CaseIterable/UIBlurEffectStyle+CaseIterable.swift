@@ -9,7 +9,7 @@ import UIKit
 
 extension UIBlurEffect.Style: CaseIterable {
 
-  public static var allCases: [UIBlurEffect.Style] {
+  public static var allCases: [Self] {
     var blurEffects: [Self] = [];
   
     if #available(iOS 10.0, *) {

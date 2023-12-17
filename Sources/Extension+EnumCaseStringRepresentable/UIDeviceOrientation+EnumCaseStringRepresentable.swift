@@ -7,7 +7,7 @@
 
 import UIKit
 
-extension UIDeviceOrientation: EnumCaseStringRepresentable {
+extension UIDeviceOrientation: EnumCaseStringRepresentable, CustomStringConvertible {
 
   public var caseString: String {
     switch self {

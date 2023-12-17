@@ -72,7 +72,11 @@ extension UIBlurEffect.Style: EnumCaseStringRepresentable, CustomStringConvertib
         return "systemChromeMaterialDark";
         
       @unknown default:
-        return "unknown";
+        #if DEBUG
+        print("Runtime Warning - Not implemented -", #file);
+        #endif
+        
+        return "";
     };
   };
 };
