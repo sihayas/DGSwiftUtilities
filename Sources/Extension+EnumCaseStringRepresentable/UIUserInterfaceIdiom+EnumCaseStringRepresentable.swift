@@ -29,9 +29,13 @@ extension UIUserInterfaceIdiom: EnumCaseStringRepresentable, CustomStringConvert
 
       case .mac:
         return "mac";
-
+      
+      #if !targetEnvironment(macCatalyst)
+      #if swift(>=5.9)
       case .vision:
         return "vision";
+      #endif
+      #endif
       
       @unknown default:
         #if DEBUG
