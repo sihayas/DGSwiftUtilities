@@ -41,7 +41,9 @@ public class ObjectWrapperHelpers {
       ? selectorResult.takeRetainedValue()
       : selectorResult.takeUnretainedValue();
       
-    return rawValue as? T;
+    return T.self == Any.self
+      ? nil
+      : rawValue as? T;
   };
   
   @discardableResult
