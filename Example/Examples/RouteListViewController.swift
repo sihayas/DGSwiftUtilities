@@ -100,7 +100,7 @@ class RouteItemController: UIViewController {
   };
   
   @objc func onPressButtonPush(_ sender: UIButton){
-    guard let window = self.view.window else {
+    guard let _ = self.view.window else {
       print(
         "RouteItemController.onPressButtonPushToStack",
         "\n- could not get window"

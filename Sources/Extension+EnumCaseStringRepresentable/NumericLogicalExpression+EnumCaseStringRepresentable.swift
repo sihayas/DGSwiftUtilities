@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import DGSwiftUtilities
 
 extension NumericLogicalExpression: EnumCaseStringRepresentable {
   public var caseString: String {
