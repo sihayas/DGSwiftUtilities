@@ -10,7 +10,7 @@ import Foundation
 public enum StringComparisonMode: String, CaseIterable {
   case contains, matches;
   
-  func evaluate(a: String, b: String, isCaseSensitive: Bool) -> Bool {
+  public func evaluate(a: String, b: String, isCaseSensitive: Bool) -> Bool {
     let stringA = isCaseSensitive
      ? a
      : a.lowercased();
