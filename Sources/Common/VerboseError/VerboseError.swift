@@ -114,7 +114,9 @@ public struct VerboseError<
   };
   
   public var errorDescription: String? {
-    "\(self.baseErrorMessage) - \(self.debugTrace) - \(self.debugStackTrace)";
+      "Error - \(self.baseErrorMessage)"
+    + "- Error Metadata: \(self.debugTrace)"
+    + "- Stack Trace: \(self.debugStackTrace)";
   };
   
   // MARK: - Init
