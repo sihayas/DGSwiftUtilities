@@ -101,7 +101,7 @@ public struct VerboseError<
   // ------------
   
   public init(
-    description: String,
+    description: String?,
     extraDebugValues: Dictionary<String, Any>? = nil,
     extraDebugInfo: String? = nil,
     fileName: String = #file,
@@ -132,16 +132,17 @@ public struct VerboseError<
     functionName: String = #function
   ) {
     
+    self.init(
+      description: description ?? errorCode.description,
+      extraDebugValues: extraDebugValues,
+      extraDebugInfo: extraDebugInfo,
+      fileName: fileName,
+      lineNumber: lineNumber,
+      columnNumber: columnNumber,
+      functionName: functionName
+    );
+    
     self.errorCode = errorCode;
-    self.description = description ?? errorCode.description;
-    
-    self.extraDebugValues = extraDebugValues;
-    self.extraDebugInfo = extraDebugInfo;
-    
-    self.fileName = fileName;
-    self.lineNumber = lineNumber;
-    self.columnNumber = columnNumber;
-    self.functionName = functionName;
   };
   
   // MARK: - Functions
