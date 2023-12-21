@@ -29,8 +29,7 @@ public struct VerboseError<
   // MARK: - Computed Properties
   // ---------------------------
   
-  // TODO: Rename to `debugMetadata`
-  public var debugTrace: String {
+  public var debugMetadata: String {
     let fileURL = URL(fileURLWithPath: self.fileName);
   
     var string = "fileName: \(fileURL.lastPathComponent)";
@@ -115,7 +114,7 @@ public struct VerboseError<
   
   public var errorDescription: String? {
       "Error - \(self.baseErrorMessage)"
-    + "- Error Metadata: \(self.debugTrace)"
+    + "- Error Metadata: \(self.debugMetadata)"
     + "- Stack Trace: \(self.debugStackTrace)";
   };
   
