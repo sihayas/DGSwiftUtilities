@@ -27,8 +27,11 @@ public struct VerboseError<
   // MARK: - Computed Properties
   // ---------------------------
   
+  // TODO: Rename to `debugMetadata`
   public var debugTrace: String {
-    var string = "fileName: \(self.fileName)";
+    let fileURL = URL(fileURLWithPath: self.fileName);
+  
+    var string = "fileName: \(fileURL.lastPathComponent)";
     
     if let parentType = Metadata.parentType {
       string += " - type: \(parentType)";
@@ -37,6 +40,7 @@ public struct VerboseError<
     string += " - functionName: \(self.functionName)";
     string += " - lineNumber: \(self.lineNumber)";
     string += " - columnNumber: \(self.columnNumber)";
+    string += " - path: \(self.fileName)";
     
     return string;
   };
