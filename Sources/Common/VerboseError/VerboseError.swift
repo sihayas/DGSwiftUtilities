@@ -24,6 +24,8 @@ public struct VerboseError<
   public var columnNumber: Int;
   public var functionName: String;
   
+  public var stackTrace: [String];
+  
   // MARK: - Computed Properties
   // ---------------------------
   
@@ -43,6 +45,24 @@ public struct VerboseError<
     string += " - path: \(self.fileName)";
     
     return string;
+  };
+  
+  public var debugStackTrace: String {
+    let total = self.stackTrace.count;
+    
+    return self.stackTrace.enumerated().reduce(""){
+      /// E.g. (1/10)
+      let counter = "(\($1.offset + 1)/\(total)";
+      
+      /// E.g. (1/10) stackTraceItem
+      let item = "(\(counter) \($1.element)";
+      let separator = " -> ";
+      
+      let isFirst = $1.offset == 0;
+      return isFirst
+        ? $0 + item
+        : $0 + separator + item;
+    };
   };
   
   var extraDebugValuesString: String? {
@@ -94,7 +114,7 @@ public struct VerboseError<
   };
   
   public var errorDescription: String? {
-    "\(self.baseErrorMessage) - \(self.debugTrace)";
+    "\(self.baseErrorMessage) - \(self.debugTrace) - \(self.debugStackTrace)";
   };
   
   // MARK: - Init
@@ -107,7 +127,8 @@ public struct VerboseError<
     fileName: String = #file,
     lineNumber: Int = #line,
     columnNumber: Int = #column,
-    functionName: String = #function
+    functionName: String = #function,
+    stackTrace: [String] = Thread.callStackSymbols
   ) {
   
     self.description = description;
@@ -119,6 +140,8 @@ public struct VerboseError<
     self.lineNumber = lineNumber;
     self.columnNumber = columnNumber;
     self.functionName = functionName;
+    
+    self.stackTrace = stackTrace;
   };
   
   public init(
@@ -129,7 +152,8 @@ public struct VerboseError<
     fileName: String = #file,
     lineNumber: Int = #line,
     columnNumber: Int = #column,
-    functionName: String = #function
+    functionName: String = #function,
+    stackTrace: [String] = Thread.callStackSymbols
   ) {
     
     self.init(
@@ -139,7 +163,8 @@ public struct VerboseError<
       fileName: fileName,
       lineNumber: lineNumber,
       columnNumber: columnNumber,
-      functionName: functionName
+      functionName: functionName,
+      stackTrace: stackTrace
     );
     
     self.errorCode = errorCode;
