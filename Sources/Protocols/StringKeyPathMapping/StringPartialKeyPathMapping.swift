@@ -9,6 +9,7 @@ import Foundation
 
 
 public protocol StringPartialKeyPathMapping {
+  associatedtype KeyPathRoot = Self;
   
-  static var partialKeyPathMap: Dictionary<String, PartialKeyPath<Self>> { get };
+  static var partialKeyPathMap: Dictionary<String, PartialKeyPath<KeyPathRoot>> { get };
 };
