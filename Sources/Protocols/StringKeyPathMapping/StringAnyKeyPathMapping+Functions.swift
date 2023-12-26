@@ -11,14 +11,14 @@ import Foundation
 /// Cached values for `StringAnyKeyPathMapping.anyKeyPathValueTypes`
 /// for each type that conforms to `StringAnyKeyPathMapping`.
 ///
-fileprivate var __cacheAnyKeyPathValueTypes:
+fileprivate var __cacheKeyPathValueTypes:
   Dictionary<String, [StringAnyKeyPathMapping.Type]> = [:];
 
 /// Cached values for
-/// `StringAnyKeyPathMapping.recursivelyGetAllAnyKeyPathValueTypes`
+/// `StringAnyKeyPathMapping.recursivelyGetAllKeyPathValueTypes`
 /// for each type that conforms to `StringAnyKeyPathMapping`.
 ///
-fileprivate var __cacheAllAnyKeyPathValueTypes:
+fileprivate var __cacheAllKeyPathValueTypes:
   Dictionary<String, [StringAnyKeyPathMapping.Type]> = [:];
 
 extension StringAnyKeyPathMapping {
@@ -30,25 +30,25 @@ extension StringAnyKeyPathMapping {
     String(describing: Self.self);
   };
   
-  /// Cached values for `StringAnyKeyPathMapping.anyKeyPathValueTypes`
-  private static var _cacheAnyKeyPathValueTypes: [StringAnyKeyPathMapping.Type]? {
+  /// Cached values for `StringAnyKeyPathMapping.keyPathValueTypes`
+  private static var _cacheKeyPathValueTypes: [StringAnyKeyPathMapping.Type]? {
     get {
-      __cacheAnyKeyPathValueTypes[Self._typeName];
+      __cacheKeyPathValueTypes[Self._typeName];
     }
     set {
-      __cacheAnyKeyPathValueTypes[Self._typeName] = newValue;
+      __cacheKeyPathValueTypes[Self._typeName] = newValue;
     }
   };
   
   /// Cached values for
-  /// `StringAnyKeyPathMapping.recursivelyGetAllAnyKeyPathValueTypes`
+  /// `StringAnyKeyPathMapping.recursivelyGetAllKeyPathValueTypes`
   ///
-  private static var _cacheAllAnyKeyPathValueTypes: [StringAnyKeyPathMapping.Type]? {
+  private static var _cacheAllKeyPathValueTypes: [StringAnyKeyPathMapping.Type]? {
     get {
-      __cacheAllAnyKeyPathValueTypes[Self._typeName];
+      __cacheAllKeyPathValueTypes[Self._typeName];
     }
     set {
-      __cacheAllAnyKeyPathValueTypes[Self._typeName] = newValue;
+      __cacheAllKeyPathValueTypes[Self._typeName] = newValue;
     }
   };
   
@@ -58,9 +58,9 @@ extension StringAnyKeyPathMapping {
   /// All of the `Value.Type` items from `KeyPath<Root, Value>` in
   /// `Self.anyKeyPathMap`, that conforms to `StringAnyKeyPathMapping`.
   ///
-  private static var anyKeyPathValueTypes: [StringAnyKeyPathMapping.Type] {
-    if let _cacheAnyKeyPathValueTypes = Self._cacheAnyKeyPathValueTypes {
-      return _cacheAnyKeyPathValueTypes;
+  private static var keyPathValueTypes: [StringAnyKeyPathMapping.Type] {
+    if let _cacheKeyPathValueTypes = Self._cacheKeyPathValueTypes {
+      return _cacheKeyPathValueTypes;
     };
   
     let types = Self.anyKeyPathMap.compactMap {
@@ -82,48 +82,47 @@ extension StringAnyKeyPathMapping {
       uniqueTypes.append(type);
     };
     
-    Self._cacheAnyKeyPathValueTypes = uniqueTypes;
+    Self._cacheKeyPathValueTypes = uniqueTypes;
     return uniqueTypes;
   };
   
-  private static var recursiveAnyKeyPathValueTypes: [StringAnyKeyPathMapping.Type] {
-    Self.recursivelyGetAllAnyKeyPathValueTypes();
+  private static var allKeyPathValueTypes: [StringAnyKeyPathMapping.Type] {
+    Self.recursivelyGetAllKeyPathValueTypes();
   };
   
-  private static func recursivelyGetAllAnyKeyPathValueTypes(
+  private static func recursivelyGetAllKeyPathValueTypes(
     currentItems: [StringAnyKeyPathMapping.Type]? = nil
   ) -> [StringAnyKeyPathMapping.Type] {
     
-    if let _cacheAllAnyKeyPathValueTypes = Self._cacheAllAnyKeyPathValueTypes {
-      return _cacheAllAnyKeyPathValueTypes;
+    if let _cacheAllKeyPathValueTypes = Self._cacheAllKeyPathValueTypes {
+      return _cacheAllKeyPathValueTypes;
     };
   
-    var allAnyKeyPathValueTypes: [StringAnyKeyPathMapping.Type] = [Self.self];
+    var keyPathValueTypes: [StringAnyKeyPathMapping.Type] = [Self.self];
     
-    for anyKeyPathValueType in Self.anyKeyPathValueTypes {
+    for type in Self.keyPathValueTypes {
       let shouldSkip: Bool = {
         guard let currentItems = currentItems else { return false };
         
         let match = currentItems.first {
-          $0 == anyKeyPathValueType;
+          $0 == type;
         };
         
         // Duplicate - current item already exists in
-        // `allAnyKeyPathValueTypes`.
+        // `allKeyPathValueTypes`.
         return match != nil;
       }();
       
       guard !shouldSkip else { continue };
-      allAnyKeyPathValueTypes.append(anyKeyPathValueType);
+      keyPathValueTypes.append(type);
       
-      allAnyKeyPathValueTypes +=
-        anyKeyPathValueType.recursivelyGetAllAnyKeyPathValueTypes(
-          currentItems: allAnyKeyPathValueTypes
-        );
+      keyPathValueTypes += type.recursivelyGetAllKeyPathValueTypes(
+        currentItems: keyPathValueTypes
+      );
     };
     
-    Self._cacheAllAnyKeyPathValueTypes = allAnyKeyPathValueTypes;
-    return allAnyKeyPathValueTypes;
+    Self._cacheAllKeyPathValueTypes = keyPathValueTypes;
+    return keyPathValueTypes;
   };
   
   // MARK: - Public Functions
@@ -161,10 +160,10 @@ extension StringAnyKeyPathMapping {
       );
     };
     
-    let allAnyKeyPathValueTypes = Self.recursiveAnyKeyPathValueTypes;
+    let allKeyPathValueTypes = Self.allKeyPathValueTypes;
     
     let anyKeyPaths = stringKeys.compactMap { stringKey in
-      for typeItem in allAnyKeyPathValueTypes {
+      for typeItem in allKeyPathValueTypes {
         guard let anyKeyPath = typeItem.anyKeyPathMap[stringKey]
         else { continue };
         
@@ -207,20 +206,6 @@ extension StringAnyKeyPathMapping {
     }();
     
     return combinedAnyKeyPath;
-    
-    /*
-    let rootKeyPath: KeyPath<Self, T>? = {
-      guard let partialKeyPath = Self.stringToKeyPathMap[stringKey] else {
-        throw "No matching key path value for string key"
-      };
-
-      guard let keyPath = value as? KeyPath<Self, T> else {
-        throw "Unable to cast partial key path to target type";
-      };
-
-      return keyPath;
-    }();
-    */
   };
   
   public static func getPartialKeyPath(
