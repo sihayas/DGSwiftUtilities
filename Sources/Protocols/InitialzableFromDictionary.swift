@@ -14,7 +14,7 @@ public protocol InitializableFromDictionary {
   init(fromDict dict: Dictionary<String, Any>) throws;
 };
 
-extension InitializableFromDictionary {
+public extension InitializableFromDictionary {
   
   // For backwards compatibility
   @available(*, deprecated, message: "Please use init(fromDict:) instead...")
