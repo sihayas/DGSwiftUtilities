@@ -15,7 +15,7 @@ public protocol InitializableFromString {
 
 extension RawRepresentable where RawValue == String {
   
-  init(fromString string: String) throws {
+  public init(fromString string: String) throws {
     guard let value = Self.init(rawValue: string) else {
       throw GenericError(
         errorCode: .invalidArgument,
@@ -30,7 +30,7 @@ extension RawRepresentable where RawValue == String {
   };
 };
 
-extension InitializableFromString {
+public extension InitializableFromString {
   
   // For backwards compatibility
   @available(*, deprecated, message: "Please use init(fromString:) instead...")
