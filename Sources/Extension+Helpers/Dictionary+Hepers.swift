@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import DGSwiftUtilities
 
 // TODO: Move to `DGSwiftUtilities`
 public extension Dictionary where Key == String {
@@ -19,7 +18,7 @@ public extension Dictionary where Key == String {
     let dictValue = self[key];
     
     guard let dictValue = dictValue else {
-      throw RNIUtilitiesError(
+      throw GenericError(
         errorCode: .unexpectedNilValue,
         description: "Unable to get value from dictionary for key",
         extraDebugValues: [
@@ -29,7 +28,7 @@ public extension Dictionary where Key == String {
     };
     
     guard let value = dictValue as? T else {
-      throw RNIUtilitiesError(
+      throw GenericError(
         errorCode: .typeCastFailed,
         description: "Unable to parse value from dictionary for key",
         extraDebugValues: [
@@ -76,7 +75,7 @@ public extension Dictionary where Key == String {
     let dictValue: String = try self.getValueFromDictionary(forKey: key);
     
     guard let value = T(rawValue: dictValue) else {
-      throw RNIUtilitiesError(
+      throw GenericError(
         errorCode: .unexpectedNilValue,
         description: "Unable to convert string from dictionary to enum",
         extraDebugValues: [
@@ -99,7 +98,7 @@ public extension Dictionary where Key == String {
     let dictValue: String = try self.getValueFromDictionary(forKey: key);
     
     guard let value = T(fromString: dictValue) else {
-      throw RNIUtilitiesError(
+      throw GenericError(
         errorCode: .unexpectedNilValue,
         description: "Unable to convert string from dictionary to enum",
         extraDebugValues: [

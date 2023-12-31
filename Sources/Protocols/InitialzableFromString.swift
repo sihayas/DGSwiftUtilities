@@ -17,7 +17,7 @@ extension RawRepresentable where RawValue == String {
   
   init(fromString string: String) throws {
     guard let value = Self.init(rawValue: string) else {
-      throw RNIUtilitiesError(
+      throw GenericError(
         errorCode: .invalidArgument,
         description: "Invalid string value",
         extraDebugValues: [
