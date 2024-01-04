@@ -19,48 +19,51 @@ public struct VerboseError<
   public var extraDebugValues: Dictionary<String, Any>?;
   public var extraDebugInfo: String?;
 
-  public var fileName: String;
+  public var filePath: String;
   public var lineNumber: Int;
   public var columnNumber: Int;
   public var functionName: String;
   
-  public var stackTrace: [String];
+  public var stackTrace: [String]?;
   
   // MARK: - Computed Properties
   // ---------------------------
   
   public var debugMetadata: String {
-    let fileURL = URL(fileURLWithPath: self.fileName);
+    let fileURL: URL? = Metadata.shouldLogFileMetadata
+      ? .init(fileURLWithPath: self.filePath)
+      : nil;
+    
+    var string = "";
   
-    var string = "fileName: \(fileURL.lastPathComponent)";
+    string += "functionName: \(self.functionName)";
+    string += " - lineNumber: \(self.lineNumber)";
+    string += " - columnNumber: \(self.columnNumber)";
+    
+    if let fileURL = fileURL {
+      string += " - fileName: \(fileURL.lastPathComponent)";
+    };
+    
+    if Metadata.shouldLogFilePath {
+      string += " - path: \(self.filePath)";
+    };
     
     if let parentType = Metadata.parentType {
       string += " - type: \(parentType)";
     };
     
-    string += " - functionName: \(self.functionName)";
-    string += " - lineNumber: \(self.lineNumber)";
-    string += " - columnNumber: \(self.columnNumber)";
-    string += " - path: \(self.fileName)";
-    
     return string;
   };
   
-  public var debugStackTrace: String {
-    let total = self.stackTrace.count;
+  public var debugStackTrace: String? {
+    guard let stackTrace = self.stackTrace else { return nil };
+    let total = stackTrace.count;
     
-    return self.stackTrace.enumerated().reduce(""){
-      /// E.g. (1/10)
-      let counter = "(\($1.offset + 1)/\(total)";
-      
-      /// E.g. (1/10) stackTraceItem
-      let item = "(\(counter) \($1.element)";
-      let separator = " -> ";
-      
+    return stackTrace.enumerated().reduce(""){
       let isFirst = $1.offset == 0;
       return isFirst
-        ? $0 + item
-        : $0 + separator + item;
+        ? $0 + $1.element
+        : "\($0) - \($1.element)"
     };
   };
   
@@ -113,9 +116,15 @@ public struct VerboseError<
   };
   
   public var errorDescription: String? {
-      "Error - \(self.baseErrorMessage)"
-    + "- Error Metadata: \(self.debugMetadata)"
-    + "- Stack Trace: \(self.debugStackTrace)";
+    var message =
+      "Error: \(self.baseErrorMessage)"
+    + " - Error Metadata: \(self.debugMetadata)";
+    
+    if let debugStackTrace = self.debugStackTrace {
+      message += " - Stack Trace: \(debugStackTrace)";
+    };
+    
+    return debugStackTrace;
   };
   
   // MARK: - Init
@@ -129,7 +138,9 @@ public struct VerboseError<
     lineNumber: Int = #line,
     columnNumber: Int = #column,
     functionName: String = #function,
-    stackTrace: [String] = Thread.callStackSymbols
+    stackTrace: [String]? = Metadata.shouldLogStackTrace
+      ? Thread.callStackSymbols
+      : nil
   ) {
   
     self.description = description;
@@ -137,7 +148,7 @@ public struct VerboseError<
     self.extraDebugValues = extraDebugValues;
     self.extraDebugInfo = extraDebugInfo;
     
-    self.fileName = fileName;
+    self.filePath = fileName;
     self.lineNumber = lineNumber;
     self.columnNumber = columnNumber;
     self.functionName = functionName;
@@ -149,12 +160,14 @@ public struct VerboseError<
     errorCode: Code,
     description: String? = nil,
     extraDebugValues: Dictionary<String, Any>? = nil,
-    extraDebugInfo: String? = nil,
+    extraDebugInfo: String? = nil,e
     fileName: String = #file,
     lineNumber: Int = #line,
     columnNumber: Int = #column,
     functionName: String = #function,
-    stackTrace: [String] = Thread.callStackSymbols
+    stackTrace: [String]? = Metadata.shouldLogStackTrace
+      ? Thread.callStackSymbols
+      : nil
   ) {
     
     self.init(
@@ -174,7 +187,7 @@ public struct VerboseError<
   // MARK: - Functions
   // -----------------
   
-  func log(){
+  public func log(){
     #if DEBUG
     guard let errorDescription = self.errorDescription else { return };
     print("Error -", errorDescription);
