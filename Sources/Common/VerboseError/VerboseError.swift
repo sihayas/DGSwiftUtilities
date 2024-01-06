@@ -57,8 +57,7 @@ public struct VerboseError<
   
   public var debugStackTrace: String? {
     guard let stackTrace = self.stackTrace else { return nil };
-    let total = stackTrace.count;
-    
+
     return stackTrace.enumerated().reduce(""){
       let isFirst = $1.offset == 0;
       return isFirst
