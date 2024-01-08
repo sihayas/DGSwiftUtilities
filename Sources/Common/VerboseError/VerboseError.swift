@@ -123,7 +123,7 @@ public struct VerboseError<
       message += " - Stack Trace: \(debugStackTrace)";
     };
     
-    return debugStackTrace;
+    return message;
   };
   
   // MARK: - Init
