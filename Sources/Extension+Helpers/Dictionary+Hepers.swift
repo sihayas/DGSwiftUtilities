@@ -97,35 +97,28 @@ public extension Dictionary where Key == String {
   };
   
   func getColorFromDictionary(forKey key: String) throws -> UIColor {
-    let stringValue = try? self.getValueFromDictionary(
-      forKey: key,
-      type: String.self
-    );
-    
-    if let stringValue = stringValue,
-       let color = UIColor(rgbString: stringValue) {
-      
-      return color;
+    guard let colorValue = self[key] else {
+      throw GenericError(
+        errorCode: .unexpectedNilValue,
+        description: "Unable to get value from dictionary for key",
+        extraDebugValues: [
+          "key": key
+        ]
+      );
     };
     
-    let dictValue = try? self.getValueFromDictionary(
-      forKey: key,
-      type: NSDictionary.self
-    );
-    
-    if let dictValue = dictValue,
-       let color = UIColor(dynamicDict: dictValue) {
-      
-      return color;
+    guard let color = UIColor.parseColor(value: colorValue) else {
+      throw GenericError(
+        errorCode: .invalidValue,
+        description: "Unable to parse color value",
+        extraDebugValues: [
+          "key": key,
+          "colorValue": colorValue,
+        ]
+      );
     };
     
-    throw GenericError(
-      errorCode: .unexpectedNilValue,
-      description: "Unable to get color from dictionary for key",
-      extraDebugValues: [
-        "key": key
-      ]
-    );
+    return color;
   };
   
   func getEnumFromDictionary<T: RawRepresentable<String>>(
