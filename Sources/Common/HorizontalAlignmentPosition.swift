@@ -38,7 +38,8 @@ public enum HorizontalAlignmentPosition: String {
     enclosingView: UIView,
     preferredWidth: CGFloat?,
     marginLeading: CGFloat = 0,
-    marginTrailing: CGFloat = 0
+    marginTrailing: CGFloat = 0,
+    shouldPreferWidthAnchor: Bool = false
   ) -> [NSLayoutConstraint] {
   
     var constraints: [NSLayoutConstraint?] = [];
@@ -83,7 +84,15 @@ public enum HorizontalAlignmentPosition: String {
       
       // D - match preview size
       case .stretchTarget:
-        constraints += [
+        constraints += shouldPreferWidthAnchor ? [
+          view.centerXAnchor.constraint(
+            equalTo: targetView.centerXAnchor
+          ),
+          
+          view.widthAnchor.constraint(
+            equalToConstant: targetView.bounds.width
+          ),
+        ] : [
           view.leadingAnchor.constraint(
             equalTo: targetView.leadingAnchor,
             constant: marginLeading
@@ -97,17 +106,25 @@ public enum HorizontalAlignmentPosition: String {
       
       // E - stretch to edges of screen
       case .stretch:
-        constraints += [
-          view.leadingAnchor.constraint(
-            equalTo: enclosingView.leadingAnchor,
-            constant: marginLeading
+        constraints += shouldPreferWidthAnchor ?  [
+          view.centerXAnchor.constraint(
+            equalTo: targetView.centerXAnchor
           ),
           
-          view.trailingAnchor.constraint(
-            equalTo: enclosingView.trailingAnchor,
-            constant: marginTrailing
+          view.widthAnchor.constraint(
+            equalToConstant: enclosingView.bounds.width
           ),
-        ];
+        ] : [
+         view.leadingAnchor.constraint(
+           equalTo: enclosingView.leadingAnchor,
+           constant: marginLeading
+         ),
+
+         view.trailingAnchor.constraint(
+           equalTo: enclosingView.trailingAnchor,
+           constant: marginTrailing
+         ),
+      ];
     };
     
     return constraints.compactMap { $0 };
