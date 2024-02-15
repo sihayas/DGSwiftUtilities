@@ -14,7 +14,7 @@ public class ClassRegistry {
 
   static var _allClasses: [AnyClass]?;
 
-  public var allClasses: [AnyClass] {
+  public static var allClasses: [AnyClass] {
     if Self.shouldCacheClasses,
        let _allClasses = Self._allClasses {
        
