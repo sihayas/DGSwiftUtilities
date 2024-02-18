@@ -8,7 +8,19 @@
 import Foundation
 
 public struct VerboseErrorSharedEnv {
-  public static var shouldLogFileMetadata: Bool?;
-  public static var shouldLogFilePath: Bool?;
+  public static var overrideShouldLogFileMetadata: Bool?;
+  public static var overrideShouldLogFilePath: Bool?;
   public static var overrideEnableLogStackTrace: Bool?;
+};
+
+public extension VerboseErrorSharedEnv {
+  @available(*, deprecated, renamed: "overrideShouldLogFilePath")
+  static var shouldLogFileMetadata: Bool? {
+    Self.overrideShouldLogFilePath;
+  };
+  
+  @available(*, deprecated, renamed: "overrideShouldLogFilePath")
+  static var shouldLogFilePath: Bool? {
+    Self.overrideShouldLogFilePath;
+  };
 };

@@ -14,12 +14,12 @@ public struct VerboseError<
 >: LocalizedError {
 
   public static var shouldLogFileMetadata: Bool {
-       VerboseErrorSharedEnv.shouldLogFileMetadata
+       VerboseErrorSharedEnv.overrideShouldLogFileMetadata
     ?? Metadata.shouldLogFileMetadata;
   };
   
   public static var shouldLogFilePath: Bool {
-       VerboseErrorSharedEnv.shouldLogFilePath
+       VerboseErrorSharedEnv.overrideShouldLogFilePath
     ?? Metadata.shouldLogFilePath;
   };
 
