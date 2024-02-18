@@ -23,7 +23,11 @@ extension ErrorMetadata {
   };
   
   public static var shouldLogFilePath: Bool {
+    #if DEBUG
     return true;
+    #else
+    return false;
+    #endif
   };
   
   public static var shouldLogStackTrace: Bool {
