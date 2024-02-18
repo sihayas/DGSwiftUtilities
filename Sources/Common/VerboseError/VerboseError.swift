@@ -13,6 +13,24 @@ public struct VerboseError<
   Code: ErrorCode
 >: LocalizedError {
 
+  public static var shouldLogFileMetadata: Bool {
+       VerboseErrorSharedEnv.shouldLogFileMetadata
+    ?? Metadata.shouldLogFileMetadata;
+  };
+  
+  public static var shouldLogFilePath: Bool {
+       VerboseErrorSharedEnv.shouldLogFilePath
+    ?? Metadata.shouldLogFilePath;
+  };
+
+  public static var shouldLogStackTrace: Bool {
+       VerboseErrorSharedEnv.overrideEnableLogStackTrace
+    ?? Metadata.shouldLogStackTrace;
+  };
+  
+  // MARK: - Properties
+  // ------------------
+
   public var errorCode: Code?;
   public var description: String?;
   
@@ -32,21 +50,21 @@ public struct VerboseError<
   // ---------------------------
   
   public var debugMetadata: String {
-    let fileURL: URL? = Metadata.shouldLogFileMetadata
-      ? .init(fileURLWithPath: self.filePath)
-      : nil;
-    
     var string = "";
   
     string += "functionName: \(self.functionName)";
     string += " - lineNumber: \(self.lineNumber)";
     string += " - columnNumber: \(self.columnNumber)";
     
+    let fileURL: URL? = Self.shouldLogFileMetadata
+      ? .init(fileURLWithPath: self.filePath)
+      : nil;
+    
     if let fileURL = fileURL {
       string += " - fileName: \(fileURL.lastPathComponent)";
     };
     
-    if Metadata.shouldLogFilePath {
+    if Self.shouldLogFilePath {
       string += " - path: \(self.filePath)";
     };
     
@@ -144,7 +162,7 @@ public struct VerboseError<
     lineNumber: Int = #line,
     columnNumber: Int = #column,
     functionName: String = #function,
-    stackTrace: [String]? = Metadata.shouldLogStackTrace
+    stackTrace: [String]? = Self.shouldLogStackTrace
       ? Thread.callStackSymbols
       : nil
   ) {
@@ -177,7 +195,7 @@ public struct VerboseError<
     lineNumber: Int = #line,
     columnNumber: Int = #column,
     functionName: String = #function,
-    stackTrace: [String]? = Metadata.shouldLogStackTrace
+    stackTrace: [String]? = Self.shouldLogStackTrace
       ? Thread.callStackSymbols
       : nil
   ) {
