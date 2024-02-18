@@ -9,8 +9,11 @@
 import Foundation
 
 
-public protocol Singleton {
+public protocol Singleton: AnyObject {
   static var shared: Self { get };
+};
+
+public protocol InitializableSingleton: Singleton {
   
   init();
 };
