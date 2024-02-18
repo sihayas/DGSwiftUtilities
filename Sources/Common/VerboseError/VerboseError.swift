@@ -26,6 +26,8 @@ public struct VerboseError<
   
   public var stackTrace: [String]?;
   
+  public var senderTypeString: String?;
+  
   // MARK: - Computed Properties
   // ---------------------------
   
@@ -48,8 +50,12 @@ public struct VerboseError<
       string += " - path: \(self.filePath)";
     };
     
+    if let senderTypeString = self.senderTypeString {
+      string += " - senderType: \(senderTypeString)";
+    };
+    
     if let parentType = Metadata.parentType {
-      string += " - type: \(parentType)";
+      string += " - parentType: \(parentType)";
     };
     
     return string;
@@ -130,6 +136,7 @@ public struct VerboseError<
   // ------------
   
   public init(
+    sender: Any? = nil,
     description: String?,
     extraDebugValues: Dictionary<String, Any>? = nil,
     extraDebugInfo: String? = nil,
@@ -141,6 +148,11 @@ public struct VerboseError<
       ? Thread.callStackSymbols
       : nil
   ) {
+  
+    if let sender = sender {
+      let senderType = type(of: sender);
+      self.senderTypeString = String(describing: senderType);
+    };
   
     self.description = description;
     
@@ -156,6 +168,7 @@ public struct VerboseError<
   };
   
   public init(
+    sender: Any? = nil,
     errorCode: Code,
     description: String? = nil,
     extraDebugValues: Dictionary<String, Any>? = nil,
@@ -170,6 +183,7 @@ public struct VerboseError<
   ) {
     
     self.init(
+      sender: sender,
       description: description ?? errorCode.description,
       extraDebugValues: extraDebugValues,
       extraDebugInfo: extraDebugInfo,
