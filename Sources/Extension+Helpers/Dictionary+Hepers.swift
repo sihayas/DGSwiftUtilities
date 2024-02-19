@@ -73,7 +73,7 @@ public extension Dictionary where Key == String {
   ) throws -> T {
   
     let stringValues = try self.getValueFromDictionary(
-      forKey: "modalMaskedCorners",
+      forKey: key,
       type: [String].self
     );
     
