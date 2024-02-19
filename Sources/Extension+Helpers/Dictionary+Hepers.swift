@@ -5,6 +5,7 @@
 //  Created by Dominic Go on 12/22/23.
 //
 
+import Foundation
 import UIKit
 
 // TODO: Move to `DGSwiftUtilities`
@@ -22,7 +23,8 @@ public extension Dictionary where Key == String {
         errorCode: .unexpectedNilValue,
         description: "Unable to get value from dictionary for key",
         extraDebugValues: [
-          "key": key
+          "key": key,
+          "type": type.self
         ]
       );
     };
@@ -34,6 +36,7 @@ public extension Dictionary where Key == String {
         extraDebugValues: [
           "key": key,
           "dictValue": dictValue,
+          "type": type.self
         ]
       );
     };
@@ -86,7 +89,8 @@ public extension Dictionary where Key == String {
         errorCode: .unexpectedNilValue,
         description: "array of optionSet values is 0",
         extraDebugValues: [
-          "key": key
+          "key": key,
+          "type": type.self
         ]
       );
     };
@@ -102,7 +106,7 @@ public extension Dictionary where Key == String {
         errorCode: .unexpectedNilValue,
         description: "Unable to get value from dictionary for key",
         extraDebugValues: [
-          "key": key
+          "key": key,
         ]
       );
     };
@@ -134,7 +138,8 @@ public extension Dictionary where Key == String {
         description: "Unable to convert string from dictionary to enum",
         extraDebugValues: [
           "key": key,
-          "dictValue": dictValue
+          "dictValue": dictValue,
+          "type": type.self,
         ]
       );
     };
@@ -157,7 +162,8 @@ public extension Dictionary where Key == String {
         description: "Unable to convert string from dictionary to enum",
         extraDebugValues: [
           "key": key,
-          "dictValue": dictValue
+          "dictValue": dictValue,
+          "type": type.self
         ]
       );
     };
