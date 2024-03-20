@@ -18,9 +18,7 @@ public class ObjectWrapperHelpers {
     type: T.Type = Any.self,
     shouldRetainValue: Bool = false
   ) -> T? {
-  
-    guard object.responds(to: selector) else { return nil };
-    
+
     let selectorResult: Unmanaged<AnyObject>? = {
       if let arg1 = arg1 {
         return object.perform(selector, with: arg1);
@@ -37,13 +35,15 @@ public class ObjectWrapperHelpers {
     
     guard let selectorResult = selectorResult else { return nil };
     
+    if T.self == Any.self || T.self == Void.self {
+      return nil;
+    };
+    
     let rawValue = shouldRetainValue
       ? selectorResult.takeRetainedValue()
       : selectorResult.takeUnretainedValue();
-      
-    return T.self == Any.self
-      ? nil
-      : rawValue as? T;
+        
+    return rawValue as? T;
   };
   
   @discardableResult
@@ -61,14 +61,29 @@ public class ObjectWrapperHelpers {
         errorCode: .guardCheckFailed,
         description: "Failed to decode string for HashedStringDecodable",
         extraDebugValues: [
+          "objectName": (object as? NSObject)?.className ?? "N/A",
           "typeName": String(describing: hashedString.self),
-          "rawValue:": hashedString.rawValue,
-          "encodedString:": hashedString.encodedString,
+          "rawValue": hashedString.rawValue,
+          "encodedString": hashedString.encodedString,
         ]
       );
     };
     
     let selector = NSSelectorFromString(decodedString);
+    
+    guard object.responds(to: selector) else {
+      throw GenericError(
+        errorCode: .guardCheckFailed,
+        description: "object does not respond to selector: \(decodedString)",
+        extraDebugValues: [
+          "objectName": (object as? NSObject)?.className ?? "N/A",
+          "typeName": String(describing: hashedString.self),
+          "rawValue": hashedString.rawValue,
+          "encodedString": hashedString.encodedString,
+          "decodedString": decodedString,
+        ]
+      );
+    };
     
     return Self.performSelector(
       forObject: object,
