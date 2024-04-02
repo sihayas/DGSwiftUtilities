@@ -27,6 +27,17 @@ public extension UIView {
     self.rootViewControllerForCurrentWindow?.view;
   };
   
+  var recursivelyGetAllSuperviews: [UIView] {
+    var parentViews: [UIView] = [];
+    var currentView = self;
+    
+    while true {
+      guard let superview = currentView.superview else { return parentViews };
+      parentViews.append(superview);
+      currentView = superview;
+    };
+  };
+  
   var recursivelyGetAllSubviews: [UIView] {
     var views: [UIView] = [];
     
