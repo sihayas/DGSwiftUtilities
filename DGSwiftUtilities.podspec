@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name             = 'DGSwiftUtilities'
-  s.version          = '0.17.3'
+  s.version          = '0.18.0'
   s.summary          = 'Swift helpers and utilities'
 
   s.homepage         = 'https://github.com/dominicstop/DGSwiftUtilities'
