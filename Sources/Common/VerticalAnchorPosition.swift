@@ -12,6 +12,19 @@ public enum VerticalAnchorPosition: String {
 
   case top, bottom;
   
+  // MARK: - Computed Properties
+  // ---------------------------
+  
+  var opposite: Self {
+    switch self {
+      case .top:
+        return .bottom;
+        
+      case .bottom:
+        return .top;
+    };
+  };
+  
   // MARK: - Functions
   // -----------------
   
