@@ -57,6 +57,19 @@ public extension Dictionary where Key == String {
     return try T.init(fromDict: dictValue);
   };
   
+  func getValueFromDictionary<T: CreatableFromDictionary>(
+    forKey key: String,
+    type: T.Type = T.self
+  ) throws -> T {
+  
+    let dictValue = try self.getValueFromDictionary(
+      forKey: key,
+      type: Dictionary<String, Any>.self
+    );
+    
+    return try T.create(fromDict: dictValue);
+  };
+  
   func getValueFromDictionary<T: InitializableFromString>(
     forKey key: String,
     type: T.Type = T.self
