@@ -5,7 +5,7 @@
 //  Created by Dominic Go on 5/14/24.
 //
 
-import Foundation
+import UIKit
 
 
 public enum VerticalAlignmentPosition: String {

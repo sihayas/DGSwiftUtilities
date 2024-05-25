@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import DGSwiftUtilities
 
 public class MappedMulticastDelegate<K: Hashable, T> {
   private var _delegateMap: WeakDictionary<K, T> = .init();
