@@ -29,6 +29,10 @@ public class WeakDictionary<K: Hashable, T> {
     }
   }
   
+  public init(){
+    // no-op
+  };
+  
   public func set(for key: K, with value: T){
     self.rawDict[key] = WeakRef(with: value);
   };
