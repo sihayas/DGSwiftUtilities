@@ -46,6 +46,10 @@ public class WeakDictionary<K: Hashable, T> {
     return ref;
   };
   
+  public func removeValue(for key: K){
+    self.rawDict.removeValue(forKey: key);
+  };
+  
   public subscript(key: K) -> T? {
     get {
       self.get(for: key);
