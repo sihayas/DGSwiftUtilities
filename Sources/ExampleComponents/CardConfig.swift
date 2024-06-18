@@ -25,7 +25,7 @@ public struct CardConfig {
   // MARK: - Init
   // ------------
   
-  init(
+  public init(
     title: String,
     subtitle: String? = nil,
     desc: [AttributedStringConfig],
