@@ -29,7 +29,7 @@ extension UIDevice.BatteryState: EnumCaseStringRepresentable, CustomStringConver
         print("Runtime Warning - Not implemented -", #file);
         #endif
         
-        return "";
+        return "unknown";
     };
   };
 };
