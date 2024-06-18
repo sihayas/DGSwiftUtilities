@@ -8,7 +8,7 @@
 import UIKit
 
 
-extension UIGestureRecognizer.State {
+public extension UIGestureRecognizer.State {
   var isActive: Bool {
     switch self {
       case .began, .changed:
