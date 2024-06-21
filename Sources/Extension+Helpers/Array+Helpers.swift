@@ -29,4 +29,12 @@ public extension Array {
     
     return match as? T;
   };
+  
+  func extractValues<U>(
+    forKey key: KeyPath<Element, U>
+  ) -> [U] {
+    self.map {
+      $0[keyPath: key];
+    };
+  };
 };
