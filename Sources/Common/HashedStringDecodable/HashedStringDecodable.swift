@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol HashedStringDecodable: RawRepresentable where RawValue == String  {
+public protocol HashedStringDecodable  {
 
   var encodedString: String { get };
   

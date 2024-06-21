@@ -11,6 +11,10 @@ fileprivate var decodedStringCache: Dictionary<String, String> = [:];
 
 public extension HashedStringDecodable {
 
+  var rawValue: String {
+    self.decodedString ?? self.encodedString;
+  };
+
   var decodedString: String? {
     let encodedString = self.encodedString;
     
@@ -24,7 +28,6 @@ public extension HashedStringDecodable {
       #if DEBUG
       print(
         "HashedStringDecodable.decodedString",
-        "\n- rawValue: \(self.rawValue)",
         "\n- encodedString: \(encodedString)",
         "\n- couldn't decode string",
         "\n"
@@ -35,5 +38,21 @@ public extension HashedStringDecodable {
     
     decodedStringCache[encodedString] = decodedString;
     return decodedString;
+  };
+};
+
+public extension HashedStringDecodable where Self: CaseIterable {
+
+  init?(rawValue: String) {
+    let match = Self.allCases.first {
+      if let decodedString = $0.decodedString {
+        return decodedString == rawValue;
+      };
+      
+      return $0.encodedString == rawValue;
+    };
+    
+    guard let match = match else { return nil };
+    self = match;
   };
 };
