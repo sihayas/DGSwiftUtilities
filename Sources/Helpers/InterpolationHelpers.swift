@@ -8,8 +8,10 @@
 import UIKit
 
 @available(*, deprecated, renamed: "AdaptiveModalUtilities")
-public class InterpolationHelpers {
+public typealias AdaptiveModalUtilities = InterpolationHelpers;
 
+
+public class InterpolationHelpers {
   public static func lerp(
     valueStart: CGFloat,
     valueEnd: CGFloat,
