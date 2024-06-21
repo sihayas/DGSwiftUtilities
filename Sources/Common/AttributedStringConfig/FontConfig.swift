@@ -122,7 +122,9 @@ public struct FontConfig {
     };
     
     var traits = attributes[.traits] as? [UIFontDescriptor.TraitKey: Any] ?? [:];
-    traits[.weight] = self.weight ?? .regular;
+    if let weight = self.weight {
+      traits[.weight] = weight;
+    };
     
     attributes[.traits] = traits;
     descriptor = descriptor.addingAttributes(attributes);
