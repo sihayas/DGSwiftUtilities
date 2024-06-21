@@ -1,5 +1,5 @@
 //
-//  AdaptiveModalManager+Helpers.swift
+//  InterpolationHelpers.swift
 //  swift-programmatic-modal
 //
 //  Created by Dominic Go on 5/27/23.
@@ -7,7 +7,8 @@
 
 import UIKit
 
-public class AdaptiveModalUtilities {
+@available(*, deprecated, renamed: "AdaptiveModalUtilities")
+public class InterpolationHelpers {
 
   public static func lerp(
     valueStart: CGFloat,
