@@ -216,7 +216,7 @@ public struct Transform3D: Equatable {
     
     transform.m34 = self.perspective;
     transform.m12 = self.skewY;
-    transform.m21 = self.skewY;
+    transform.m21 = self.skewX;
     
     transform = CATransform3DTranslate(
       transform,
