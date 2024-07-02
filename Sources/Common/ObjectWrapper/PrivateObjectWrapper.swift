@@ -16,6 +16,9 @@ open class PrivateObjectWrapper<
   EncodedString
 > {
 
+  // MARK: - Class Properties
+  // ------------------------
+
   public static var className: String? {
     EncodedString.className.decodedString;
   };
@@ -24,6 +27,22 @@ open class PrivateObjectWrapper<
     guard let className = Self.className else { return nil };
     return NSClassFromString(className);
   };
+  
+  // MARK: - Class Methods
+  // ---------------------
+  
+  static func createInstance() -> NSObject? {
+    guard let classType = Self.classType,
+          let classTypeErased = classType as? NSObject.Type
+    else {
+      return nil;
+    };
+    
+    return classTypeErased.init();
+  };
+  
+  // MARK: - Init
+  // ------------
 
   public override init?(
     objectToWrap sourceObject: AnyObject,
@@ -40,7 +59,12 @@ open class PrivateObjectWrapper<
       shouldRetainObject: shouldRetainObject
     );
   };
+  
+  public convenience init?(){
+    guard let instance = Self.createInstance() else {
+      return nil;
+    };
+    
+    self.init(objectToWrap: instance, shouldRetainObject: true);
+  };
 };
-
-
-
