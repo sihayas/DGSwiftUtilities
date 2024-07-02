@@ -40,7 +40,7 @@ public struct ColorThemeConfig {
   // MARK: - Init
   // ------------
   
-  init(
+  public init(
     colorBgLight: UIColor,
     colorBgDark: UIColor,
     colorBgAccent: UIColor,

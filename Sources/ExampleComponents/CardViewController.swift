@@ -10,6 +10,7 @@ import UIKit
 public class CardViewController: UIViewController {
 
   public var cardConfig: CardConfig;
+  public var cardView: UIView?;
   
   public init(cardConfig: CardConfig){
     self.cardConfig = cardConfig;
@@ -20,16 +21,36 @@ public class CardViewController: UIViewController {
     fatalError("init(coder:) has not been implemented");
   };
   
-  public override func loadView() {
+  public override func viewDidLoad() {
     self.applyCardConfig();
   };
   
   public func applyCardConfig(){
-    if self.isViewLoaded {
-      self.view.removeFromSuperview();
+    if let cardView = self.cardView {
+      cardView.removeFromSuperview();
+      self.cardView = nil;
     };
     
     let cardView = self.cardConfig.createCardView();
-    self.view = cardView.rootVStack;
+    let cardRootView = cardView.rootVStack;
+    self.cardView = cardRootView;
+    
+    self.view.addSubview(cardRootView);
+    cardRootView.translatesAutoresizingMaskIntoConstraints = false;
+    
+    NSLayoutConstraint.activate([
+      cardRootView.leadingAnchor.constraint(
+        equalTo: self.view.leadingAnchor
+      ),
+      cardRootView.trailingAnchor.constraint(
+        equalTo: self.view.trailingAnchor
+      ),
+      cardRootView.topAnchor.constraint(
+        equalTo: self.view.topAnchor
+      ),
+      cardRootView.bottomAnchor.constraint(
+        equalTo: self.view.bottomAnchor
+      ),
+    ]);
   };
 };
