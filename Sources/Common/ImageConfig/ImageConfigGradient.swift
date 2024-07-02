@@ -121,7 +121,7 @@ public struct ImageConfigGradient {
 
 extension ImageConfigGradient {
 
-  public func topDownGradient(
+  public static func topDownGradient(
     colors: [UIColor],
     locations: [NSNumber]? = nil,
     cornerRadius: CGFloat = 0,
@@ -138,7 +138,7 @@ extension ImageConfigGradient {
     );
   };
   
-  public func bottomToTopGradient(
+  public static func bottomToTopGradient(
     colors: [UIColor],
     locations: [NSNumber]? = nil,
     cornerRadius: CGFloat = 0,
@@ -155,7 +155,7 @@ extension ImageConfigGradient {
     );
   };
   
-  public func leftToRightGradient(
+  public static func leftToRightGradient(
     colors: [UIColor],
     locations: [NSNumber]? = nil,
     cornerRadius: CGFloat = 0,
@@ -172,7 +172,7 @@ extension ImageConfigGradient {
     );
   };
   
-  public func rightToLeftGradient(
+  public static func rightToLeftGradient(
     colors: [UIColor],
     locations: [NSNumber]? = nil,
     cornerRadius: CGFloat = 0,
