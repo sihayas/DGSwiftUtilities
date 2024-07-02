@@ -163,7 +163,8 @@ public enum CardLabelValueDisplayItemConfig {
           
           stack.axis = .vertical;
           //stack.distribution = .equalSpacing;
-          stack.alignment = .leading
+          stack.alignment = .leading;
+          stack.spacing = 8;
                     
           return stack;
         }();
@@ -198,11 +199,19 @@ public enum CardLabelValueDisplayItemConfig {
         };
         
         let topTitleLabel = UILabel();
+        topTitleLabel.font = nil;
+        topTitleLabel.textColor = nil;
+        topTitleLabel.numberOfLines = 0
+        topTitleLabel.lineBreakMode = .byWordWrapping;
         topTitleLabel.attributedText = labelConfig.makeAttributedString();
         
         rootVStack.addArrangedSubview(topTitleLabel);
         
         let bottomValueLabel = UILabel();
+        bottomValueLabel.font = nil;
+        bottomValueLabel.textColor = nil;
+        bottomValueLabel.numberOfLines = 0
+        bottomValueLabel.lineBreakMode = .byWordWrapping;
         bottomValueLabel.attributedText = valueConfig.makeAttributedString();
         
         rootVStack.addArrangedSubview(bottomValueLabel);
