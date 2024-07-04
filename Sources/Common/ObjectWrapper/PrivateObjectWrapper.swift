@@ -31,7 +31,7 @@ open class PrivateObjectWrapper<
   // MARK: - Class Methods
   // ---------------------
   
-  static func createInstance() -> NSObject? {
+  public static func createInstance() -> NSObject? {
     guard let classType = Self.classType,
           let classTypeErased = classType as? NSObject.Type
     else {
