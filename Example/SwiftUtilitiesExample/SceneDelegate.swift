@@ -29,9 +29,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     let window = UIWindow(windowScene: windowScene);
     self.window = window;
     
-    let rootVC = RouteManagerShared.currentRoute.viewController;
+    RouteManager.sharedInstance.window = window;
+    RouteManager.sharedInstance.applyCurrentRoute();
     
-    window.rootViewController = rootVC;
     window.makeKeyAndVisible();
   };
   
@@ -76,3 +76,4 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     // current state.
   };
 };
+
