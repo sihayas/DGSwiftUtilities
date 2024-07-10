@@ -35,4 +35,19 @@ public extension Interpolator {
       percent: percentWithEasing
     );
   };
+  
+  static func lerp(
+    valueStart: CGFloat,
+    valueEnd: CGFloat,
+    percent: CGFloat,
+    easing: InterpolationEasing
+  ) -> CGFloat {
+  
+    let percentWithEasing = easing.compute(inputValue: percent);
+    return lerp(
+      valueStart: valueStart,
+      valueEnd: valueEnd,
+      percent: percentWithEasing
+    );
+  };
 };

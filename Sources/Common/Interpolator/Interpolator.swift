@@ -14,8 +14,17 @@ public struct Interpolator {
   
   func lerp(
     percent: CGFloat,
+    easing: InterpolationEasing? = nil
   ) -> CGFloat {
     
+    if let easing = easing {
+      return Self.lerp(
+        valueStart: self.valueStart,
+        valueEnd: self.valueEnd,
+        percent: percent,
+        easing: easing
+      );
+    };
     
     return Self.lerp(
       valueStart: self.valueStart,
