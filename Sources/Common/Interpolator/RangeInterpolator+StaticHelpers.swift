@@ -9,13 +9,35 @@ import Foundation
 
 
 public extension RangeInterpolator {
+  
+  static func lerp(
+    inputValue: CGFloat,
+    inputValueStart: CGFloat,
+    inputValueEnd: CGFloat,
+    outputValueStart: CGFloat,
+    outputValueEnd: CGFloat,
+    easing: InterpolationEasing = .linear
+  ) -> CGFloat {
+  
+    let inputValueAdj    = inputValue    - inputValueStart;
+    let rangeInputEndAdj = inputValueEnd - inputValueStart;
+
+    let progress = inputValueAdj / rangeInputEndAdj;
+          
+    return Interpolator.lerp(
+      valueStart: outputValueStart,
+      valueEnd  : inputValueEnd,
+      percent   : progress
+    );
+  };
 
   static func interpolate(
-    inputValue    : CGFloat,
-    rangeInput    : [CGFloat],
-    rangeOutput   : [CGFloat],
+    inputValue: CGFloat,
+    rangeInput: [CGFloat],
+    rangeOutput: [CGFloat],
     shouldClampMin: Bool = false,
-    shouldClampMax: Bool = false
+    shouldClampMax: Bool = false,
+    easing: InterpolationEasing = .linear
   ) -> CGFloat? {
   
     guard rangeInput.count == rangeOutput.count,
@@ -46,7 +68,8 @@ public extension RangeInterpolator {
       let interpolatedValue = Interpolator.lerp(
         valueStart: rangeOutputEnd,
         valueEnd  : rangeOutputStart,
-        percent   : percent
+        percent   : percent,
+        easing    : easing
       );
       
       let delta2 = interpolatedValue - rangeOutputEnd;
@@ -82,15 +105,13 @@ public extension RangeInterpolator {
           let rangeOutputEnd   = rangeOutput[safeIndex: rangeEndIndex  ]
     else { return nil };
     
-    let inputValueAdj    = inputValue    - rangeInputStart;
-    let rangeInputEndAdj = rangeInputEnd - rangeInputStart;
-
-    let progress = inputValueAdj / rangeInputEndAdj;
-          
-    return Interpolator.lerp(
-      valueStart: rangeOutputStart,
-      valueEnd  : rangeOutputEnd,
-      percent   : progress
+    return Self.lerp(
+      inputValue      : inputValue,
+      inputValueStart : rangeInputStart,
+      inputValueEnd   : rangeInputEnd,
+      outputValueStart: rangeOutputStart,
+      outputValueEnd  : rangeOutputEnd,
+      easing          : easing
     );
   };
 };
