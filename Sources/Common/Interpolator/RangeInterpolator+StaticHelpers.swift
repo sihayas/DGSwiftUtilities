@@ -26,7 +26,7 @@ public extension RangeInterpolator {
           
     return Interpolator.lerp(
       valueStart: outputValueStart,
-      valueEnd  : inputValueEnd,
+      valueEnd  : outputValueEnd,
       percent   : progress
     );
   };
@@ -54,26 +54,20 @@ public extension RangeInterpolator {
     
     // A - Extrapolate Left
     if inputValue < rangeInput.first! {
-       
       let rangeInputStart  = rangeInput.first!;
+      let rangeInputEnd = rangeInput[1];
+      
       let rangeOutputStart = rangeOutput.first!;
-       
-      let delta1 = rangeInputStart - inputValue;
-      let percent = delta1 / rangeInputStart;
+      let rangeOutputEnd = rangeOutput[1];
       
-      // extrapolated "range output end"
-      let rangeOutputEnd =
-        rangeOutputStart - (rangeOutput[1] - rangeOutputStart);
-      
-      let interpolatedValue = Interpolator.lerp(
-        valueStart: rangeOutputEnd,
-        valueEnd  : rangeOutputStart,
-        percent   : percent,
-        easing    : easing
+      return RangeInterpolator.lerp(
+        inputValue: inputValue,
+        inputValueStart: rangeInputEnd,
+        inputValueEnd: rangeInputStart,
+        outputValueStart: rangeOutputEnd,
+        outputValueEnd: rangeOutputStart,
+        easing: easing
       );
-      
-      let delta2 = interpolatedValue - rangeOutputEnd;
-      return rangeOutputStart - delta2;
     };
     
     let (rangeStartIndex, rangeEndIndex): (Int, Int) = {
