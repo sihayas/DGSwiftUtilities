@@ -7,7 +7,12 @@
 
 import Foundation
 
+public typealias IndexValuePair<T> = (index: Int, value: T);
+
 public extension Array {
+
+  /// Kind of like a type-erased version of `Enumerated`
+  typealias IndexElementPair = IndexValuePair<Element>;
 
   subscript(cyclicIndex index: Index) -> Element {
     get {
@@ -36,5 +41,19 @@ public extension Array {
     self.map {
       $0[keyPath: key];
     };
+  };
+
+  func indexedFirst(
+    where predicate: (_ index: Index, _ value: Element) -> Bool
+  ) -> IndexElementPair? {
+    let match = self.enumerated().first {
+      predicate($0.offset, $0.element);
+    };
+    
+    guard let match = match else {
+      return nil;
+    };
+    
+    return (match.offset, match.element);
   };
 };
