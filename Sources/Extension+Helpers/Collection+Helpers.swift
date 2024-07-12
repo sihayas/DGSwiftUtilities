@@ -83,6 +83,31 @@ public extension Collection {
       }
     );
   };
+  
+  func seekBackwardsAndForward (
+    startIndex: Int,
+    where condition: (Element, _ isReversing: Bool) -> Bool
+  ) -> Element? {
+    
+    let matchInitial = self.seekBackwards(
+      startIndex: startIndex,
+      where: {
+        condition($0, true);
+      }
+    );
+    
+    if let matchInitial = matchInitial {
+      return matchInitial;
+    };
+    
+    return self.seekForward(
+      startIndex: startIndex,
+      where: {
+        condition($0, false);
+      }
+    );
+  };
+  
   func seekAlternatingForwardAndBackwards(
     startIndex: Int?,
     where predicate: (Element, _ isReversing: Bool) -> Bool
