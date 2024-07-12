@@ -42,10 +42,11 @@ public extension Collection {
   };
   
   func seekBackwards(
-    startIndex: Int,
+    startIndex: Int? = nil,
     where condition: (Element) -> Bool
   ) -> Element? {
     
+    let startIndex = startIndex ?? self.count - 1;
     for index in (0...startIndex).reversed() {
       let element = self[
         self.index(self.indices.startIndex, offsetBy: index)
@@ -81,6 +82,57 @@ public extension Collection {
         condition($0, true);
       }
     );
+  };
+  func seekAlternatingForwardAndBackwards(
+    startIndex: Int?,
+    where predicate: (Element, _ isReversing: Bool) -> Bool
+  ) -> Element? {
+  
+    guard self.count > 0  else {
+      return nil;
+    };
+    
+    let startIndex = startIndex ?? (self.count - 1) / 2;
+    
+    var seekForwardIndex =
+      startIndex.clamped(min: 0, max: self.count - 1);
+      
+    var seekBackwardIndex =
+      (startIndex - 1).clamped(min: 0, max: seekForwardIndex - 1);
+    
+    let totalIterations =
+      (seekForwardIndex + seekBackwardIndex + 1).clamped(max: self.count);
+  
+    for count in 0...totalIterations {
+      let isCountEven = count % 2 == 0;
+      
+      let canSeekForwards  = seekForwardIndex < self.count;
+      let canSeekBackwards = seekBackwardIndex >= 0;
+    
+      if isCountEven && canSeekForwards {
+        let index = self.index(self.startIndex, offsetBy: seekForwardIndex);
+        let element = self[index];
+        seekForwardIndex += 1;
+        
+        let result = predicate(element, false);
+        if result {
+          return element;
+        };
+      };
+      
+      if !isCountEven && canSeekBackwards {
+        let index = self.index(self.startIndex, offsetBy: seekBackwardIndex);
+        let element = self[index];
+        seekBackwardIndex -= 1;
+        
+        let result = predicate(element, true);
+        if result {
+          return element;
+        };
+      };
+    };
+    
+    return nil;
   };
 };
 
