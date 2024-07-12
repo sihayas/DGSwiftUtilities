@@ -1,5 +1,5 @@
 //
-//  FloatingPoint+Helpers.swift
+//  Numeric+Helpers.swift
 //  swift-programmatic-modal
 //
 //  Created by Dominic Go on 5/19/23.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-public extension FloatingPoint {
+public extension Numeric where Self: Comparable {
   func clamped(
     min lowerBound: Self? = nil,
     max upperBound: Self? = nil
@@ -31,6 +31,6 @@ public extension FloatingPoint {
   };
   
   func clamped(minMax: Self) -> Self {
-    self.clamped(min: -minMax, max: minMax);
+    self.clamped(min: 0 - minMax, max: minMax);
   };
 };
