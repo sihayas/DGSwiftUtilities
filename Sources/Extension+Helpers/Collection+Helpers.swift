@@ -23,12 +23,16 @@ public extension Collection {
     return self.isOutOfBounds(forIndex: index) ? nil : self[index];
   };
   
-  func seekForward(
-    startIndex: Int,
+  func firstBySeekingForwards(
+    startingAtIndex startIndex: Int,
     where condition: (Element) -> Bool
   ) -> Element? {
+  
+    guard self.count > 0 else {
+      return nil;
+    };
     
-    for index in startIndex ..< self.count {
+    for index in startIndex..<self.count {
       let element = self[
         self.index(self.indices.startIndex, offsetBy: index)
       ];
@@ -41,10 +45,14 @@ public extension Collection {
     return nil;
   };
   
-  func seekBackwards(
-    startIndex: Int? = nil,
+  func firstBySeekingBackwards(
+    startingAtIndex startIndex: Int? = nil,
     where condition: (Element) -> Bool
   ) -> Element? {
+  
+    guard self.count > 0 else {
+      return nil;
+    };
     
     let startIndex = startIndex ?? self.count - 1;
     for index in (0...startIndex).reversed() {
@@ -60,13 +68,17 @@ public extension Collection {
     return nil;
   };
   
-  func seekForwardAndBackwards(
-    startIndex: Int,
+  func firstBySeekingForwardsThenBackwards(
+    startingAtIndex startIndex: Int,
     where condition: (Element, _ isReversing: Bool) -> Bool
   ) -> Element? {
+  
+    guard self.count > 0 else {
+      return nil;
+    };
     
-    let matchInitial = self.seekForward(
-      startIndex: startIndex,
+    let matchInitial = self.firstBySeekingForwards(
+      startingAtIndex: startIndex,
       where: {
         condition($0, false);
       }
@@ -76,21 +88,21 @@ public extension Collection {
       return matchInitial;
     };
     
-    return self.seekBackwards(
-      startIndex: startIndex,
+    return self.firstBySeekingBackwards(
+      startingAtIndex: startIndex,
       where: {
         condition($0, true);
       }
     );
   };
   
-  func seekBackwardsAndForward (
-    startIndex: Int,
+  func firstBySeekingBackwardsThenForwards (
+    startingAtIndex startIndex: Int,
     where condition: (Element, _ isReversing: Bool) -> Bool
   ) -> Element? {
     
-    let matchInitial = self.seekBackwards(
-      startIndex: startIndex,
+    let matchInitial = self.firstBySeekingBackwards(
+      startingAtIndex: startIndex,
       where: {
         condition($0, true);
       }
@@ -100,15 +112,15 @@ public extension Collection {
       return matchInitial;
     };
     
-    return self.seekForward(
-      startIndex: startIndex,
+    return self.firstBySeekingForwards(
+      startingAtIndex: startIndex,
       where: {
         condition($0, false);
       }
     );
   };
   
-  func seekAlternatingForwardAndBackwards(
+  func firstBySeekingForwardAndBackwards(
     startIndex: Int?,
     where predicate: (Element, _ isReversing: Bool) -> Bool
   ) -> Element? {
@@ -158,6 +170,45 @@ public extension Collection {
     };
     
     return nil;
+  };
+  
+  // MARK: - Deprecated
+  // ------------------
+  
+  @available(*, deprecated, renamed: "firstBySeekingForwards")
+  func seekForward(
+    startIndex: Int,
+    where condition: (Element) -> Bool
+  ) -> Element? {
+    
+    self.firstBySeekingForwards(
+      startingAtIndex: startIndex,
+      where: condition
+    );
+  };
+  
+  @available(*, deprecated, renamed: "firstBySeekBackwards")
+  func seekBackwards(
+    startIndex: Int? = nil,
+    where condition: (Element) -> Bool
+  ) -> Element? {
+  
+    self.firstBySeekingBackwards(
+      startingAtIndex: startIndex,
+      where: condition
+    );
+  };
+  
+  @available(*, deprecated, renamed: "firstBySeekingForwardsThenBackwards")
+  func seekForwardAndBackwards(
+    startIndex: Int,
+    where condition: (_ item: Element, _ isReversing: Bool) -> Bool
+  ) -> Element? {
+  
+    self.firstBySeekingBackwardsThenForwards(
+      startingAtIndex: startIndex,
+      where: condition
+    );
   };
 };
 
