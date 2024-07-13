@@ -30,6 +30,28 @@ public extension RangeInterpolator {
       percent   : progress
     );
   };
+  
+  static func interpolate(
+    relativePercent: CGFloat,
+    inputValueStart: CGFloat,
+    inputValueEnd: CGFloat,
+    outputValueStart: CGFloat,
+    outputValueEnd: CGFloat,
+    easing: InterpolationEasing = .linear
+  ) -> CGFloat {
+    
+    let rangeDelta = abs(inputValueStart - inputValueEnd);
+    let inputValue = rangeDelta * relativePercent;
+    
+    let percentRaw = inputValue / rangeDelta;
+    let percent = percentRaw.isFinite ? percentRaw : 0;
+    
+    return Interpolator.lerp(
+      valueStart: outputValueStart,
+      valueEnd  : outputValueEnd,
+      percent   : percent
+    );
+  };
 
   static func interpolate(
     inputValue: CGFloat,
