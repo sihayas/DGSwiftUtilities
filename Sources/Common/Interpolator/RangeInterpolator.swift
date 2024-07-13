@@ -28,11 +28,12 @@ public struct RangeInterpolator {
   private(set) public var rangeOutputMin: RangeItem;
   private(set) public var rangeOutputMax: RangeItem;
   
-  var prevInputValue: CGFloat?;
-  var currentRangeStart: RangeItem?;
-  var currentRangeEnd: RangeItem?;
+  private(set) public var prevInputValue: CGFloat?;
+  var currentInterpolatorIndex: Int?;
   
-  var interpolators: [Interpolator];
+  private(set) public var interpolators: [Interpolator];
+  private(set) public var extrapolatorLeft: Interpolator;
+  private(set) public var extrapolatorRight: Interpolator;
   
   // MARK: - Computed Properties
   // ---------------------------
@@ -93,6 +94,22 @@ public struct RangeInterpolator {
     };
     
     self.interpolators = interpolators;
+    
+    self.extrapolatorLeft = .init(
+      inputValueStart: rangeInput[1],
+      inputValueEnd: rangeInput[0],
+      outputValueStart: rangeOutput[1],
+      outputValueEnd: rangeOutput[0],
+      easing: .linear
+    );
+    
+    self.extrapolatorRight = .init(
+      inputValueStart: rangeInput.secondToLast!,
+      inputValueEnd: rangeInput.last!,
+      outputValueStart: rangeOutput.secondToLast!,
+      outputValueEnd: rangeOutput.last!,
+      easing: .linear
+    );
   };
   
   // MARK: Functions
@@ -122,13 +139,9 @@ public struct RangeInterpolator {
         return rangeOutput.first!;
       };
       
-      return Self.interpolate(
+      return self.extrapolatorLeft.interpolate(
         inputValue: inputValue,
-        inputValueStart: self.rangeInput[1],
-        inputValueEnd: self.rangeInput[0],
-        outputValueStart: self.rangeOutput[1],
-        outputValueEnd: self.rangeOutput[0],
-        easing: .linear
+        easingOverride: .linear
       );
     };
     
@@ -138,13 +151,9 @@ public struct RangeInterpolator {
         return rangeOutput.last!;
       };
         
-      return Self.interpolate(
+      return self.extrapolatorRight.interpolate(
         inputValue: inputValue,
-        inputValueStart: self.rangeInput.secondToLast!,
-        inputValueEnd: self.rangeInput.last!,
-        outputValueStart: self.rangeOutput.secondToLast!,
-        outputValueEnd: self.rangeOutput.last!,
-        easing: .linear
+        easingOverride: .linear
       );
     };
     
