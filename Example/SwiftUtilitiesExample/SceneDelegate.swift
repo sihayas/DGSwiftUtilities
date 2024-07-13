@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import DGSwiftUtilities
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   
@@ -33,6 +34,72 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     RouteManager.sharedInstance.applyCurrentRoute();
     
     window.makeKeyAndVisible();
+    
+    
+    
+//    [-1.0, -0.5, 0.0, 0.25, 0.5, 0.75, 1.0, 1.5, 2.0].forEach {
+//      let valueStart = 0;
+//      let valueEnd = 100;
+//      print(
+//        "input:", $0,
+//        "\n - valueStart:", valueStart,
+//        "\n - valueEnd:", valueEnd,
+//        "\n - lerp result:", Interpolator.lerp(valueStart: CGFloat(valueStart), valueEnd: CGFloat(valueEnd), percent: $0),
+//        "\n"
+//      );
+//    };
+    
+    
+    let rangedInterpolator = try! RangeInterpolator(
+      rangeInput : [-100 , -1 , 0, 1 , 100 ],
+      rangeOutput: [-1000, -10, 0, 10, 1000]
+    );
+    
+    
+    [-100, -1, 0, 1, 100, -1000, 500, -200, -50, -0.5, 0.5, 50, 75, 200, 500, 1000].forEach {
+      let result = rangedInterpolator.interpolate(inputValue: $0)
+      print(
+        "input:", $0,
+        "result:", result,
+        "\n"
+      );
+    };
+    
+    
+    [].seekForwardAndBackwards(startIndex: 1, where: {_,_ in return true})
+    
+    (0...1).firstBySeekingForwardAndBackwards(startIndex: 5){
+      print("\($0)", "\($1)");
+      return false;
+    };
+    
+    let result = RangeInterpolator.interpolate(
+      inputValue: 0.5,
+      inputValueStart: 0,
+      inputValueEnd: 1,
+      outputValueStart: 1,
+      outputValueEnd: 50,
+      easing: .linear
+    );
+    
+    let result2A = RangeInterpolator.interpolate(
+      inputValue: -5,
+      rangeInput: [0, 10],
+      rangeOutput: [0, 100]
+    );
+    
+    let result2B = RangeInterpolator.interpolate(
+      inputValue: -5,
+      inputValueStart: 0,
+      inputValueEnd: 10,
+      outputValueStart: 0,
+      outputValueEnd: 100
+    );
+    
+    let result3 = Interpolator.lerp(valueStart: 0, valueEnd: 100, percent: 0.5)
+    
+    print("");
+    
   };
   
   func sceneDidDisconnect(_ scene: UIScene) {
