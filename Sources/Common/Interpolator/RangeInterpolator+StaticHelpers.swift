@@ -9,8 +9,8 @@ import Foundation
 
 
 public extension RangeInterpolator {
-  
-  static func lerp(
+
+  static func interpolate(
     inputValue: CGFloat,
     inputValueStart: CGFloat,
     inputValueEnd: CGFloat,
@@ -18,11 +18,12 @@ public extension RangeInterpolator {
     outputValueEnd: CGFloat,
     easing: InterpolationEasing = .linear
   ) -> CGFloat {
-  
-    let inputValueAdj    = inputValue    - inputValueStart;
-    let rangeInputEndAdj = inputValueEnd - inputValueStart;
 
-    let progress = inputValueAdj / rangeInputEndAdj;
+    let inputValueAdj   = inputValue    - inputValueStart;
+    let inputRangeDelta = inputValueEnd - inputValueStart;
+
+    let progressRaw = inputValueAdj / inputRangeDelta;
+    let progress = progressRaw.isFinite ? progressRaw : 0;
           
     return Interpolator.lerp(
       valueStart: outputValueStart,
@@ -82,7 +83,7 @@ public extension RangeInterpolator {
       let rangeOutputStart = rangeOutput.first!;
       let rangeOutputEnd = rangeOutput[1];
       
-      return RangeInterpolator.lerp(
+      return Self.interpolate(
         inputValue: inputValue,
         inputValueStart: rangeInputEnd,
         inputValueEnd: rangeInputStart,
@@ -121,7 +122,7 @@ public extension RangeInterpolator {
           let rangeOutputEnd   = rangeOutput[safeIndex: rangeEndIndex  ]
     else { return nil };
     
-    return Self.lerp(
+    return Self.interpolate(
       inputValue      : inputValue,
       inputValueStart : rangeInputStart,
       inputValueEnd   : rangeInputEnd,
