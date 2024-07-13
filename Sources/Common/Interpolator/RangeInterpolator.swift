@@ -115,13 +115,46 @@ public struct RangeInterpolator {
   // MARK: Functions
   // ---------------
   
-  public func getInputOutputRange(forInputValue inputValue: CGFloat) -> (
-    rangeInputStart: RangeItem,
-    rangeInputEnd: RangeItem,
-    rangeOutputStart: RangeItem,
-    rangeOutputEnd: RangeItem
-  )? {
-    return nil;
+  public func createDirectInterpolator(
+    fromStartIndex startIndex: Int,
+    toEndIndex endIndex: Int
+  ) throws -> Interpolator {
+    
+    guard startIndex >= 0 && startIndex < self.rangeInput.count else {
+      throw GenericError(
+        errorCode: .indexOutOfBounds,
+        description: "startIndex out of bounds"
+      );
+    };
+    
+    guard endIndex >= 0 && endIndex < self.rangeInput.count else {
+      throw GenericError(
+        errorCode: .indexOutOfBounds,
+        description: "endIndex out of bounds"
+      );
+    };
+    
+    guard startIndex != endIndex else {
+      throw GenericError(
+        errorCode: .indexOutOfBounds,
+        description: "startIndex and endIndex cannot be the same"
+      );
+    };
+    
+    let inputStart = rangeInput[startIndex];
+    let inputEnd   = rangeInput[startIndex];
+    
+    let outputStart = rangeOutput[endIndex];
+    let outputEnd   = rangeOutput[endIndex];
+    
+    let interpolator = Interpolator(
+      inputValueStart : inputStart ,
+      inputValueEnd   : inputEnd   ,
+      outputValueStart: outputStart,
+      outputValueEnd  : outputEnd
+    );
+    
+    return interpolator;
   };
   
   public func interpolate(inputValue: CGFloat) -> CGFloat {
@@ -169,7 +202,7 @@ public struct RangeInterpolator {
   };
 };
 
-extension Array where Element == Interpolator {
+public extension Array where Element == Interpolator {
 
   func getInterpolator(forInputValue inputValue: CGFloat) -> Interpolator? {
     self.first {
