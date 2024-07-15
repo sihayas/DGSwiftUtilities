@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 public extension Array where Element == Interpolator {
 
   func getInterpolator(
