@@ -208,8 +208,10 @@ public struct RangeInterpolator {
     self.inputValuePrev = inputValuePrev;
     self.inputValueCurrent = inputValue;
   
-    let interpolator =
-      self.interpolators.getInterpolator(forInputValue: inputValue);
+    let matchInterpolator = self.interpolators.getInterpolator(
+      forInputValue: inputValue,
+      withStartIndex: self.currentInterpolationIndex
+    );
     
     if let (interpolatorIndex, interpolator) = matchInterpolator {
       self.interpolationModeCurrent =
@@ -260,10 +262,24 @@ public struct RangeInterpolator {
 
 public extension Array where Element == Interpolator {
 
-  func getInterpolator(forInputValue inputValue: CGFloat) -> Interpolator? {
-    self.first {
+  func getInterpolator(
+    forInputValue inputValue: CGFloat,
+    withStartIndex startIndex: Int? = nil
+  ) -> IndexValuePair<Interpolator>? {
+    
+    let predicate: (_ interpolator: Interpolator) -> Bool = {
          inputValue >= $0.inputValueStart
-      && inputValue <= $0.inputValueEnd
+      && inputValue <= $0.inputValueEnd;
+    };
+    
+    guard let startIndex = startIndex else {
+      return self.indexedFirst { _, interpolator in
+        predicate(interpolator);
+      };
+    };
+    
+    return self.indexedFirstBySeekingForwardAndBackwards(startIndex: startIndex) { item, _ in
+      predicate(item.value);
     };
   };
 };
