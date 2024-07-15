@@ -8,6 +8,8 @@
 import UIKit
 
 public extension Collection {
+
+  typealias IndexElementPair = IndexValuePair<Element>;
   
   var secondToLast: Element? {
     self[safeIndex: self.index(self.indices.endIndex, offsetBy: -2)];
@@ -120,11 +122,11 @@ public extension Collection {
     );
   };
   
-  func firstBySeekingForwardAndBackwards(
+  func indexedFirstBySeekingForwardAndBackwards(
     startIndex: Int?,
-    where predicate: (Element, _ isReversing: Bool) -> Bool
-  ) -> Element? {
-  
+    where predicate: (IndexElementPair, _ isReversing: Bool) -> Bool
+  ) -> IndexElementPair? {
+    
     guard self.count > 0  else {
       return nil;
     };
@@ -151,9 +153,11 @@ public extension Collection {
         let element = self[index];
         seekForwardIndex += 1;
         
-        let result = predicate(element, false);
+        let indexedElement: IndexElementPair = (seekForwardIndex, element);
+        let result = predicate(indexedElement, false);
+        
         if result {
-          return element;
+          return indexedElement;
         };
       };
       
@@ -162,14 +166,28 @@ public extension Collection {
         let element = self[index];
         seekBackwardIndex -= 1;
         
-        let result = predicate(element, true);
+        let indexedElement: IndexElementPair = (seekBackwardIndex, element);
+        let result = predicate(indexedElement, true);
+        
         if result {
-          return element;
+          return indexedElement;
         };
       };
     };
     
     return nil;
+  };
+  
+  func firstBySeekingForwardAndBackwards(
+    startIndex: Int?,
+    where predicate: (Element, _ isReversing: Bool) -> Bool
+  ) -> Element? {
+  
+    let match = self.indexedFirstBySeekingForwardAndBackwards(startIndex: startIndex){
+      predicate($0.value, $1);
+    };
+    
+    return match?.value;
   };
   
   // MARK: - Deprecated
