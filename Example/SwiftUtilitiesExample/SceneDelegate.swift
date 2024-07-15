@@ -51,7 +51,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     };
     
     if true {
-      let rangedInterpolator = try! RangeInterpolator(
+      var rangedInterpolator = try! RangeInterpolator(
         rangeInput : [-100 , -1 , 0, 1 , 100 ],
         rangeOutput: [-1000, -10, 0, 10, 1000]
       );

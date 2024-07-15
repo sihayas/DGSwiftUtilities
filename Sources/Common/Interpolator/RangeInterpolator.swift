@@ -8,10 +8,15 @@
 import Foundation
 
 
-
 public struct RangeInterpolator {
 
   public typealias RangeItem = IndexValuePair<CGFloat>;
+  
+  private enum InterpolationMode {
+    case extrapolateLeft;
+    case extrapolateRight;
+    case interpolate(interpolatorIndex: Int);
+  };
   
   // MARK: - Properties
   // ------------------
@@ -28,16 +33,56 @@ public struct RangeInterpolator {
   private(set) public var rangeOutputMin: RangeItem;
   private(set) public var rangeOutputMax: RangeItem;
   
-  private(set) public var prevInputValue: CGFloat?;
-  var currentInterpolatorIndex: Int?;
+  private(set) public var inputValuePrev: CGFloat?;
+  private(set) public var inputValueCurrent: CGFloat?;
   
   private(set) public var interpolators: [Interpolator];
   private(set) public var extrapolatorLeft: Interpolator;
   private(set) public var extrapolatorRight: Interpolator;
   
+  private var interpolationModePrevious: InterpolationMode?;
+  private var interpolationModeCurrent: InterpolationMode? {
+    willSet {
+      self.interpolationModePrevious = newValue;
+    }
+  };
+  
   // MARK: - Computed Properties
   // ---------------------------
-
+  
+  public var currentInterpolator: Interpolator? {
+    guard let interpolationModeCurrent = self.interpolationModeCurrent else {
+      return nil;
+    };
+    
+    switch interpolationModeCurrent {
+      case .extrapolateLeft:
+        return self.extrapolatorLeft;
+        
+      case .extrapolateRight:
+        return self.extrapolatorRight;
+        
+      case let .interpolate(interpolatorIndex):
+        return self.interpolators[interpolatorIndex];
+    };
+  };
+  
+  public var currentInterpolationIndex: Int? {
+    guard let interpolationModeCurrent = self.interpolationModeCurrent else {
+      return nil;
+    };
+    
+    switch interpolationModeCurrent {
+      case .extrapolateLeft:
+        return 0;
+        
+      case .extrapolateRight:
+        return self.rangeInput.count - 1;
+        
+      case let .interpolate(interpolatorIndex):
+        return interpolatorIndex;
+    };
+  };
   
   // MARK: - Init
   // ------------
@@ -157,17 +202,26 @@ public struct RangeInterpolator {
     return interpolator;
   };
   
-  public func interpolate(inputValue: CGFloat) -> CGFloat {
+  public mutating func interpolate(inputValue: CGFloat) -> CGFloat {
+    let inputValuePrev = self.inputValueCurrent;
+    
+    self.inputValuePrev = inputValuePrev;
+    self.inputValueCurrent = inputValue;
   
     let interpolator =
       self.interpolators.getInterpolator(forInputValue: inputValue);
     
-    if let interpolator = interpolator {
+    if let (interpolatorIndex, interpolator) = matchInterpolator {
+      self.interpolationModeCurrent =
+        .interpolate(interpolatorIndex: interpolatorIndex);
+        
       return interpolator.interpolate(inputValue: inputValue);
     };
     
     // extrapolate left
     if inputValue < rangeInput.first! {
+      self.interpolationModeCurrent = .extrapolateLeft;
+    
       guard !self.shouldClampMin else {
         return rangeOutput.first!;
       };
@@ -180,6 +234,8 @@ public struct RangeInterpolator {
     
     // extrapolate right
     if inputValue > rangeInput.last! {
+      self.interpolationModeCurrent = .extrapolateRight;
+      
       guard !self.shouldClampMax else {
         return rangeOutput.last!;
       };
@@ -211,5 +267,3 @@ public extension Array where Element == Interpolator {
     };
   };
 };
-
-
