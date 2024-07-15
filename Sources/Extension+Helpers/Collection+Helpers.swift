@@ -212,7 +212,7 @@ public extension Collection {
   };
 };
 
-extension MutableCollection {
+public extension MutableCollection {
   subscript(safeIndex index: Index) -> Element? {
     get {
       return self.isOutOfBounds(forIndex: index) ? nil : self[index];
