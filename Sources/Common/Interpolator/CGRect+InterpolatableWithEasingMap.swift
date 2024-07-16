@@ -13,7 +13,6 @@ extension CGRect: InterpolatableWithEasingMap {
 
   public static var interpolatablePropertiesMap: InterpolatableValuesMap = [
     \.size: CGSize.self,
-    \.origin.x: CGFloat.self,
-    \.origin.y: CGFloat.self,
+    \.origin: CGPoint.self,
   ];
 };
