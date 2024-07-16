@@ -10,10 +10,11 @@ import CoreGraphics
 
 
 extension CGRect: InterpolatableWithEasingMap {
-  public static var interpolatableProperties: [PartialKeyPath<Self>] = [
-    \.size.width,
-    \.size.height,
-    \.origin.x,
-    \.origin.y,
+
+  public static var interpolatablePropertiesMap: InterpolatableValuesMap = [
+    \.size.width: CGFloat.self,
+    \.size.height: CGFloat.self,
+    \.origin.x: CGFloat.self,
+    \.origin.y: CGFloat.self,
   ];
 };

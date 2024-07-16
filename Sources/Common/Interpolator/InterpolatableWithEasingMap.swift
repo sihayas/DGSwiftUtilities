@@ -10,7 +10,10 @@ import Foundation
 
 public protocol InterpolatableWithEasingMap: Interpolatable {
   
-  static var interpolatableProperties: [PartialKeyPath<Self>] { get };
+  typealias InterpolatableValuesMap =
+    [PartialKeyPath<Self>: any Interpolatable.Type];
+
+  static var interpolatablePropertiesMap: InterpolatableValuesMap { get };
   
   static func lerp(
     valueStart: Self,
@@ -31,8 +34,20 @@ public extension InterpolatableWithEasingMap {
     
     var newValue = valueStart;
     
-    for partialKeyPath in Self.interpolatableProperties {
+    for (partialKeyPath, type) in Self.interpolatablePropertiesMap {
       let easing = easingMap[partialKeyPath];
+
+      if InterpolatorHelpers.lerp(
+        type: type,
+        keyPath: partialKeyPath,
+        valueStart: valueStart,
+        valueEnd: valueEnd,
+        percent: percent,
+        easing: easing,
+        writeTo: &newValue
+      ) {
+        continue;
+      };
     
       switch partialKeyPath {
         case let keyPath as WritableKeyPath<Self, CGFloat>:
@@ -47,6 +62,7 @@ public extension InterpolatableWithEasingMap {
           );
           
           newValue[keyPath: keyPath] = result;
+          continue;
           
         default:
           #if DEBUG
