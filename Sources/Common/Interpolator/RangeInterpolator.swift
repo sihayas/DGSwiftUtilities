@@ -8,9 +8,10 @@
 import Foundation
 
 
-public struct RangeInterpolator {
+public struct RangeInterpolator<T: Interpolatable> {
 
-  public typealias RangeItem = IndexValuePair<CGFloat>;
+  public typealias RangeItemInput = IndexValuePair<CGFloat>;
+  public typealias RangeItemOutput = IndexValuePair<T>;
   
   private enum InterpolationMode {
     case extrapolateLeft;
@@ -22,23 +23,23 @@ public struct RangeInterpolator {
   // ------------------
 
   public let rangeInput: [CGFloat];
-  public let rangeOutput: [CGFloat];
+  public let rangeOutput: [T];
   
   public var shouldClampMin: Bool;
   public var shouldClampMax: Bool;
   
-  private(set) public var rangeInputMin: RangeItem;
-  private(set) public var rangeInputMax: RangeItem;
+  private(set) public var rangeInputMin: RangeItemInput;
+  private(set) public var rangeInputMax: RangeItemInput;
   
-  private(set) public var rangeOutputMin: RangeItem;
-  private(set) public var rangeOutputMax: RangeItem;
+  private(set) public var rangeOutputMin: RangeItemOutput;
+  private(set) public var rangeOutputMax: RangeItemOutput;
   
   private(set) public var inputValuePrev: CGFloat?;
   private(set) public var inputValueCurrent: CGFloat?;
   
-  private(set) public var interpolators: [Interpolator];
-  private(set) public var extrapolatorLeft: Interpolator;
-  private(set) public var extrapolatorRight: Interpolator;
+  private(set) public var interpolators: [Interpolator<T>];
+  private(set) public var extrapolatorLeft: Interpolator<T>;
+  private(set) public var extrapolatorRight: Interpolator<T>;
   
   private var interpolationModePrevious: InterpolationMode?;
   private var interpolationModeCurrent: InterpolationMode? {
@@ -50,7 +51,7 @@ public struct RangeInterpolator {
   // MARK: - Computed Properties
   // ---------------------------
   
-  public var currentInterpolator: Interpolator? {
+  public var currentInterpolator: Interpolator<T>? {
     guard let interpolationModeCurrent = self.interpolationModeCurrent else {
       return nil;
     };
@@ -89,7 +90,7 @@ public struct RangeInterpolator {
   
   public init(
     rangeInput: [CGFloat],
-    rangeOutput: [CGFloat],
+    rangeOutput: [T],
     shouldClampMin: Bool = false,
     shouldClampMax: Bool = false
   ) throws {
@@ -119,7 +120,7 @@ public struct RangeInterpolator {
     self.rangeOutputMin = rangeOutput.indexedMin!;
     self.rangeOutputMax = rangeOutput.indexedMax!;
     
-    var interpolators: [Interpolator] = [];
+    var interpolators: [Interpolator<T>] = [];
     
     for index in 0..<rangeInput.count - 1 {
       let inputStart = rangeInput[index];
@@ -128,7 +129,7 @@ public struct RangeInterpolator {
       let outputStart = rangeOutput[index];
       let outputEnd   = rangeOutput[index + 1];
       
-      let interpolator = Interpolator(
+      let interpolator = Interpolator<T>(
         inputValueStart : inputStart ,
         inputValueEnd   : inputEnd   ,
         outputValueStart: outputStart,
@@ -163,7 +164,7 @@ public struct RangeInterpolator {
   public func createDirectInterpolator(
     fromStartIndex startIndex: Int,
     toEndIndex endIndex: Int
-  ) throws -> Interpolator {
+  ) throws -> Interpolator<T> {
     
     guard startIndex >= 0 && startIndex < self.rangeInput.count else {
       throw GenericError(
@@ -202,7 +203,7 @@ public struct RangeInterpolator {
     return interpolator;
   };
   
-  public mutating func interpolate(inputValue: CGFloat) -> CGFloat {
+  public mutating func interpolate(inputValue: CGFloat) -> T {
     let inputValuePrev = self.inputValueCurrent;
     
     self.inputValuePrev = inputValuePrev;
@@ -249,7 +250,7 @@ public struct RangeInterpolator {
     };
     
     // this shouldn't be called
-    return Self.interpolate(
+    return T.interpolate(
       inputValue: inputValue,
       inputValueStart: self.rangeInput.first!,
       inputValueEnd: self.rangeInput.last!,
@@ -257,5 +258,32 @@ public struct RangeInterpolator {
       outputValueEnd: self.rangeOutput.last!,
       easing: .linear
     );
+  };
+};
+
+// MARK: - Array+Interpolator
+// --------------------------
+
+fileprivate extension Array {
+
+  func getInterpolator<T>(
+    forInputValue inputValue: CGFloat,
+    withStartIndex startIndex: Int? = nil
+  ) -> IndexValuePair<Interpolator<T>>? where Element == Interpolator<T> {
+    
+    let predicate: (_ interpolator: Interpolator<T>) -> Bool = {
+         inputValue >= $0.inputValueStart
+      && inputValue <= $0.inputValueEnd;
+    };
+    
+    guard let startIndex = startIndex else {
+      return self.indexedFirst { _, interpolator in
+        predicate(interpolator);
+      };
+    };
+    
+    return self.indexedFirstBySeekingForwardAndBackwards(startIndex: startIndex) { item, _ in
+      predicate(item.value);
+    };
   };
 };

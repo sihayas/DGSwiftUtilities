@@ -1,16 +1,58 @@
 //
-//  RangeInterpolator+StaticHelpers.swift
+//  InterpolatorHelpers.swift
 //  
 //
-//  Created by Dominic Go on 7/10/24.
+//  Created by Dominic Go on 7/16/24.
 //
 
 import Foundation
 
 
-public extension RangeInterpolator {
+public struct InterpolatorHelpers {
 
-  static func interpolate(
+  public static func lerp(
+    valueStart: CGFloat,
+    valueEnd: CGFloat,
+    percent: CGFloat
+  ) -> CGFloat {
+  
+    let valueDelta = valueEnd - valueStart;
+    let valueProgress = valueDelta * percent
+    let result = valueStart + valueProgress;
+    return result;
+  };
+
+  public static func lerp(
+    valueStart: CGFloat,
+    valueEnd: CGFloat,
+    percent: CGFloat,
+    easingFunction: (CGFloat) -> CGFloat
+  ) -> CGFloat {
+  
+    let percentWithEasing = easingFunction(percent);
+    return lerp(
+      valueStart: valueStart,
+      valueEnd: valueEnd,
+      percent: percentWithEasing
+    );
+  };
+  
+  public static func lerp(
+    valueStart: CGFloat,
+    valueEnd: CGFloat,
+    percent: CGFloat,
+    easing: InterpolationEasing
+  ) -> CGFloat {
+  
+    let percentWithEasing: CGFloat = easing.compute(inputValue: percent);
+    return lerp(
+      valueStart: valueStart,
+      valueEnd: valueEnd,
+      percent: percentWithEasing
+    );
+  };
+  
+  public static func interpolate(
     inputValue: CGFloat,
     inputValueStart: CGFloat,
     inputValueEnd: CGFloat,
@@ -25,14 +67,14 @@ public extension RangeInterpolator {
     let progressRaw = inputValueAdj / inputRangeDelta;
     let progress = progressRaw.isFinite ? progressRaw : 0;
           
-    return Interpolator.lerp(
+    return Self.lerp(
       valueStart: outputValueStart,
       valueEnd  : outputValueEnd,
       percent   : progress
     );
   };
   
-  static func interpolate(
+  public static func interpolate(
     relativePercent: CGFloat,
     inputValueStart: CGFloat,
     inputValueEnd: CGFloat,
@@ -47,14 +89,14 @@ public extension RangeInterpolator {
     let percentRaw = inputValue / rangeDelta;
     let percent = percentRaw.isFinite ? percentRaw : 0;
     
-    return Interpolator.lerp(
+    return Self.lerp(
       valueStart: outputValueStart,
       valueEnd  : outputValueEnd,
       percent   : percent
     );
   };
 
-  static func interpolate(
+  public static func interpolate(
     inputValue: CGFloat,
     rangeInput: [CGFloat],
     rangeOutput: [CGFloat],
@@ -132,6 +174,3 @@ public extension RangeInterpolator {
     );
   };
 };
-
-
-

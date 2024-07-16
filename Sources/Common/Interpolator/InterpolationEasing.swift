@@ -1,5 +1,5 @@
 //
-//  File 2.swift
+//  InterpolationEasing.swift
 //  
 //
 //  Created by Dominic Go on 7/10/24.
@@ -64,7 +64,7 @@ public enum InterpolationEasing {
         let easeIn = easeInConfig.compute(inputValue: inputValue);
         let easeOut = easeOutConfig.compute(inputValue: inputValue);
         
-        return Interpolator.lerp(
+        return InterpolatorHelpers.lerp(
           valueStart: easeIn,
           valueEnd: easeOut,
           percent: inputValue

@@ -44,14 +44,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
           "input:", $0,
           "\n - valueStart:", valueStart,
           "\n - valueEnd:", valueEnd,
-          "\n - lerp result:", Interpolator.lerp(valueStart: CGFloat(valueStart), valueEnd: CGFloat(valueEnd), percent: $0),
+          "\n - lerp result:", InterpolatorHelpers.lerp(valueStart: CGFloat(valueStart), valueEnd: CGFloat(valueEnd), percent: $0),
           "\n"
         );
       };
     };
     
     if true {
-      var rangedInterpolator = try! RangeInterpolator(
+      var rangedInterpolator = try! RangeInterpolator<CGFloat>(
         rangeInput : [-100 , -1 , 0, 1 , 100 ],
         rangeOutput: [-1000, -10, 0, 10, 1000]
       );
@@ -75,7 +75,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         return false;
       };
       
-      let result = RangeInterpolator.interpolate(
+ 
+      let result = InterpolatorHelpers.interpolate(
         inputValue: 0.5,
         inputValueStart: 0,
         inputValueEnd: 1,
@@ -84,13 +85,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         easing: .linear
       );
       
-      let result2A = RangeInterpolator.interpolate(
+      let result2A = InterpolatorHelpers.interpolate(
         inputValue: -5,
         rangeInput: [0, 10],
         rangeOutput: [0, 100]
       );
       
-      let result2B = RangeInterpolator.interpolate(
+      let result2B = InterpolatorHelpers.interpolate(
         inputValue: -5,
         inputValueStart: 0,
         inputValueEnd: 10,
@@ -98,7 +99,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         outputValueEnd: 100
       );
       
-      let result3 = Interpolator.lerp(valueStart: 0, valueEnd: 100, percent: 0.5)
+      let result3 = InterpolatorHelpers.lerp(valueStart: 0, valueEnd: 100, percent: 0.5)
       
       print("");
     };

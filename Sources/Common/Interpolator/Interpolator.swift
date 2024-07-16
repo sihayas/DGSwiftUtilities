@@ -7,13 +7,14 @@
 
 import Foundation
 
-public struct Interpolator {
-  
+
+public struct Interpolator<T: Interpolatable> {
+
   public var inputValueStart: CGFloat = 0;
   public var inputValueEnd: CGFloat = 1;
   
-  public var outputValueStart: CGFloat;
-  public var outputValueEnd: CGFloat;
+  public var outputValueStart: T;
+  public var outputValueEnd: T;
   
   public var easing: InterpolationEasing;
   private var _hasCustomInputRange = false;
@@ -22,8 +23,8 @@ public struct Interpolator {
   // ------------
   
   public init(
-    valueStart: CGFloat,
-    valueEnd: CGFloat,
+    valueStart: T,
+    valueEnd: T,
     easing: InterpolationEasing = .linear
   ) {
     self.outputValueStart = valueStart;
@@ -34,8 +35,8 @@ public struct Interpolator {
   public init(
     inputValueStart: CGFloat,
     inputValueEnd: CGFloat,
-    outputValueStart: CGFloat,
-    outputValueEnd: CGFloat,
+    outputValueStart: T,
+    outputValueEnd: T,
     easing: InterpolationEasing = .linear
   ) {
     self.inputValueStart = inputValueStart;
@@ -53,10 +54,10 @@ public struct Interpolator {
   public func interpolate(
     percent: CGFloat,
     easingOverride: InterpolationEasing? = nil
-  ) -> CGFloat {
+  ) -> T {
   
     if self._hasCustomInputRange {
-      return RangeInterpolator.interpolate(
+      return T.interpolate(
         relativePercent: percent,
         inputValueStart: inputValueStart,
         inputValueEnd: inputValueEnd,
@@ -66,7 +67,7 @@ public struct Interpolator {
       );
     };
     
-    return Self.lerp(
+    return T.lerp(
       valueStart: self.outputValueStart,
       valueEnd: self.outputValueEnd,
       percent: percent,
@@ -77,9 +78,9 @@ public struct Interpolator {
   public func interpolate(
     inputValue: CGFloat,
     easingOverride: InterpolationEasing? = nil
-  ) -> CGFloat {
+  ) -> T {
   
-    return RangeInterpolator.interpolate(
+    return T.interpolate(
       inputValue: inputValue,
       inputValueStart: self.inputValueStart,
       inputValueEnd: self.inputValueEnd,

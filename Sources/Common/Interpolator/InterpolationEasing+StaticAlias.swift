@@ -1,5 +1,5 @@
 //
-//  InterpolationEasing.swift
+//  InterpolationEasing+StaticAlias.swift
 //  
 //
 //  Created by Dominic Go on 7/10/24.
