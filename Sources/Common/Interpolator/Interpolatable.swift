@@ -19,6 +19,10 @@ public protocol Interpolatable: Comparable {
 };
 
 public extension Interpolatable {
+
+  typealias Interpolator = DGSwiftUtilities.Interpolator<Self>;
+
+  typealias RangeInterpolator = DGSwiftUtilities.RangeInterpolator<Self>;
   
   static func interpolate(
     inputValue: CGFloat,

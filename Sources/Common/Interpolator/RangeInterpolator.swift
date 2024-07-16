@@ -31,9 +31,6 @@ public struct RangeInterpolator<T: Interpolatable> {
   private(set) public var rangeInputMin: RangeItemInput;
   private(set) public var rangeInputMax: RangeItemInput;
   
-  private(set) public var rangeOutputMin: RangeItemOutput;
-  private(set) public var rangeOutputMax: RangeItemOutput;
-  
   private(set) public var inputValuePrev: CGFloat?;
   private(set) public var inputValueCurrent: CGFloat?;
   
@@ -116,9 +113,6 @@ public struct RangeInterpolator<T: Interpolatable> {
     
     self.rangeInputMin = rangeInput.indexedMin!;
     self.rangeInputMax = rangeInput.indexedMax!;
-    
-    self.rangeOutputMin = rangeOutput.indexedMin!;
-    self.rangeOutputMax = rangeOutput.indexedMax!;
     
     var interpolators: [Interpolator<T>] = [];
     
