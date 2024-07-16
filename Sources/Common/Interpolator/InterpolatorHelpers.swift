@@ -52,6 +52,77 @@ public struct InterpolatorHelpers {
     );
   };
   
+  public static func lerp<T: Interpolatable, U>(
+    valueStart: T,
+    valueEnd: U,
+    percent: CGFloat,
+    easing: InterpolationEasing
+  ) -> T? {
+  
+    guard let valueEnd = valueEnd as? T else {
+      return nil
+    };
+    
+    return T.lerp(
+      valueStart: valueStart,
+      valueEnd: valueEnd,
+      percent: percent,
+      easing: easing
+    );
+  };
+  
+  public static func lerp<T, U: Interpolatable>(
+    type: U.Type = U.self,
+    keyPath: PartialKeyPath<T>,
+    valueStart: T,
+    valueEnd: T,
+    percent: CGFloat,
+    easing: InterpolationEasing?
+  ) -> U? {
+  
+    guard let keyPath = keyPath as? KeyPath<T, U> else {
+      return nil;
+    };
+    
+    let valueStart = valueStart[keyPath: keyPath];
+    let valueEnd   = valueEnd  [keyPath: keyPath];
+    
+    return U.lerp(
+      valueStart: valueStart,
+      valueEnd: valueEnd,
+      percent: percent,
+      easing: easing
+    );
+  };
+  
+  public static func lerp<T, U: Interpolatable>(
+    type: U.Type = U.self,
+    keyPath: PartialKeyPath<T>,
+    valueStart: T,
+    valueEnd: T,
+    percent: CGFloat,
+    easing: InterpolationEasing?,
+    writeTo target: inout T
+  ) -> Bool {
+  
+    guard let keyPath = keyPath as? WritableKeyPath<T, U> else {
+      return false;
+    };
+    
+    let valueStart = valueStart[keyPath: keyPath];
+    let valueEnd   = valueEnd  [keyPath: keyPath];
+    
+    let interpolatedValue = U.lerp(
+      valueStart: valueStart,
+      valueEnd: valueEnd,
+      percent: percent,
+      easing: easing
+    );
+    
+    target[keyPath: keyPath] = interpolatedValue;
+    return true;
+  };
+  
   public static func interpolate(
     inputValue: CGFloat,
     inputValueStart: CGFloat,
@@ -171,49 +242,6 @@ public struct InterpolatorHelpers {
       outputValueStart: rangeOutputStart,
       outputValueEnd  : rangeOutputEnd,
       easing          : easing
-    );
-  };
-  
-  public static func lerp<T: Interpolatable, U>(
-    valueStart: T,
-    valueEnd: U,
-    percent: CGFloat,
-    easing: InterpolationEasing
-  ) -> T? {
-  
-    guard let valueEnd = valueEnd as? T else {
-      return nil
-    };
-    
-    return T.lerp(
-      valueStart: valueStart,
-      valueEnd: valueEnd,
-      percent: percent,
-      easing: easing
-    );
-  };
-  
-  public static func lerp<T, U: Interpolatable>(
-    type: U.Type = U.self,
-    keyPath: PartialKeyPath<T>,
-    valueStart: T,
-    valueEnd: T,
-    percent: CGFloat,
-    easing: InterpolationEasing?
-  ) -> U? {
-  
-    guard let keyPath = keyPath as? KeyPath<T, U> else {
-      return nil;
-    };
-    
-    let valueStart = valueStart[keyPath: keyPath];
-    let valueEnd   = valueEnd  [keyPath: keyPath];
-    
-    return U.lerp(
-      valueStart: valueStart,
-      valueEnd: valueEnd,
-      percent: percent,
-      easing: easing
     );
   };
 };
