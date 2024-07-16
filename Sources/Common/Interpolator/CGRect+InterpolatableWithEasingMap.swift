@@ -12,8 +12,7 @@ import CoreGraphics
 extension CGRect: InterpolatableWithEasingMap {
 
   public static var interpolatablePropertiesMap: InterpolatableValuesMap = [
-    \.size.width: CGFloat.self,
-    \.size.height: CGFloat.self,
+    \.size: CGSize.self,
     \.origin.x: CGFloat.self,
     \.origin.y: CGFloat.self,
   ];
