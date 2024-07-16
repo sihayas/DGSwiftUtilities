@@ -51,6 +51,30 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     };
     
     if true {
+      // -1000, -10, 0, 10, 1000
+      var rangedInterpolator = try! RangeInterpolator<CGRect>(
+        rangeInput : [-100 , -1 , 0, 1 , 100 ],
+        rangeOutput: [
+          .init(x: -1000, y: -1000, width: -1000, height: -1000),
+          .init(x: -10  , y: -10  , width: -10  , height: -10  ),
+          .init(x:  0   , y:  0   , width:  0   , height:  0   ),
+          .init(x:  10  , y:  10  , width:  10  , height:  10  ),
+          .init(x:  1000, y:  1000, width:  1000, height:  1000),
+        ]
+      );
+      
+      
+      [-100, -1, 0, 1, 100, -1000, 500, -200, -50, -0.5, 0.5, 50, 75, 200, 500, 1000].forEach {
+        let result = rangedInterpolator.interpolate(inputValue: $0)
+        print(
+          "input:", $0,
+          "result:", result,
+          "\n"
+        );
+      };
+    };
+    
+    if false {
       var rangedInterpolator = try! RangeInterpolator<CGFloat>(
         rangeInput : [-100 , -1 , 0, 1 , 100 ],
         rangeOutput: [-1000, -10, 0, 10, 1000]
