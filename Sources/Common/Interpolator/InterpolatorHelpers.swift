@@ -41,10 +41,10 @@ public struct InterpolatorHelpers {
     valueStart: CGFloat,
     valueEnd: CGFloat,
     percent: CGFloat,
-    easing: InterpolationEasing
+    easing: InterpolationEasing?
   ) -> CGFloat {
   
-    let percentWithEasing: CGFloat = easing.compute(inputValue: percent);
+    let percentWithEasing = easing?.compute(inputValue: percent) ?? percent;
     return lerp(
       valueStart: valueStart,
       valueEnd: valueEnd,

@@ -14,7 +14,7 @@ public protocol Interpolatable: Comparable {
     valueStart: Self,
     valueEnd: Self,
     percent: CGFloat,
-    easing: InterpolationEasing
+    easing: InterpolationEasing?
   ) -> Self;
 };
 
@@ -26,7 +26,7 @@ public extension Interpolatable {
     inputValueEnd: CGFloat,
     outputValueStart: Self,
     outputValueEnd: Self,
-    easing: InterpolationEasing = .linear
+    easing: InterpolationEasing? = nil
   ) -> Self {
 
     let inputValueAdj   = inputValue    - inputValueStart;
@@ -49,7 +49,7 @@ public extension Interpolatable {
     inputValueEnd: CGFloat,
     outputValueStart: Self,
     outputValueEnd: Self,
-    easing: InterpolationEasing = .linear
+    easing: InterpolationEasing? = nil
   ) -> Self {
     
     let rangeDelta = abs(inputValueStart - inputValueEnd);

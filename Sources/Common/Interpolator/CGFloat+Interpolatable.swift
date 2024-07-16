@@ -14,7 +14,7 @@ extension CGFloat: Interpolatable {
     valueStart: Self,
     valueEnd: Self,
     percent: CGFloat,
-    easing: InterpolationEasing
+    easing: InterpolationEasing?
   ) -> Self {
     
     return InterpolatorHelpers.lerp(
