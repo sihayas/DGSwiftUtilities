@@ -9,6 +9,8 @@ import Foundation
 
 
 public protocol Interpolatable: Comparable {
+
+  init();
   
   static func lerp(
     valueStart: Self,
