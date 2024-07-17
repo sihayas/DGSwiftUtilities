@@ -11,6 +11,7 @@ import DGSwiftUtilities
 enum Route: String, CaseIterable {
   case routeList;
   case test01;
+  case interpolationTest01;
   
   // MARK: - Computed Properties
   // ---------------------------
@@ -22,6 +23,9 @@ enum Route: String, CaseIterable {
       
       case .test01:
         return Test01ViewController();
+        
+      case .interpolationTest01:
+        return InterpolationTest01ViewController();
     };
   };
   
@@ -38,6 +42,9 @@ enum Route: String, CaseIterable {
         
       case .test01:
         return "Test";
+        
+      case .interpolationTest01:
+        return "Tests for Interpolator";
     };
   };
   
@@ -82,6 +89,9 @@ enum Route: String, CaseIterable {
           .init(text: "`Test01`"),
           .init(text: " - Present sheet modal`"),
         ];
+        
+      case .interpolationTest01:
+        return [];
     };
   };
 };

@@ -75,20 +75,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     };
     
     if false {
-      var rangedInterpolator = try! RangeInterpolator<CGFloat>(
-        rangeInput : [-100 , -1 , 0, 1 , 100 ],
-        rangeOutput: [-1000, -10, 0, 10, 1000]
-      );
       
-      
-      [-100, -1, 0, 1, 100, -1000, 500, -200, -50, -0.5, 0.5, 50, 75, 200, 500, 1000].forEach {
-        let result = rangedInterpolator.interpolate(inputValue: $0)
-        print(
-          "input:", $0,
-          "result:", result,
-          "\n"
-        );
-      };
     };
     
     if false {

@@ -16,6 +16,7 @@
 		88D6B5A52C3DCF2B005E900B /* Test01ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D6B5A02C3DCF2B005E900B /* Test01ViewController.swift */; };
 		88D6B5A62C3DCF2B005E900B /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D6B5A22C3DCF2B005E900B /* Route.swift */; };
 		88D6B5A72C3DCF2B005E900B /* RouteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D6B5A32C3DCF2B005E900B /* RouteManager.swift */; };
+		88E6BEF42C474C7C00BAAE1F /* InterpolationTest01ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E6BEF32C474C7C00BAAE1F /* InterpolationTest01ViewController.swift */; };
 		88E6BEF62C47780200BAAE1F /* LogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E6BEF52C47780200BAAE1F /* LogViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -31,6 +32,7 @@
 		88D6B5A02C3DCF2B005E900B /* Test01ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Test01ViewController.swift; sourceTree = "<group>"; };
 		88D6B5A22C3DCF2B005E900B /* Route.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
 		88D6B5A32C3DCF2B005E900B /* RouteManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RouteManager.swift; sourceTree = "<group>"; };
+		88E6BEF32C474C7C00BAAE1F /* InterpolationTest01ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterpolationTest01ViewController.swift; sourceTree = "<group>"; };
 		88E6BEF52C47780200BAAE1F /* LogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -88,6 +90,7 @@
 		88D6B59E2C3DCF2B005E900B /* Routes */ = {
 			isa = PBXGroup;
 			children = (
+				88E6BEF32C474C7C00BAAE1F /* InterpolationTest01ViewController.swift */,
 				88D6B59F2C3DCF2B005E900B /* RouteListViewController.swift */,
 				88D6B5A02C3DCF2B005E900B /* Test01ViewController.swift */,
 			);
@@ -181,6 +184,7 @@
 				88D6B5A52C3DCF2B005E900B /* Test01ViewController.swift in Sources */,
 				88D6B5A42C3DCF2B005E900B /* RouteListViewController.swift in Sources */,
 				88E6BEF62C47780200BAAE1F /* LogViewController.swift in Sources */,
+				88E6BEF42C474C7C00BAAE1F /* InterpolationTest01ViewController.swift in Sources */,
 				88D6B5A72C3DCF2B005E900B /* RouteManager.swift in Sources */,
 				88D6B5A62C3DCF2B005E900B /* Route.swift in Sources */,
 				8807B4052B1732540025F159 /* SceneDelegate.swift in Sources */,
