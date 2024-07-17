@@ -142,7 +142,7 @@ public extension Collection {
     let totalIterations =
       (seekForwardIndex + seekBackwardIndex + 1).clamped(max: self.count);
   
-    for count in 0...totalIterations {
+    for count in 0..<totalIterations {
       let isCountEven = count % 2 == 0;
       
       let canSeekForwards  = seekForwardIndex < self.count;
