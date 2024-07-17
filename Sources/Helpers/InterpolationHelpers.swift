@@ -11,6 +11,7 @@ import UIKit
 public typealias AdaptiveModalUtilities = InterpolationHelpers;
 
 
+@available(*, deprecated, message: "Use InterpolatorHelpers or Interpolatable instead")
 public class InterpolationHelpers {
   public static func lerp(
     valueStart: CGFloat,
