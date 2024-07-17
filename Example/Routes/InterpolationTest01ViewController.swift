@@ -32,45 +32,13 @@ class InterpolationTest01ViewController: UIViewController {
     
     cardConfig.append({
       let sharedRangeInputValues: [CGFloat] = [-100, -1, 0, 1, 100];
+      let sharedRangeOutputValues: [CGFloat] = [-1000, -10, 0, 10, 1000];
+      
       let sharedInputValues: [CGFloat] = [
         -100, -1, 0, 1, 100,
         -1000, -500, -200, -50, -0.5, 0.5, 50, 75, 200, 500, 1000,
       ];
       
-      func invokeRangedInterpolatorAndGetResults<T>(
-        with inputValues: [CGFloat],
-        rangedInterpolator: inout RangeInterpolator<T>
-      ) -> [AttributedStringConfig] {
-      
-        var textItems: [AttributedStringConfig] = [];
-        textItems += rangedInterpolator.metadataAsAttributedStringConfig;
-        textItems.append(.newLine);
-        
-        textItems += inputValues.enumerated().reduce(into: []) {
-          $0.append(.init(text: "\($1.offset). "));
-          $0 += rangedInterpolator.interpolateAndGetMetadataAsAttributedStringConfig(inputValue: $1.element)
-          
-          if let interpolator = rangedInterpolator.currentInterpolator {
-            $0.append(.newLine);
-            $0 += interpolator.metadataAsAttributedStringConfig;
-          };
-          
-          $0.append(.newLines(2));
-        };
-        
-        return textItems;
-      };
-      
-      func logAndPresent(textItems: [AttributedStringConfig]){
-        let attributedString = textItems.makeAttributedString();
-        print(attributedString.string);
-        
-        let modalVC = LogViewController();
-        modalVC.textItems = textItems;
-        
-        self.present(modalVC, animated: true);
-      };
-    
       return .init(
         title: "Basic Testing by Logging",
         desc: [],
@@ -82,17 +50,21 @@ class InterpolationTest01ViewController: UIViewController {
             handler: { _,_ in
               var rangedInterpolator = try! RangeInterpolator<CGFloat>(
                 rangeInput : sharedRangeInputValues,
-                rangeOutput: [-1000, -10, 0, 10, 1000]
+                rangeOutput: sharedRangeOutputValues
               );
               
-              let results = invokeRangedInterpolatorAndGetResults(
+              let results = Helpers.invokeRangedInterpolatorAndGetResults(
                 with: sharedInputValues,
                 rangedInterpolator: &rangedInterpolator
               );
               
-              logAndPresent(textItems: results);
+              Helpers.logAndPresent(
+                textItems: results,
+                parentVC: self
+              );
             }
           ),
+          
           .filledButton(
             title: [
               .init(text: "RangeInterpolator<CGRect>"),
@@ -101,21 +73,70 @@ class InterpolationTest01ViewController: UIViewController {
             
               var rangedInterpolator = try! RangeInterpolator<CGRect>(
                 rangeInput : sharedRangeInputValues,
-                rangeOutput: [
-                  .init(x: -1000, y: -1000, width: -1000, height: -1000),
-                  .init(x: -10  , y: -10  , width: -10  , height: -10  ),
-                  .init(x:  0   , y:  0   , width:  0   , height:  0   ),
-                  .init(x:  10  , y:  10  , width:  10  , height:  10  ),
-                  .init(x:  1000, y:  1000, width:  1000, height:  1000),
-                ]
+                rangeOutput: sharedRangeOutputValues.map {
+                  .init(x: $0, y: $0, width: $0, height: $0)
+                }
               );
               
-              let results = invokeRangedInterpolatorAndGetResults(
+              let results = Helpers.invokeRangedInterpolatorAndGetResults(
                 with: sharedInputValues,
                 rangedInterpolator: &rangedInterpolator
               );
               
-              logAndPresent(textItems: results);
+              Helpers.logAndPresent(
+                textItems: results,
+                parentVC: self
+              );
+            }
+          ),
+          
+          .filledButton(
+            title: [
+              .init(text: "RangeInterpolator<CGSize>"),
+            ],
+            handler: { _,_ in
+            
+              var rangedInterpolator = try! RangeInterpolator<CGSize>(
+                rangeInput : sharedRangeInputValues,
+                rangeOutput: sharedRangeOutputValues.map {
+                  .init(width: $0, height: $0)
+                }
+              );
+              
+              let results = Helpers.invokeRangedInterpolatorAndGetResults(
+                with: sharedInputValues,
+                rangedInterpolator: &rangedInterpolator
+              );
+              
+              Helpers.logAndPresent(
+                textItems: results,
+                parentVC: self
+              );
+            }
+          ),
+          
+          .filledButton(
+            title: [
+              .init(text: "RangeInterpolator<CGPoint>"),
+            ],
+            handler: { _,_ in
+            
+              var rangedInterpolator = try! RangeInterpolator<CGPoint>(
+                rangeInput : sharedRangeInputValues,
+                rangeOutput: sharedRangeOutputValues.map {
+                  .init(x: $0, y: $0)
+                }
+              );
+              
+              let results = Helpers.invokeRangedInterpolatorAndGetResults(
+                with: sharedInputValues,
+                rangedInterpolator: &rangedInterpolator
+              );
+              
+              Helpers.logAndPresent(
+                textItems: results,
+                parentVC: self
+              );
             }
           ),
         ]
@@ -239,5 +260,45 @@ extension Interpolator {
       .newLine,
       .init(text: "outputValueEnd: \(self.outputValueEnd)"),
     ];
+  };
+};
+
+fileprivate struct Helpers {
+
+  static func invokeRangedInterpolatorAndGetResults<T>(
+    with inputValues: [CGFloat],
+    rangedInterpolator: inout RangeInterpolator<T>
+  ) -> [AttributedStringConfig] {
+  
+    var textItems: [AttributedStringConfig] = [];
+    textItems += rangedInterpolator.metadataAsAttributedStringConfig;
+    textItems.append(.newLine);
+    
+    textItems += inputValues.enumerated().reduce(into: []) {
+      $0.append(.init(text: "\($1.offset). "));
+      $0 += rangedInterpolator.interpolateAndGetMetadataAsAttributedStringConfig(inputValue: $1.element)
+      
+      if let interpolator = rangedInterpolator.currentInterpolator {
+        $0.append(.newLine);
+        $0 += interpolator.metadataAsAttributedStringConfig;
+      };
+      
+      $0.append(.newLines(2));
+    };
+    
+    return textItems;
+  };
+    
+  static func logAndPresent(
+    textItems: [AttributedStringConfig],
+    parentVC: UIViewController
+  ){
+    let attributedString = textItems.makeAttributedString();
+    print(attributedString.string);
+    
+    let modalVC = LogViewController();
+    modalVC.textItems = textItems;
+    
+    parentVC.present(modalVC, animated: true);
   };
 };
