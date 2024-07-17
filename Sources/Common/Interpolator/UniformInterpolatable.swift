@@ -26,6 +26,28 @@ public extension UniformInterpolatable {
 
   typealias RangeInterpolator = DGSwiftUtilities.RangeInterpolator<Self>;
   
+  static func lerp(
+    valueStart: Self,
+    valueEnd: Self,
+    percent: CGFloat,
+    easing: InterpolationEasing?,
+    shouldClampLeft: Bool,
+    shouldClampRight: Bool
+  ) -> Self {
+  
+    let percentClamped = percent.clamped(
+      min: shouldClampLeft  ? 0 : nil,
+      max: shouldClampRight ? 1 : nil
+    );
+  
+    return Self.lerp(
+      valueStart: valueStart,
+      valueEnd: valueEnd,
+      percent: percentClamped,
+      easing: easing
+    );
+  };
+  
   static func interpolate(
     inputValue: CGFloat,
     inputValueStart: CGFloat,
@@ -36,22 +58,22 @@ public extension UniformInterpolatable {
     shouldClampLeft: Bool = false,
     shouldClampRight: Bool = false
   ) -> Self {
+  
+    let inputValueClamped = inputValue.clamped(
+      min: shouldClampLeft  ? inputValueStart : nil,
+      max: shouldClampRight ? inputValueEnd   : nil
+    );
 
-    let inputValueAdj   = inputValue    - inputValueStart;
-    let inputRangeDelta = inputValueEnd - inputValueStart;
+    let inputValueAdj   = inputValueClamped - inputValueStart;
+    let inputRangeDelta = inputValueEnd     - inputValueStart;
 
     let progressRaw = inputValueAdj / inputRangeDelta;
     let progress = progressRaw.isFinite ? progressRaw : 0;
     
-    let progressClamped = progress.clamped(
-      min: shouldClampLeft  ? inputValueStart : nil,
-      max: shouldClampRight ? inputValueEnd   : nil
-    );
-          
     return Self.lerp(
       valueStart: outputValueStart,
       valueEnd  : outputValueEnd,
-      percent   : progressClamped,
+      percent   : progress,
       easing    : easing
     );
   };
@@ -70,18 +92,18 @@ public extension UniformInterpolatable {
     let rangeDelta = abs(inputValueStart - inputValueEnd);
     let inputValue = rangeDelta * relativePercent;
     
-    let percentRaw = inputValue / rangeDelta;
-    let percent = percentRaw.isFinite ? percentRaw : 0;
-    
-    let percentClamped = percent.clamped(
-      min: shouldClampLeft  ? 0 : nil,
-      max: shouldClampRight ? 1 : nil
+    let inputValueClamped = inputValue.clamped(
+      min: shouldClampLeft  ? inputValueStart : nil,
+      max: shouldClampRight ? inputValueEnd   : nil
     );
+    
+    let percentRaw = inputValueClamped / rangeDelta;
+    let percent = percentRaw.isFinite ? percentRaw : 0;
     
     return Self.lerp(
       valueStart: outputValueStart,
       valueEnd  : outputValueEnd,
-      percent   : percentClamped,
+      percent   : percent,
       easing    : easing
     );
   };
