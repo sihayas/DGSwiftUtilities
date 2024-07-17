@@ -71,9 +71,13 @@ public struct CardConfig {
     let topRootView = UIView();
     rootVStack.addArrangedSubview(topRootView);
     
-    let leftNumberIndicator = {
+    let leftNumberIndicator: UIView? = {
+      guard let index = self.index else {
+        return nil;
+      };
+      
       let label = UILabel();
-      label.text = "\(self.index ?? -1)";
+      label.text = "\(index)";
       label.textColor = .white;
       
       label.font = UIFont.systemFont(ofSize: 16, weight: .heavy);
@@ -82,21 +86,23 @@ public struct CardConfig {
       return label;
     }();
     
-    topRootView.addSubview(leftNumberIndicator);
-    leftNumberIndicator.translatesAutoresizingMaskIntoConstraints = false;
-    leftNumberIndicator.setContentHuggingPriority(.defaultHigh, for: .horizontal);
-    
-    NSLayoutConstraint.activate([
-      leftNumberIndicator.topAnchor.constraint(
-        equalTo: topRootView.topAnchor
-      ),
-      leftNumberIndicator.bottomAnchor.constraint(
-        equalTo: topRootView.bottomAnchor
-      ),
-      leftNumberIndicator.leadingAnchor.constraint(
-        equalTo: topRootView.leadingAnchor
-      ),
-    ]);
+    if let leftNumberIndicator = leftNumberIndicator {
+      topRootView.addSubview(leftNumberIndicator);
+      leftNumberIndicator.translatesAutoresizingMaskIntoConstraints = false;
+      leftNumberIndicator.setContentHuggingPriority(.defaultHigh, for: .horizontal);
+      
+      NSLayoutConstraint.activate([
+        leftNumberIndicator.topAnchor.constraint(
+          equalTo: topRootView.topAnchor
+        ),
+        leftNumberIndicator.bottomAnchor.constraint(
+          equalTo: topRootView.bottomAnchor
+        ),
+        leftNumberIndicator.leadingAnchor.constraint(
+          equalTo: topRootView.leadingAnchor
+        ),
+      ]);
+    };
     
     let rightStackView = {
       let stack = UIStackView();
@@ -131,21 +137,38 @@ public struct CardConfig {
     topRootView.addSubview(rightStackView);
     rightStackView.translatesAutoresizingMaskIntoConstraints = false;
     
-    NSLayoutConstraint.activate([
-      rightStackView.topAnchor.constraint(
-        equalTo: topRootView.topAnchor
-      ),
-      rightStackView.bottomAnchor.constraint(
-        equalTo: topRootView.bottomAnchor
-      ),
-      rightStackView.trailingAnchor.constraint(
-        equalTo: topRootView.trailingAnchor
-      ),
-      leftNumberIndicator.trailingAnchor.constraint(
-        equalTo: rightStackView.leadingAnchor,
-        constant: -8
-      ),
-    ]);
+    NSLayoutConstraint.activate({
+      var constraint: [NSLayoutConstraint] = [
+        rightStackView.topAnchor.constraint(
+          equalTo: topRootView.topAnchor
+        ),
+        rightStackView.bottomAnchor.constraint(
+          equalTo: topRootView.bottomAnchor
+        ),
+        rightStackView.trailingAnchor.constraint(
+          equalTo: topRootView.trailingAnchor
+        ),
+      ];
+      
+      if let leftNumberIndicator = leftNumberIndicator {
+        constraint += [
+          leftNumberIndicator.trailingAnchor.constraint(
+            equalTo: rightStackView.leadingAnchor,
+            constant: -8
+          ),
+        ];
+        
+      } else {
+        constraint += [
+          rightStackView.leadingAnchor.constraint(
+            equalTo: topRootView.leadingAnchor,
+            constant: 4
+          ),
+        ];
+      };
+      
+      return constraint;
+    }());
     
     return rootVStack;
   };
