@@ -19,6 +19,10 @@ public struct RangeInterpolator<T: Interpolatable> {
     case interpolate(interpolatorIndex: Int);
   };
   
+  public static var genericType: T.Type {
+    return T.self;
+  };
+  
   // MARK: - Properties
   // ------------------
 
