@@ -1,6 +1,6 @@
 //
-//  CGPoint+InterpolatableWithEasingMap.swift
-//
+//  CGSize+CompositeInterpolatable.swift
+//  
 //
 //  Created by Dominic Go on 7/17/24.
 //
@@ -8,10 +8,9 @@
 import Foundation
 import CoreGraphics
 
-
-extension CGPoint: InterpolatableWithEasingMap {
+extension CGSize: CompositeInterpolatable {
   public static var interpolatablePropertiesMap: InterpolatableValuesMap = [
-    \.x: CGFloat.self,
-    \.y: CGFloat.self,
+    \.width: CGFloat.self,
+    \.height: CGFloat.self,
   ];
 };

@@ -1,5 +1,5 @@
 //
-//  InterpolatableWithEasingMap.swift
+//  CompositeInterpolatable.swift
 //  
 //
 //  Created by Dominic Go on 7/16/24.
@@ -8,7 +8,7 @@
 import Foundation
 
 
-public protocol InterpolatableWithEasingMap: UniformInterpolatable {
+public protocol CompositeInterpolatable: UniformInterpolatable {
   
   typealias InterpolatableValuesMap =
     [PartialKeyPath<Self>: any UniformInterpolatable.Type];
@@ -23,7 +23,7 @@ public protocol InterpolatableWithEasingMap: UniformInterpolatable {
   ) -> Self;
 };
 
-public extension InterpolatableWithEasingMap {
+public extension CompositeInterpolatable {
   
   static func lerp(
     valueStart: Self,
