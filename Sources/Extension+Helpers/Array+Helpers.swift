@@ -56,4 +56,9 @@ public extension Array {
     
     return (match.offset, match.element);
   };
+  
+  mutating func unwrapThenAppend(_ element: Element?) {
+    guard let element = element else { return };
+    self.append(element);
+  };
 };
