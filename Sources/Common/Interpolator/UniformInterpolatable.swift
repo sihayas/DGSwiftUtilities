@@ -1,5 +1,5 @@
 //
-//  Interpolatable.swift
+//  UniformInterpolatable.swift
 //  
 //
 //  Created by Dominic Go on 7/16/24.
@@ -8,7 +8,7 @@
 import Foundation
 
 
-public protocol Interpolatable: Comparable {
+public protocol UniformInterpolatable: Comparable {
 
   init();
   
@@ -20,7 +20,7 @@ public protocol Interpolatable: Comparable {
   ) -> Self;
 };
 
-public extension Interpolatable {
+public extension UniformInterpolatable {
 
   typealias Interpolator = DGSwiftUtilities.Interpolator<Self>;
 

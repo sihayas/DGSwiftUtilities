@@ -1,5 +1,5 @@
 //
-//  CGFloat+Interpolatable.swift
+//  CGFloat+UniformInterpolatable.swift
 //  
 //
 //  Created by Dominic Go on 7/16/24.
@@ -8,7 +8,7 @@
 import Foundation
 
 
-extension CGFloat: Interpolatable {
+extension CGFloat: UniformInterpolatable {
 
   public static func lerp(
     valueStart: Self,

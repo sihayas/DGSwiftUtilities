@@ -8,10 +8,10 @@
 import Foundation
 
 
-public protocol InterpolatableWithEasingMap: Interpolatable {
+public protocol InterpolatableWithEasingMap: UniformInterpolatable {
   
   typealias InterpolatableValuesMap =
-    [PartialKeyPath<Self>: any Interpolatable.Type];
+    [PartialKeyPath<Self>: any UniformInterpolatable.Type];
 
   static var interpolatablePropertiesMap: InterpolatableValuesMap { get };
   

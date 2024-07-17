@@ -52,7 +52,7 @@ public struct InterpolatorHelpers {
     );
   };
   
-  public static func lerp<T: Interpolatable, U>(
+  public static func lerp<T: UniformInterpolatable, U>(
     valueStart: T,
     valueEnd: U,
     percent: CGFloat,
@@ -71,7 +71,7 @@ public struct InterpolatorHelpers {
     );
   };
   
-  public static func lerp<T, U: Interpolatable>(
+  public static func lerp<T, U: UniformInterpolatable>(
     type: U.Type = U.self,
     keyPath: PartialKeyPath<T>,
     valueStart: T,
@@ -95,7 +95,7 @@ public struct InterpolatorHelpers {
     );
   };
   
-  public static func lerp<T, U: Interpolatable>(
+  public static func lerp<T, U: UniformInterpolatable>(
     type: U.Type = U.self,
     keyPath: PartialKeyPath<T>,
     valueStart: T,

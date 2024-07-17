@@ -8,7 +8,7 @@
 import Foundation
 
 
-public struct RangeInterpolator<T: Interpolatable> {
+public struct RangeInterpolator<T: UniformInterpolatable> {
 
   public typealias RangeItemInput = IndexValuePair<CGFloat>;
   public typealias RangeItemOutput = IndexValuePair<T>;

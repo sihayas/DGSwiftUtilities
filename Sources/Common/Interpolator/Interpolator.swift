@@ -8,7 +8,7 @@
 import Foundation
 
 
-public struct Interpolator<T: Interpolatable> {
+public struct Interpolator<T: UniformInterpolatable> {
 
   public var inputValueStart: CGFloat = 0;
   public var inputValueEnd: CGFloat = 1;
