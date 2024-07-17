@@ -17,6 +17,10 @@ public struct Interpolator<T: UniformInterpolatable> {
   public var outputValueEnd: T;
   
   public var easing: InterpolationEasing;
+  
+  public var shouldClampLeft: Bool = false;
+  public var shouldClampRight: Bool = false;
+  
   private var _hasCustomInputRange = false;
   
   // MARK: - Init
@@ -25,11 +29,15 @@ public struct Interpolator<T: UniformInterpolatable> {
   public init(
     valueStart: T,
     valueEnd: T,
-    easing: InterpolationEasing = .linear
+    easing: InterpolationEasing = .linear,
+    shouldClampLeft: Bool = false,
+    shouldClampRight: Bool = false
   ) {
     self.outputValueStart = valueStart;
     self.outputValueEnd = valueEnd;
     self.easing = easing;
+    self.shouldClampLeft = shouldClampLeft;
+    self.shouldClampRight = shouldClampRight;
   };
   
   public init(
@@ -37,13 +45,17 @@ public struct Interpolator<T: UniformInterpolatable> {
     inputValueEnd: CGFloat,
     outputValueStart: T,
     outputValueEnd: T,
-    easing: InterpolationEasing = .linear
+    easing: InterpolationEasing = .linear,
+    shouldClampLeft: Bool = false,
+    shouldClampRight: Bool = false
   ) {
     self.inputValueStart = inputValueStart;
     self.inputValueEnd = inputValueEnd;
     self.outputValueStart = outputValueStart;
     self.outputValueEnd = outputValueEnd;
     self.easing = easing;
+    self.shouldClampLeft = shouldClampLeft;
+    self.shouldClampRight = shouldClampRight;
     
     self._hasCustomInputRange = true;
   };
@@ -53,7 +65,9 @@ public struct Interpolator<T: UniformInterpolatable> {
   
   public func interpolate(
     percent: CGFloat,
-    easingOverride: InterpolationEasing? = nil
+    easingOverride: InterpolationEasing? = nil,
+    shouldClampLeftOverride: Bool? = nil,
+    shouldClampRightOverride: Bool? = nil
   ) -> T {
   
     if self._hasCustomInputRange {
@@ -63,7 +77,9 @@ public struct Interpolator<T: UniformInterpolatable> {
         inputValueEnd: inputValueEnd,
         outputValueStart: outputValueStart,
         outputValueEnd: outputValueEnd,
-        easing: easingOverride ?? self.easing
+        easing: easingOverride ?? self.easing,
+        shouldClampLeft: shouldClampLeftOverride ?? self.shouldClampLeft,
+        shouldClampRight: shouldClampRightOverride ?? self.shouldClampRight
       );
     };
     
@@ -71,13 +87,17 @@ public struct Interpolator<T: UniformInterpolatable> {
       valueStart: self.outputValueStart,
       valueEnd: self.outputValueEnd,
       percent: percent,
-      easing: easingOverride ?? self.easing
+      easing: easingOverride ?? self.easing,
+      shouldClampLeft: shouldClampLeftOverride ?? self.shouldClampLeft,
+      shouldClampRight: shouldClampRightOverride ?? self.shouldClampRight
     );
   };
   
   public func interpolate(
     inputValue: CGFloat,
-    easingOverride: InterpolationEasing? = nil
+    easingOverride: InterpolationEasing? = nil,
+    shouldClampLeftOverride: Bool? = nil,
+    shouldClampRightOverride: Bool? = nil
   ) -> T {
   
     return T.interpolate(
@@ -86,7 +106,9 @@ public struct Interpolator<T: UniformInterpolatable> {
       inputValueEnd: self.inputValueEnd,
       outputValueStart: self.outputValueStart,
       outputValueEnd: self.outputValueEnd,
-      easing: easingOverride ?? self.easing
+      easing: easingOverride ?? self.easing,
+      shouldClampLeft: shouldClampLeftOverride ?? self.shouldClampLeft,
+      shouldClampRight: shouldClampRightOverride ?? self.shouldClampRight
     );
   };
 };
