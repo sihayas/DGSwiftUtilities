@@ -12,6 +12,8 @@ public protocol CompositeInterpolatable: UniformInterpolatable {
   
   typealias InterpolatableValuesMap =
     [PartialKeyPath<Self>: any UniformInterpolatable.Type];
+    
+  typealias EasingKeyPathMap = [PartialKeyPath<Self>: InterpolationEasing];
 
   static var interpolatablePropertiesMap: InterpolatableValuesMap { get };
   
@@ -29,7 +31,7 @@ public extension CompositeInterpolatable {
     valueStart: Self,
     valueEnd: Self,
     percent: CGFloat,
-    easingMap: [PartialKeyPath<Self>: InterpolationEasing]
+    easingMap: EasingKeyPathMap
   ) -> Self {
     
     var newValue = valueStart;
@@ -79,8 +81,8 @@ public extension CompositeInterpolatable {
     return newValue;
   };
   
-  // MARK: - `Interpolator` Conformance
-  // ----------------------------------
+  // MARK: - `UniformInterpolatable` Conformance
+  // -------------------------------------------
   
   static func lerp(
     valueStart: Self,
