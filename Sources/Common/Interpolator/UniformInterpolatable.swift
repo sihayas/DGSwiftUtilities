@@ -22,7 +22,7 @@ public protocol UniformInterpolatable: Comparable {
 
 public extension UniformInterpolatable {
 
-  typealias Interpolator = DGSwiftUtilities.Interpolator<Self>;
+  typealias Interpolator = DGSwiftUtilities.UniformInterpolator<Self>;
 
   typealias RangeInterpolator = DGSwiftUtilities.RangeInterpolator<Self>;
   

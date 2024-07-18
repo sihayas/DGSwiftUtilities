@@ -1,5 +1,5 @@
 //
-//  Interpolator.swift
+//  UniformInterpolator.swift
 //  
 //
 //  Created by Dominic Go on 7/10/24.
@@ -8,7 +8,7 @@
 import Foundation
 
 
-public struct Interpolator<T: UniformInterpolatable> {
+public struct UniformInterpolator<T: UniformInterpolatable> {
 
   public var inputValueStart: CGFloat = 0;
   public var inputValueEnd: CGFloat = 1;
