@@ -8,33 +8,47 @@
 import Foundation
 
 
-public struct UniformInterpolator<T: UniformInterpolatable> {
-
-  public var inputValueStart: CGFloat = 0;
-  public var inputValueEnd: CGFloat = 1;
+public struct UniformInterpolator<T: UniformInterpolatable>: Interpolator {
+  
+  public var inputValueStart: CGFloat;
+  public var inputValueEnd: CGFloat;
   
   public var outputValueStart: T;
   public var outputValueEnd: T;
   
-  public var easing: InterpolationEasing;
+  public var hasCustomInputRange: Bool;
+  
+  public var easing: InterpolationEasing? = nil;
   
   public var shouldClampLeft: Bool = false;
   public var shouldClampRight: Bool = false;
-  
-  private var _hasCustomInputRange = false;
   
   // MARK: - Init
   // ------------
   
   public init(
+    inputValueStart: CGFloat,
+    inputValueEnd: CGFloat,
+    outputValueStart: T,
+    outputValueEnd: T,
+    hasCustomInputRange: Bool
+  ) {
+    self.inputValueStart = inputValueStart;
+    self.inputValueEnd = inputValueEnd;
+    self.outputValueStart = outputValueStart;
+    self.outputValueEnd = outputValueEnd;
+    self.hasCustomInputRange = hasCustomInputRange;
+  };
+  
+  public init(
     valueStart: T,
     valueEnd: T,
-    easing: InterpolationEasing = .linear,
+    easing: InterpolationEasing,
     shouldClampLeft: Bool = false,
     shouldClampRight: Bool = false
   ) {
-    self.outputValueStart = valueStart;
-    self.outputValueEnd = valueEnd;
+    self.init(valueStart: valueStart, valueEnd: valueEnd);
+    
     self.easing = easing;
     self.shouldClampLeft = shouldClampLeft;
     self.shouldClampRight = shouldClampRight;
@@ -45,19 +59,21 @@ public struct UniformInterpolator<T: UniformInterpolatable> {
     inputValueEnd: CGFloat,
     outputValueStart: T,
     outputValueEnd: T,
-    easing: InterpolationEasing = .linear,
+    easing: InterpolationEasing,
     shouldClampLeft: Bool = false,
     shouldClampRight: Bool = false
   ) {
-    self.inputValueStart = inputValueStart;
-    self.inputValueEnd = inputValueEnd;
-    self.outputValueStart = outputValueStart;
-    self.outputValueEnd = outputValueEnd;
+    
+    self.init(
+      inputValueStart: inputValueStart,
+      inputValueEnd: inputValueEnd,
+      outputValueStart: outputValueStart,
+      outputValueEnd: outputValueEnd
+    );
+  
     self.easing = easing;
     self.shouldClampLeft = shouldClampLeft;
     self.shouldClampRight = shouldClampRight;
-    
-    self._hasCustomInputRange = true;
   };
   
   // MARK: - Functions
@@ -69,23 +85,8 @@ public struct UniformInterpolator<T: UniformInterpolatable> {
     shouldClampLeftOverride: Bool? = nil,
     shouldClampRightOverride: Bool? = nil
   ) -> T {
-  
-    if self._hasCustomInputRange {
-      return T.interpolate(
-        relativePercent: percent,
-        inputValueStart: inputValueStart,
-        inputValueEnd: inputValueEnd,
-        outputValueStart: outputValueStart,
-        outputValueEnd: outputValueEnd,
-        easing: easingOverride ?? self.easing,
-        shouldClampLeft: shouldClampLeftOverride ?? self.shouldClampLeft,
-        shouldClampRight: shouldClampRightOverride ?? self.shouldClampRight
-      );
-    };
     
-    return T.lerp(
-      valueStart: self.outputValueStart,
-      valueEnd: self.outputValueEnd,
+    self.interpolate(
       percent: percent,
       easing: easingOverride ?? self.easing,
       shouldClampLeft: shouldClampLeftOverride ?? self.shouldClampLeft,
@@ -100,12 +101,8 @@ public struct UniformInterpolator<T: UniformInterpolatable> {
     shouldClampRightOverride: Bool? = nil
   ) -> T {
   
-    return T.interpolate(
+    return self.interpolate(
       inputValue: inputValue,
-      inputValueStart: self.inputValueStart,
-      inputValueEnd: self.inputValueEnd,
-      outputValueStart: self.outputValueStart,
-      outputValueEnd: self.outputValueEnd,
       easing: easingOverride ?? self.easing,
       shouldClampLeft: shouldClampLeftOverride ?? self.shouldClampLeft,
       shouldClampRight: shouldClampRightOverride ?? self.shouldClampRight
