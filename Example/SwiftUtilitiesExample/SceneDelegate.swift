@@ -36,7 +36,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     window.makeKeyAndVisible();
     
     if true {
-      let test01: CGRectInterpolatableElements = [.height, .width, .x, .y];
+      let test01: CGRect.InterpolatableElements = [.height, .width, .x, .y];
     
       print(
         "CGRectInterpolatableElements - test01",
@@ -47,7 +47,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         "\n"
       );
       
-      let test02: CGRectInterpolatableElements = [.height, .x];
+      let test02: CGRect.InterpolatableElements = [.height, .x];
       print(
         "CGRectInterpolatableElements - test02",
         "\n - associatedAnyKeyPaths", test02.associatedAnyKeyPaths,
@@ -57,7 +57,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         "\n"
       );
       
-      let test03: CGRectInterpolatableElements = [.width,.y];
+      let test03: CGRect.InterpolatableElements = [.width,.y];
       print(
         "CGRectInterpolatableElements - test03",
         "\n - associatedAnyKeyPaths", test03.associatedAnyKeyPaths,
@@ -69,7 +69,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     };
     
     if false {
-      let test01: CGRectInterpolatableElements = [.height, .width, .x, .y];
+      let test01: CGRect.InterpolatableElements = [.height, .width, .x, .y];
     
       print(
         "CGRectInterpolatableElements - test01",
@@ -80,7 +80,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         "\n"
       );
       
-      let test02: CGRectInterpolatableElements = [.height, .x];
+      let test02: CGRect.InterpolatableElements = [.height, .x];
       print(
         "CGRectInterpolatableElements - test02",
         "\n - associatedAnyKeyPaths", test02.associatedAnyKeyPaths,
@@ -90,7 +90,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         "\n"
       );
       
-      let test03: CGRectInterpolatableElements = [.width,.y];
+      let test03: CGRect.InterpolatableElements = [.width,.y];
       print(
         "CGRectInterpolatableElements - test03",
         "\n - associatedAnyKeyPaths", test03.associatedAnyKeyPaths,
@@ -102,7 +102,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     };
     
     if false {
-      let test01: CGRectInterpolatableElements = [.height, .width, .x, .y];
+      let test01: CGRect.InterpolatableElements = [.height, .width, .x, .y];
       let anyKeyPaths = test01.getAssociatedAnyKeyPaths(forType: CGRect.self);
       
       let map1 = CGRect.interpolatablePropertiesMap as Dictionary<AnyKeyPath, Any>;
@@ -149,7 +149,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     };
     
     if true {
-      let x: [CGRectInterpolatableElements: InterpolationEasing] = [
+      let x: [CGRect.InterpolatableElements: InterpolationEasing] = [
         .height: .easeInCubic,
         .width: .easeInCubic,
       ];
@@ -197,44 +197,3 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     // current state.
   };
 };
-
-// temp/test impl.
-//
-public struct CGRectInterpolatableElements: OptionSet, CompositeInterpolatableElements {
-  public let rawValue: Int;
-  
-  public static let width  = Self(rawValue: 1 << 0);
-  public static let height = Self(rawValue: 1 << 1);
-  public static let x      = Self(rawValue: 1 << 2);
-  public static let y      = Self(rawValue: 1 << 3);
-  
-  public static let size  : Self = [.width, .height];
-  public static let origin: Self = [.x, .y];
-  
-  public var associatedAnyKeyPaths: [AnyKeyPath] {
-    var keyPaths: [AnyKeyPath] = [];
-    
-    keyPaths.unwrapThenAppend(
-        self.contains(.size  ) ? \CGRect.size
-      : self.contains(.width ) ? \CGSize.width
-      : self.contains(.height) ? \CGSize.height
-      : nil
-    );
-    
-    keyPaths.unwrapThenAppend(
-        self.contains(.origin) ? \CGRect.origin
-      : self.contains(.x     ) ? \CGPoint.x
-      : self.contains(.y     ) ? \CGPoint.y
-      : nil
-    );
-    
-    return keyPaths;
-  };
-  
-  public init(rawValue: Int) {
-    self.rawValue = rawValue;
-  };
-};
-
-
-
