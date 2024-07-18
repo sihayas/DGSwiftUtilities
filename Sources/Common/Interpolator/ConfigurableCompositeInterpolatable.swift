@@ -1,5 +1,5 @@
 //
-//  CompositeInterpolatableWithConfigurableElements.swift
+//  ConfigurableCompositeInterpolatable.swift
 //  
 //
 //  Created by Dominic Go on 7/18/24.
@@ -7,15 +7,18 @@
 
 import Foundation
 
-
-public protocol CompositeInterpolatableWithConfigurableElements: CompositeInterpolatable {
+/// `CompositeInterpolatable` but with individually "configurable" elements.
+/// In other words, custom easing + clamping for each "interpolatable" property
+/// (e.g. `size`, etc).
+/// 
+public protocol ConfigurableCompositeInterpolatable: CompositeInterpolatable {
   
   associatedtype InterpolatableElements: CompositeInterpolatableElements;
   
   typealias EasingElementMap = [InterpolatableElements: InterpolationEasing];
 };
 
-public extension CompositeInterpolatableWithConfigurableElements {
+public extension ConfigurableCompositeInterpolatable {
 
   static func lerp(
     valueStart: Self,
