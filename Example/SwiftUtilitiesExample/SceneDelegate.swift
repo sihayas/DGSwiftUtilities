@@ -34,6 +34,126 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     RouteManager.sharedInstance.applyCurrentRoute();
     
     window.makeKeyAndVisible();
+    
+    if true {
+      let test01: CGRectInterpolatableElements = [.height, .width, .x, .y];
+    
+      print(
+        "CGRectInterpolatableElements - test01",
+        "\n - associatedAnyKeyPaths", test01.associatedAnyKeyPaths,
+        "\n - getAssociatedPartialKeyPaths - CGRect", test01.getAssociatedPartialKeyPaths(forType: CGRect.self),
+        "\n - getAssociatedPartialKeyPaths - CGSize", test01.getAssociatedPartialKeyPaths(forType: CGSize.self),
+        "\n - getAssociatedPartialKeyPaths - CGPoint", test01.getAssociatedPartialKeyPaths(forType: CGPoint.self),
+        "\n"
+      );
+      
+      let test02: CGRectInterpolatableElements = [.height, .x];
+      print(
+        "CGRectInterpolatableElements - test02",
+        "\n - associatedAnyKeyPaths", test02.associatedAnyKeyPaths,
+        "\n - getAssociatedPartialKeyPaths - CGRect", test02.getAssociatedPartialKeyPaths(forType: CGRect.self),
+        "\n - getAssociatedPartialKeyPaths - CGSize", test02.getAssociatedPartialKeyPaths(forType: CGSize.self),
+        "\n - getAssociatedPartialKeyPaths - CGPoint", test02.getAssociatedPartialKeyPaths(forType: CGPoint.self),
+        "\n"
+      );
+      
+      let test03: CGRectInterpolatableElements = [.width,.y];
+      print(
+        "CGRectInterpolatableElements - test03",
+        "\n - associatedAnyKeyPaths", test03.associatedAnyKeyPaths,
+        "\n - getAssociatedPartialKeyPaths - CGRect", test03.getAssociatedPartialKeyPaths(forType: CGRect.self),
+        "\n - getAssociatedPartialKeyPaths - CGSize", test03.getAssociatedPartialKeyPaths(forType: CGSize.self),
+        "\n - getAssociatedPartialKeyPaths - CGPoint", test03.getAssociatedPartialKeyPaths(forType: CGPoint.self),
+        "\n"
+      );
+    };
+    
+    if false {
+      let test01: CGRectInterpolatableElements = [.height, .width, .x, .y];
+    
+      print(
+        "CGRectInterpolatableElements - test01",
+        "\n - associatedAnyKeyPaths", test01.associatedAnyKeyPaths,
+        "\n - getAssociatedAnyKeyPaths - CGRect", test01.getAssociatedAnyKeyPaths(forType: CGRect.self),
+        "\n - getAssociatedAnyKeyPaths - CGSize", test01.getAssociatedAnyKeyPaths(forType: CGSize.self),
+        "\n - getAssociatedAnyKeyPaths - CGPoint", test01.getAssociatedAnyKeyPaths(forType: CGPoint.self),
+        "\n"
+      );
+      
+      let test02: CGRectInterpolatableElements = [.height, .x];
+      print(
+        "CGRectInterpolatableElements - test02",
+        "\n - associatedAnyKeyPaths", test02.associatedAnyKeyPaths,
+        "\n - getAssociatedAnyKeyPaths - CGRect", test02.getAssociatedAnyKeyPaths(forType: CGRect.self),
+        "\n - getAssociatedAnyKeyPaths - CGSize", test02.getAssociatedAnyKeyPaths(forType: CGSize.self),
+        "\n - getAssociatedAnyKeyPaths - CGPoint", test02.getAssociatedAnyKeyPaths(forType: CGPoint.self),
+        "\n"
+      );
+      
+      let test03: CGRectInterpolatableElements = [.width,.y];
+      print(
+        "CGRectInterpolatableElements - test03",
+        "\n - associatedAnyKeyPaths", test03.associatedAnyKeyPaths,
+        "\n - getAssociatedAnyKeyPaths - CGRect", test03.getAssociatedAnyKeyPaths(forType: CGRect.self),
+        "\n - getAssociatedAnyKeyPaths - CGSize", test03.getAssociatedAnyKeyPaths(forType: CGSize.self),
+        "\n - getAssociatedAnyKeyPaths - CGPoint", test03.getAssociatedAnyKeyPaths(forType: CGPoint.self),
+        "\n"
+      );
+    };
+    
+    if false {
+      let test01: CGRectInterpolatableElements = [.height, .width, .x, .y];
+      let anyKeyPaths = test01.getAssociatedAnyKeyPaths(forType: CGRect.self);
+      
+      let map1 = CGRect.interpolatablePropertiesMap as Dictionary<AnyKeyPath, Any>;
+      print("CGRect.interpolatablePropertiesMap", map1);
+      
+      let map2 = map1 as! Dictionary<PartialKeyPath<CGRect>, Any>;
+      print("map2", map2);
+      
+      func test1<T>(
+        rootType: T.Type,
+        item: AnyKeyPath
+      ) -> PartialKeyPath<T>? {
+        let result = item as? PartialKeyPath<T>;
+        
+        print(
+          "test1",
+          "\n - type - rootType:", type(of: rootType),
+          "\n - T.self:", T.self,
+          "\n - type - T.self:", type(of: T.self),
+          "\n - cast to PartialKeyPath:", PartialKeyPath<T>.self,
+          "\n - rootType:", rootType,
+          "\n - item:", item,
+          "\n - result:", result,
+          "\n"
+        );
+        
+        return result;
+      };
+      
+      test1(
+        rootType: CGRect.self,
+        item: CGRect.interpolatablePropertiesMap.keys.first! as AnyKeyPath
+      );
+      
+      
+      for anyKeyPath in anyKeyPaths {
+        print(
+          "anyKeyPath:", anyKeyPath,
+          //"\n", CGRect.interpolatablePropertiesMap[anyKeyPath],
+          "\n"
+        );
+      };
+    
+    };
+    
+    if true {
+      let x: [CGRectInterpolatableElements: InterpolationEasing] = [
+        .height: .easeInCubic,
+        .width: .easeInCubic,
+      ];
+    };
   };
   
   func sceneDidDisconnect(_ scene: UIScene) {
@@ -77,4 +197,44 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     // current state.
   };
 };
+
+// temp/test impl.
+//
+public struct CGRectInterpolatableElements: OptionSet, CompositeInterpolatableElements {
+  public let rawValue: Int;
+  
+  public static let width  = Self(rawValue: 1 << 0);
+  public static let height = Self(rawValue: 1 << 1);
+  public static let x      = Self(rawValue: 1 << 2);
+  public static let y      = Self(rawValue: 1 << 3);
+  
+  public static let size  : Self = [.width, .height];
+  public static let origin: Self = [.x, .y];
+  
+  public var associatedAnyKeyPaths: [AnyKeyPath] {
+    var keyPaths: [AnyKeyPath] = [];
+    
+    keyPaths.unwrapThenAppend(
+        self.contains(.size  ) ? \CGRect.size
+      : self.contains(.width ) ? \CGSize.width
+      : self.contains(.height) ? \CGSize.height
+      : nil
+    );
+    
+    keyPaths.unwrapThenAppend(
+        self.contains(.origin) ? \CGRect.origin
+      : self.contains(.x     ) ? \CGPoint.x
+      : self.contains(.y     ) ? \CGPoint.y
+      : nil
+    );
+    
+    return keyPaths;
+  };
+  
+  public init(rawValue: Int) {
+    self.rawValue = rawValue;
+  };
+};
+
+
 
