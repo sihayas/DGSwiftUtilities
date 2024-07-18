@@ -16,13 +16,6 @@ public protocol CompositeInterpolatable: UniformInterpolatable {
   typealias EasingKeyPathMap = [PartialKeyPath<Self>: InterpolationEasing];
 
   static var interpolatablePropertiesMap: InterpolatableValuesMap { get };
-  
-  static func lerp(
-    valueStart: Self,
-    valueEnd: Self,
-    percent: CGFloat,
-    easingMap: [PartialKeyPath<Self>: InterpolationEasing]
-  ) -> Self;
 };
 
 public extension CompositeInterpolatable {
