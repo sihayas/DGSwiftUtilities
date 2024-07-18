@@ -81,6 +81,52 @@ public extension CompositeInterpolatable {
     return newValue;
   };
   
+  static func interpolate(
+    inputValue: CGFloat,
+    inputValueStart: CGFloat,
+    inputValueEnd: CGFloat,
+    outputValueStart: Self,
+    outputValueEnd: Self,
+    easingMap: EasingKeyPathMap
+  ) -> Self {
+  
+    let inputValueAdj   = inputValue    - inputValueStart;
+    let inputRangeDelta = inputValueEnd - inputValueStart;
+
+    let progressRaw = inputValueAdj / inputRangeDelta;
+    let progress = progressRaw.isFinite ? progressRaw : 0;
+    
+    return Self.lerp(
+      valueStart: outputValueStart,
+      valueEnd  : outputValueEnd,
+      percent   : progress,
+      easingMap : easingMap
+    );
+  };
+  
+  static func interpolate(
+    relativePercent: CGFloat,
+    inputValueStart: CGFloat,
+    inputValueEnd: CGFloat,
+    outputValueStart: Self,
+    outputValueEnd: Self,
+    easingMap: EasingKeyPathMap
+  ) -> Self {
+    
+    let rangeDelta = abs(inputValueStart - inputValueEnd);
+    let inputValue = rangeDelta * relativePercent;
+        
+    let percentRaw = inputValue / rangeDelta;
+    let percent = percentRaw.isFinite ? percentRaw : 0;
+    
+    return Self.lerp(
+      valueStart: outputValueStart,
+      valueEnd  : outputValueEnd,
+      percent   : percent,
+      easingMap : easingMap
+    );
+  };
+  
   // MARK: - `UniformInterpolatable` Conformance
   // -------------------------------------------
   
