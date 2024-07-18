@@ -94,6 +94,7 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
     rangeOutput: [T],
     shouldClampMin: Bool = false,
     shouldClampMax: Bool = false
+    // TODO: Impl. easing - To be impl.
   ) throws {
       
     guard rangeInput.count == rangeOutput.count else {
@@ -131,7 +132,8 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
         inputValueStart : inputStart ,
         inputValueEnd   : inputEnd   ,
         outputValueStart: outputStart,
-        outputValueEnd  : outputEnd
+        outputValueEnd  : outputEnd  ,
+        easing          : .linear // TODO: WIP - To be impl.
       );
       
       interpolators.append(interpolator);
@@ -144,7 +146,7 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
       inputValueEnd: rangeInput[0],
       outputValueStart: rangeOutput[1],
       outputValueEnd: rangeOutput[0],
-      easing: .linear
+      easing: .linear // TODO: WIP - To be impl.
     );
     
     self.extrapolatorRight = .init(
@@ -152,7 +154,7 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
       inputValueEnd: rangeInput.last!,
       outputValueStart: rangeOutput.secondToLast!,
       outputValueEnd: rangeOutput.last!,
-      easing: .linear
+      easing: .linear // TODO: WIP - To be impl.
     );
   };
   
@@ -260,7 +262,7 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
 };
 
 // MARK: - Array+UniformInterpolator
-// --------------------------
+// ---------------------------------
 
 fileprivate extension Array {
 
