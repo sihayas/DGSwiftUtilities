@@ -29,9 +29,6 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
   public let rangeInput: [CGFloat];
   public let rangeOutput: [T];
   
-  public var shouldClampMin: Bool;
-  public var shouldClampMax: Bool;
-  
   private(set) public var rangeInputMin: RangeItemInput;
   private(set) public var rangeInputMax: RangeItemInput;
   
@@ -92,8 +89,8 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
   public init(
     rangeInput: [CGFloat],
     rangeOutput: [T],
-    shouldClampMin: Bool = false,
-    shouldClampMax: Bool = false
+    // TODO: Impl. easing param
+    clampingOptions: ClampingOptions = .none
   ) throws {
       
     guard rangeInput.count == rangeOutput.count else {
@@ -112,8 +109,6 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
     
     self.rangeInput = rangeInput;
     self.rangeOutput = rangeOutput;
-    self.shouldClampMin = shouldClampMin;
-    self.shouldClampMax = shouldClampMax;
     
     self.rangeInputMin = rangeInput.indexedMin!;
     self.rangeInputMax = rangeInput.indexedMax!;
@@ -144,7 +139,8 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
       inputValueEnd: rangeInput[0],
       outputValueStart: rangeOutput[1],
       outputValueEnd: rangeOutput[0],
-      easing: .linear
+      easing: .linear, // TODO: Impl. custom easing
+      clampingOptions: clampingOptions.shouldClampLeft ? .left : .none
     );
     
     self.extrapolatorRight = .init(
@@ -152,7 +148,8 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
       inputValueEnd: rangeInput.last!,
       outputValueStart: rangeOutput.secondToLast!,
       outputValueEnd: rangeOutput.last!,
-      easing: .linear
+      easing: .linear, // TODO: Impl. custom easing
+      clampingOptions: clampingOptions.shouldClampRight ? .right : .none
     );
   };
   
@@ -222,22 +219,12 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
     // extrapolate left
     if inputValue < rangeInput.first! {
       self.interpolationModeCurrent = .extrapolateLeft;
-    
-      guard !self.shouldClampMin else {
-        return rangeOutput.first!;
-      };
-      
       return self.extrapolatorLeft.interpolate(inputValue: inputValue);
     };
     
     // extrapolate right
     if inputValue > rangeInput.last! {
       self.interpolationModeCurrent = .extrapolateRight;
-      
-      guard !self.shouldClampMax else {
-        return rangeOutput.last!;
-      };
-        
       return self.extrapolatorRight.interpolate(inputValue: inputValue);
     };
     
