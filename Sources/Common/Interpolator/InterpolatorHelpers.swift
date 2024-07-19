@@ -137,54 +137,9 @@ public struct InterpolatorHelpers {
       return false;
     };
     
-    let test: [AnyKeyPath: InterpolationEasing] = [
-      \CGPoint.x: .linear,
-      \CGPoint.y: .linear,
-      
-      \CGSize.width : .linear,
-      \CGSize.height: .linear,
-      
-      \CGRect.size  : .linear,
-      \CGRect.origin: .linear,
-    ];
-    
-    let test2 = test as? [PartialKeyPath<CGPoint>: InterpolationEasing];
-    let test3 = test as? [PartialKeyPath<T>: InterpolationEasing];
-    
-    let test4 = {
-      var result: [PartialKeyPath<CGPoint>: InterpolationEasing] = [:];
-      
-      for (key, value) in test {
-        if let key2 = key as? PartialKeyPath<CGPoint> {
-          result[key2] = value;
-        };
-      };
-      
-      return result;
-    }();
-    
-    let test5 = {
-      var result: [PartialKeyPath<T>: InterpolationEasing] = [:];
-      
-      for (key, value) in test {
-        if let key2 = key as? PartialKeyPath<T> {
-          result[key2] = value;
-        };
-      };
-      
-      return result;
-    }();
-    
-    let test6 = {
-      var result: [PartialKeyPath<T>: InterpolationEasing] = test.reduce(into: [:]){
-        guard let newKey = $1.key as? PartialKeyPath<T> else { return };
-        $0[newKey] = $1.value;
-      };
-      
-      test.compactMapValues(<#T##transform: (InterpolationEasing) throws -> T?##(InterpolationEasing) throws -> T?#>)
-    }();
-    
-    
+    let easingMap = easingMap.compactMapKeys {
+      $0 as? PartialKeyPath<U>;
+    };
     
     let valueStart = valueStart[keyPath: keyPath];
     let valueEnd   = valueEnd  [keyPath: keyPath];
@@ -193,7 +148,7 @@ public struct InterpolatorHelpers {
       valueStart: valueStart,
       valueEnd: valueEnd,
       percent: percent,
-      easingMap: [:]
+      easingMap: easingMap
     );
     
     target[keyPath: keyPath] = interpolatedValue;
