@@ -18,7 +18,16 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
     _ interpolatedValue: T
   ) -> Void;
   
-  private enum InterpolationMode {
+  public typealias EasingProviderBlock = (
+    _ rangeIndex: Int,
+    _ interpolatorType: InterpolationMode,
+    _ inputValueStart: CGFloat,
+    _ inputValueEnd: CGFloat,
+    _ outputValueStart: T,
+    _ outputValueEnd: T
+  ) -> InterpolationEasing;
+  
+  public enum InterpolationMode {
     case extrapolateLeft;
     case extrapolateRight;
     case interpolate(interpolatorIndex: Int);
@@ -96,8 +105,8 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
   public init(
     rangeInput: [CGFloat],
     rangeOutput: [T],
-    // TODO: Impl. easing param
     clampingOptions: ClampingOptions = .none,
+    easingProvider: EasingProviderBlock? = nil,
     targetBlock: TargetBlock? = nil
   ) throws {
       
@@ -131,11 +140,21 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
       let outputStart = rangeOutput[index];
       let outputEnd   = rangeOutput[index + 1];
       
+      let easing = easingProvider?(
+        /* rangeIndex      : */ index,
+        /* interpolatorType: */ .interpolate(interpolatorIndex: index),
+        /* inputValueStart : */ inputStart,
+        /* inputValueEnd   : */ inputEnd,
+        /* outputValueStart: */ outputStart,
+        /* outputValueEnd  : */ outputEnd
+      );
+      
       let interpolator = Interpolator<T>(
-        inputValueStart : inputStart ,
-        inputValueEnd   : inputEnd   ,
+        inputValueStart: inputStart,
+        inputValueEnd: inputEnd,
         outputValueStart: outputStart,
-        outputValueEnd  : outputEnd
+        outputValueEnd: outputEnd,
+        easing: easing
       );
       
       interpolators.append(interpolator);
