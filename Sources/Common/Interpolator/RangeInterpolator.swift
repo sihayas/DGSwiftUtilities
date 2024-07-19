@@ -38,9 +38,9 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
   private(set) public var inputValuePrev: CGFloat?;
   private(set) public var inputValueCurrent: CGFloat?;
   
-  private(set) public var interpolators: [UniformInterpolator<T>];
-  private(set) public var extrapolatorLeft: UniformInterpolator<T>;
-  private(set) public var extrapolatorRight: UniformInterpolator<T>;
+  private(set) public var interpolators: [Interpolator<T>];
+  private(set) public var extrapolatorLeft: Interpolator<T>;
+  private(set) public var extrapolatorRight: Interpolator<T>;
   
   private var interpolationModePrevious: InterpolationMode?;
   private var interpolationModeCurrent: InterpolationMode? {
@@ -52,7 +52,7 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
   // MARK: - Computed Properties
   // ---------------------------
   
-  public var currentInterpolator: UniformInterpolator<T>? {
+  public var currentInterpolator: Interpolator<T>? {
     guard let interpolationModeCurrent = self.interpolationModeCurrent else {
       return nil;
     };
@@ -118,7 +118,7 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
     self.rangeInputMin = rangeInput.indexedMin!;
     self.rangeInputMax = rangeInput.indexedMax!;
     
-    var interpolators: [UniformInterpolator<T>] = [];
+    var interpolators: [Interpolator<T>] = [];
     
     for index in 0..<rangeInput.count - 1 {
       let inputStart = rangeInput[index];
@@ -127,7 +127,7 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
       let outputStart = rangeOutput[index];
       let outputEnd   = rangeOutput[index + 1];
       
-      let interpolator = UniformInterpolator<T>(
+      let interpolator = Interpolator<T>(
         inputValueStart : inputStart ,
         inputValueEnd   : inputEnd   ,
         outputValueStart: outputStart,
@@ -162,7 +162,7 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
   public func createDirectInterpolator(
     fromStartIndex startIndex: Int,
     toEndIndex endIndex: Int
-  ) throws -> UniformInterpolator<T> {
+  ) throws -> Interpolator<T> {
     
     guard startIndex >= 0 && startIndex < self.rangeInput.count else {
       throw GenericError(
@@ -191,7 +191,7 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
     let outputStart = rangeOutput[endIndex];
     let outputEnd   = rangeOutput[endIndex];
     
-    let interpolator = UniformInterpolator(
+    let interpolator = Interpolator(
       inputValueStart : inputStart ,
       inputValueEnd   : inputEnd   ,
       outputValueStart: outputStart,
@@ -267,9 +267,9 @@ fileprivate extension Array {
   func getInterpolator<T>(
     forInputValue inputValue: CGFloat,
     withStartIndex startIndex: Int? = nil
-  ) -> IndexValuePair<UniformInterpolator<T>>? where Element == UniformInterpolator<T> {
+  ) -> IndexValuePair<Interpolator<T>>? where Element == Interpolator<T> {
     
-    let predicate: (_ interpolator: UniformInterpolator<T>) -> Bool = {
+    let predicate: (_ interpolator: Interpolator<T>) -> Bool = {
          inputValue >= $0.inputValueStart
       && inputValue <= $0.inputValueEnd;
     };

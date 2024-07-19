@@ -248,7 +248,7 @@ extension RangeInterpolator {
   };
 };
 
-extension UniformInterpolator {
+extension Interpolator {
 
   var metadataAsAttributedStringConfig: [AttributedStringConfig] {
     return [
