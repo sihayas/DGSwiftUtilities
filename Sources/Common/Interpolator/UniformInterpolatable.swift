@@ -26,9 +26,6 @@ public extension UniformInterpolatable {
 
   typealias RangeInterpolator = DGSwiftUtilities.RangeInterpolator<Self>;
   
-  // MARK: - Helper Functions
-  // ------------------------
-  
   static func lerp(
     valueStart: Self,
     valueEnd: Self,
