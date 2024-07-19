@@ -39,6 +39,121 @@ class InterpolationTest01ViewController: UIViewController {
         -1000, -500, -200, -50, -0.5, 0.5, 50, 75, 200, 500, 1000,
       ];
       
+      let sharedInputPercentPresets: [CGFloat] = [
+        -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2,
+      ];
+      
+      return .init(
+        title: "Basic Test for Interpolator<T>",
+        desc: [],
+        content: [
+          .filledButton(
+            title: [
+              .init(text: "Interpolator<CGRect>"),
+            ],
+            handler: { _,_ in
+              let easingMapPresets: [(
+                desc: String,
+                easingMap: CGRect.EasingKeyPathMap
+              )] = [
+                (
+                  desc: "Empty easingMap",
+                  easingMap: [:]
+                ),
+                (
+                  desc: "easeInCubic for size, easeOutCubic for origin",
+                  easingMap: [
+                    \CGRect.size: .easeInCubic,
+                    \CGRect.origin: .easeOutCubic
+                  ]
+                ),
+                (
+                  desc: "easeInOutQuad for x, easeInOutCubic for y",
+                  easingMap: [
+                    \CGPoint.x: .easeInOutQuad,
+                    \CGPoint.y: .easeInOutCubic
+                  ]
+                ),
+                (
+                  desc: (
+                      "easeInQuad for x, easeOutCubic for y, "
+                    + "easeInOutQuart for width, easeInOutExpo for height"
+                  ),
+                  easingMap: [
+                    \CGPoint.x: .easeInQuad,
+                    \CGPoint.y: .easeOutCubic,
+                    \CGSize.width: .easeInOutQuart,
+                    \CGSize.height: .easeInOutExpo
+                  ]
+                ),
+                (
+                  desc: "easeInOutQuart for width, easeInOutQuint for height",
+                  easingMap: [
+                    \CGSize.width: .easeInOutQuart,
+                    \CGSize.height: .easeInOutQuint
+                  ]
+                ),
+              ];
+              
+              var results: [AttributedStringConfig] = [];
+              
+              var didLogInterpolatorMetadata = false;
+              
+              for (index, easingMapPreset) in easingMapPresets.enumerated() {
+                let interpolator: Interpolator<CGRect> = .init(
+                  valueStart: .init(x: 0  , y: 0  , width: 0  , height: 0  ),
+                  valueEnd  : .init(x: 100, y: 100, width: 100, height: 100),
+                  easingMap: easingMapPreset.easingMap
+                );
+                
+                if !didLogInterpolatorMetadata {
+                  results += interpolator.metadataAsAttributedStringConfig;
+                  results.append(.newLines(2));
+                  didLogInterpolatorMetadata = true;
+                };
+                
+                results += [
+                  .init(text: "easingMapPreset: \(index+1) of \(easingMapPresets.count)"),
+                  .newLine,
+                  .init(text: "preset desc: \(easingMapPreset.desc)"),
+                  .newLine,
+                  .init(text: "preset easingMap: \(easingMapPreset.easingMap)"),
+                  .newLines(2),
+                ];
+                
+                for (index, percentPreset) in sharedInputPercentPresets.enumerated() {
+                  let result = interpolator.interpolate(percent: percentPreset);
+                  
+                  results += [
+                    .init(text: "percentPreset: \(index+1) of \(sharedInputPercentPresets.count)"),
+                    .newLine,
+                    .init(text: "inputPercent: \(percentPreset)"),
+                    .newLine,
+                    .init(text: "result: \(result)"),
+                    .newLines(2),
+                  ];
+                }
+              };
+              
+              Helpers.logAndPresent(
+                textItems: results,
+                parentVC: self
+              );
+            }
+          ),
+        ]
+      );
+    }());
+    
+    cardConfig.append({
+      let sharedRangeInputValues: [CGFloat] = [-100, -1, 0, 1, 100];
+      let sharedRangeOutputValues: [CGFloat] = [-1000, -10, 0, 10, 1000];
+      
+      let sharedInputValues: [CGFloat] = [
+        -100, -1, 0, 1, 100,
+        -1000, -500, -200, -50, -0.5, 0.5, 50, 75, 200, 500, 1000,
+      ];
+      
       return .init(
         title: "Basic Testing by Logging",
         desc: [],

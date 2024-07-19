@@ -35,7 +35,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     window.makeKeyAndVisible();
     
-    if true {
+    if false {
       let test01: CGRect.InterpolatableElements = [.height, .width, .x, .y];
     
       print(
@@ -148,11 +148,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     };
     
-    if true {
+    if false {
       let x: [CGRect.InterpolatableElements: InterpolationEasing] = [
         .height: .easeInCubic,
         .width: .easeInCubic,
       ];
+    };
+    
+    if true {
+      //let interpolator = Interpolator<CGRect>  = 
     };
   };
   
