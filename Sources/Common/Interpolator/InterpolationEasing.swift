@@ -45,130 +45,130 @@ public enum InterpolationEasing {
   case easeOutExpo;
   case easeInOutExpo;
   
-  func compute(inputValue: CGFloat) -> CGFloat {
+  func compute(percentValue: CGFloat) -> CGFloat {
     switch self {
       case .linear:
-        return inputValue;
+        return percentValue;
         
       case let .easeInCustom(amount):
-        return pow(inputValue, amount);
+        return pow(percentValue, amount);
         
       case let .easeOutCustom(amount):
         let exp = amount / 2;
-        return pow(inputValue, exp);
+        return pow(percentValue, exp);
         
       case let .easeInOutCustom(easeInAmount, easeOutAmount):
         let easeInConfig: Self = .easeInCustom(amount: easeInAmount);
         let easeOutConfig: Self = .easeOutCustom(amount: easeOutAmount);
         
-        let easeIn = easeInConfig.compute(inputValue: inputValue);
-        let easeOut = easeOutConfig.compute(inputValue: inputValue);
+        let easeIn = easeInConfig.compute(percentValue: percentValue);
+        let easeOut = easeOutConfig.compute(percentValue: percentValue);
         
         return InterpolatorHelpers.lerp(
           valueStart: easeIn,
           valueEnd: easeOut,
-          percent: inputValue
+          percent: percentValue
         );
         
       case let .easeInOutExpoCustom(amount):
-        if inputValue < 0.5 {
-          return pow(inputValue * 2, amount) / 2;
+        if percentValue < 0.5 {
+          return pow(percentValue * 2, amount) / 2;
         };
         
-        return 1 - pow(2 - inputValue * 2, amount) / 2;
+        return 1 - pow(2 - percentValue * 2, amount) / 2;
         
       case let .customFunction(easingFn):
-        return easingFn(inputValue);
+        return easingFn(percentValue);
         
       case .easeInSine:
-        return 1 - cos((inputValue * CGFloat.pi) / 2);
+        return 1 - cos((percentValue * CGFloat.pi) / 2);
         
       case .easeOutSine:
-        return sin((inputValue * CGFloat.pi) / 2);
+        return sin((percentValue * CGFloat.pi) / 2);
         
       case .easeInOutSine:
-        return -(cos(CGFloat.pi * inputValue) - 1) / 2;
+        return -(cos(CGFloat.pi * percentValue) - 1) / 2;
         
       case .easeInQuad:
-        return inputValue * inputValue;
+        return percentValue * percentValue;
         
       case .easeOutQuad:
-        return 1 - (1 - inputValue) * (1 - inputValue);
+        return 1 - (1 - percentValue) * (1 - percentValue);
         
       case .easeInOutQuad:
-        if inputValue < 0.5 {
-          return 2 * inputValue * inputValue;
+        if percentValue < 0.5 {
+          return 2 * percentValue * percentValue;
         };
         
-        return 1 - pow(-2 * inputValue + 2, 2) / 2;
+        return 1 - pow(-2 * percentValue + 2, 2) / 2;
         
       case .easeInCubic:
-        return inputValue * inputValue * inputValue;
+        return percentValue * percentValue * percentValue;
         
       case .easeOutCubic:
-        return  1 - pow(1 - inputValue, 3);
+        return  1 - pow(1 - percentValue, 3);
         
       case .easeInOutCubic:
-        if inputValue < 0.5 {
-          return 4 * inputValue * inputValue * inputValue;
+        if percentValue < 0.5 {
+          return 4 * percentValue * percentValue * percentValue;
         };
         
-        return 1 - pow(-2 * inputValue + 2, 3) / 2;
+        return 1 - pow(-2 * percentValue + 2, 3) / 2;
         
       case .easeInQuart:
-        return inputValue * inputValue * inputValue * inputValue;
+        return percentValue * percentValue * percentValue * percentValue;
         
       case .easeOutQuart:
-        return 1 - pow(1 - inputValue, 4);
+        return 1 - pow(1 - percentValue, 4);
         
       case .easeInOutQuart:
-        if inputValue < 0.5 {
-          return 8 * inputValue * inputValue * inputValue * inputValue;
+        if percentValue < 0.5 {
+          return 8 * percentValue * percentValue * percentValue * percentValue;
         };
         
-        return 1 - pow(-2 * inputValue + 2, 4) / 2;
+        return 1 - pow(-2 * percentValue + 2, 4) / 2;
         
       case .easeInQuint:
-        return inputValue * inputValue * inputValue * inputValue * inputValue;
+        return percentValue * percentValue * percentValue * percentValue * percentValue;
         
       case .easeOutQuint:
-        return 1 - pow(1 - inputValue, 5);
+        return 1 - pow(1 - percentValue, 5);
         
       case .easeInOutQuint:
-        if inputValue < 0.5 {
-          return 16 * inputValue * inputValue * inputValue * inputValue * inputValue;
+        if percentValue < 0.5 {
+          return 16 * percentValue * percentValue * percentValue * percentValue * percentValue;
         };
         
-        return 1 - pow(-2 * inputValue + 2, 5) / 2;
+        return 1 - pow(-2 * percentValue + 2, 5) / 2;
         
       case .easeInExpo:
-        if inputValue.asWholeNumberExact == 0 {
+        if percentValue.asWholeNumberExact == 0 {
           return 0;
         };
         
-        return pow(2, 10 * inputValue - 10);
+        return pow(2, 10 * percentValue - 10);
         
       case .easeOutExpo:
-        if inputValue.asWholeNumberExact == 1 {
+        if percentValue.asWholeNumberExact == 1 {
           return 1;
         };
         
-        return 1 - pow(2, -10 * inputValue);
+        return 1 - pow(2, -10 * percentValue);
         
       case .easeInOutExpo:
-        if inputValue.asWholeNumberExact == 0 {
+        if percentValue.asWholeNumberExact == 0 {
           return 0;
         };
         
-        if inputValue.asWholeNumberExact == 1 {
+        if percentValue.asWholeNumberExact == 1 {
           return 1;
         };
         
-        if inputValue < 0.5 {
-          return pow(2, 20 * inputValue - 10) / 2;
+        if percentValue < 0.5 {
+          return pow(2, 20 * percentValue - 10) / 2;
         };
         
-        return (2 - pow(2, -20 * inputValue + 10)) / 2;
+        return (2 - pow(2, -20 * percentValue + 10)) / 2;
     };
   };
 };
