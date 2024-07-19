@@ -13,6 +13,11 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
   public typealias RangeItemInput = IndexValuePair<CGFloat>;
   public typealias RangeItemOutput = IndexValuePair<T>;
   
+  public typealias TargetBlock = (
+    _ sender: Self,
+    _ interpolatedValue: T
+  ) -> Void;
+  
   private enum InterpolationMode {
     case extrapolateLeft;
     case extrapolateRight;
@@ -45,6 +50,8 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
       self.interpolationModePrevious = newValue;
     }
   };
+  
+  public var targetBlock: TargetBlock?;
   
   // MARK: - Computed Properties
   // ---------------------------
@@ -90,7 +97,8 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
     rangeInput: [CGFloat],
     rangeOutput: [T],
     // TODO: Impl. easing param
-    clampingOptions: ClampingOptions = .none
+    clampingOptions: ClampingOptions = .none,
+    targetBlock: TargetBlock? = nil
   ) throws {
       
     guard rangeInput.count == rangeOutput.count else {
@@ -109,6 +117,7 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
     
     self.rangeInput = rangeInput;
     self.rangeOutput = rangeOutput;
+    self.targetBlock = targetBlock;
     
     self.rangeInputMin = rangeInput.indexedMin!;
     self.rangeInputMax = rangeInput.indexedMax!;
@@ -237,6 +246,17 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
       outputValueEnd: self.rangeOutput.last!,
       easing: .linear
     );
+  };
+  
+  @discardableResult
+  public mutating func interpolateAndApplyToTarget(inputValue: CGFloat) -> T {
+    let result = self.interpolate(inputValue: inputValue);
+    
+    if let targetBlock = self.targetBlock {
+      targetBlock(self, result);
+    };
+    
+    return result;
   };
 };
 
