@@ -156,7 +156,27 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     };
     
     if true {
-      //let interpolator = Interpolator<CGRect>  = 
+      let items: [(desc: String, options: ClampingOptions)] = [
+        ("empty", []),
+        (".none", [.none]),
+        (".left", [.left]),
+        (".right", [.right]),
+        (".left, .right", [.left, .right]),
+        (".leftAndRight", [.leftAndRight]),
+      ];
+      
+      for (index, (desc, item)) in items.enumerated() {
+        print(
+          "ClampingOptions test \(index + 1)",
+          "\n - desc:", desc,
+          "\n - ClampingOptions:", item,
+          "\n - contains - left:", item.contains(.left),
+          "\n - contains - right:", item.contains(.right),
+          "\n - contains - leftAndRight:", item.contains(.leftAndRight),
+          "\n - contains - none:", item.contains(.none),
+          "\n"
+        );
+      }
     };
   };
   
