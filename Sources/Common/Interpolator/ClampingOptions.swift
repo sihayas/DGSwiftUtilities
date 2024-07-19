@@ -17,6 +17,14 @@ public struct ClampingOptions: OptionSet {
   public static let none: Self = [];
   public static let leftAndRight: Self = [.left, right];
   
+  public var shouldClampLeft: Bool {
+    self.contains(.left);
+  };
+  
+  public var shouldClampRight: Bool {
+    self.contains(.right);
+  };
+  
   public init(rawValue: UInt8) {
     self.rawValue = rawValue;
   };

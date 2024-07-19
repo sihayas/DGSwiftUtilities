@@ -102,6 +102,7 @@ public struct InterpolatorHelpers {
     valueEnd: T,
     percent: CGFloat,
     easing: InterpolationEasing?,
+    clampingOptions: ClampingOptions?,
     writeTo target: inout T
   ) -> Bool {
   
@@ -116,7 +117,8 @@ public struct InterpolatorHelpers {
       valueStart: valueStart,
       valueEnd: valueEnd,
       percent: percent,
-      easing: easing
+      easing: easing,
+      clampingOptions: clampingOptions ?? ClampingOptions.none
     );
     
     target[keyPath: keyPath] = interpolatedValue;
@@ -130,6 +132,7 @@ public struct InterpolatorHelpers {
     valueEnd: T,
     percent: CGFloat,
     easingMap: U.EasingKeyPathMap,
+    clampingMap: U.ClampingKeyPathMap,
     writeTo target: inout T
   ) -> Bool {
   
@@ -144,7 +147,8 @@ public struct InterpolatorHelpers {
       valueStart: valueStart,
       valueEnd: valueEnd,
       percent: percent,
-      easingMap: easingMap
+      easingMap: easingMap,
+      clampingMap: clampingMap
     );
     
     target[keyPath: keyPath] = interpolatedValue;

@@ -14,6 +14,7 @@ public protocol CompositeInterpolatable: UniformInterpolatable {
     [PartialKeyPath<Self>: any UniformInterpolatable.Type];
     
   typealias EasingKeyPathMap = [AnyKeyPath: InterpolationEasing];
+  typealias ClampingKeyPathMap = [AnyKeyPath: ClampingOptions];
 
   static var interpolatablePropertiesMap: InterpolatableValuesMap { get };
   
@@ -21,7 +22,8 @@ public protocol CompositeInterpolatable: UniformInterpolatable {
     valueStart: Self,
     valueEnd: Self,
     percent: CGFloat,
-    easingMap: EasingKeyPathMap
+    easingMap: EasingKeyPathMap,
+    clampingMap: ClampingKeyPathMap
   ) -> Self;
 };
 
@@ -31,13 +33,15 @@ public extension CompositeInterpolatable {
     valueStart: Self,
     valueEnd: Self,
     percent: CGFloat,
-    easingMap: EasingKeyPathMap
+    easingMap: EasingKeyPathMap,
+    clampingMap: ClampingKeyPathMap
   ) -> Self {
     
     var newValue = valueStart;
     
     for (partialKeyPath, type) in Self.interpolatablePropertiesMap {
       let easing = easingMap[partialKeyPath];
+      let clampingOptions = clampingMap[partialKeyPath];
       
       if let type = type as? any CompositeInterpolatable.Type,
          InterpolatorHelpers.lerp(
@@ -47,6 +51,7 @@ public extension CompositeInterpolatable {
            valueEnd: valueEnd,
            percent: percent,
            easingMap: easingMap,
+           clampingMap: clampingMap,
            writeTo: &newValue
          )
       {
@@ -60,6 +65,7 @@ public extension CompositeInterpolatable {
         valueEnd: valueEnd,
         percent: percent,
         easing: easing,
+        clampingOptions: clampingOptions,
         writeTo: &newValue
       ) {
         continue;
@@ -101,7 +107,8 @@ public extension CompositeInterpolatable {
     inputValueEnd: CGFloat,
     outputValueStart: Self,
     outputValueEnd: Self,
-    easingMap: EasingKeyPathMap
+    easingMap: EasingKeyPathMap,
+    clampingMap: ClampingKeyPathMap
   ) -> Self {
   
     let inputValueAdj   = inputValue    - inputValueStart;
@@ -112,9 +119,10 @@ public extension CompositeInterpolatable {
     
     return Self.lerp(
       valueStart: outputValueStart,
-      valueEnd  : outputValueEnd,
-      percent   : progress,
-      easingMap : easingMap
+      valueEnd: outputValueEnd,
+      percent: progress,
+      easingMap: easingMap,
+      clampingMap: clampingMap
     );
   };
   
@@ -124,7 +132,8 @@ public extension CompositeInterpolatable {
     inputValueEnd: CGFloat,
     outputValueStart: Self,
     outputValueEnd: Self,
-    easingMap: EasingKeyPathMap
+    easingMap: EasingKeyPathMap,
+    clampingMap: ClampingKeyPathMap
   ) -> Self {
     
     let rangeDelta = abs(inputValueStart - inputValueEnd);
@@ -135,9 +144,10 @@ public extension CompositeInterpolatable {
     
     return Self.lerp(
       valueStart: outputValueStart,
-      valueEnd  : outputValueEnd,
-      percent   : percent,
-      easingMap : easingMap
+      valueEnd: outputValueEnd,
+      percent: percent,
+      easingMap: easingMap,
+      clampingMap: clampingMap
     );
   };
   
@@ -148,14 +158,16 @@ public extension CompositeInterpolatable {
     valueStart: Self,
     valueEnd: Self,
     percent: CGFloat,
-    easing: InterpolationEasing?
+    easing: InterpolationEasing? = nil,
+    clampingOptions: ClampingOptions = .none
   ) -> Self {
     
     Self.lerp(
       valueStart: valueStart,
       valueEnd: valueEnd,
       percent: percent,
-      easingMap: [:] // TODO
+      easingMap: [:], // MARK: TODO
+      clampingMap: [:] // MARK: TODO
     );
   };
 };

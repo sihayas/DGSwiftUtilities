@@ -26,8 +26,7 @@ public struct Interpolator<T: UniformInterpolatable>  {
     valueStart: T,
     valueEnd: T,
     easing: InterpolationEasing? = nil,
-    shouldClampLeft: Bool = false,
-    shouldClampRight: Bool = false
+    clampingOptions: ClampingOptions = .none
   ) {
   
     self.inputValueStart = 0;
@@ -41,8 +40,7 @@ public struct Interpolator<T: UniformInterpolatable>  {
         valueEnd: $0.outputValueEnd,
         percent: $1,
         easing: easing,
-        shouldClampLeft: shouldClampLeft,
-        shouldClampRight: shouldClampRight
+        clampingOptions: clampingOptions
       );
     };
     
@@ -52,8 +50,7 @@ public struct Interpolator<T: UniformInterpolatable>  {
         valueEnd: $0.outputValueEnd,
         percent: $1,
         easing: easing,
-        shouldClampLeft: shouldClampLeft,
-        shouldClampRight: shouldClampRight
+        clampingOptions: clampingOptions
       );
     };
   };
@@ -64,8 +61,7 @@ public struct Interpolator<T: UniformInterpolatable>  {
     outputValueStart: T,
     outputValueEnd: T,
     easing: InterpolationEasing? = nil,
-    shouldClampLeft: Bool = false,
-    shouldClampRight: Bool = false
+    clampingOptions: ClampingOptions = .none
   ) {
   
     self.inputValueStart = inputValueStart
@@ -81,8 +77,7 @@ public struct Interpolator<T: UniformInterpolatable>  {
         outputValueStart: $0.outputValueStart,
         outputValueEnd: $0.outputValueEnd,
         easing: easing,
-        shouldClampLeft: shouldClampLeft,
-        shouldClampRight: shouldClampRight
+        clampingOptions: clampingOptions
       );
     };
     
@@ -94,8 +89,7 @@ public struct Interpolator<T: UniformInterpolatable>  {
         outputValueStart: $0.outputValueStart,
         outputValueEnd: $0.outputValueEnd,
         easing: easing,
-        shouldClampLeft: shouldClampLeft,
-        shouldClampRight: shouldClampRight
+        clampingOptions: clampingOptions
       );
     };
   };
@@ -106,7 +100,8 @@ public struct Interpolator<T: UniformInterpolatable>  {
   public init(
     valueStart: T,
     valueEnd: T,
-    easingMap: T.EasingKeyPathMap = [:] // TODO: Impl. clamping config
+    easingMap: T.EasingKeyPathMap = [:], // TODO: Impl. clamping config
+    clampingMap: T.ClampingKeyPathMap = [:]
   ) where T: CompositeInterpolatable  {
     
     self.inputValueStart = 0;
@@ -119,7 +114,8 @@ public struct Interpolator<T: UniformInterpolatable>  {
         valueStart: $0.outputValueStart,
         valueEnd: $0.outputValueEnd,
         percent: $1,
-        easingMap: easingMap
+        easingMap: easingMap,
+        clampingMap: clampingMap
       );
     };
     
@@ -128,7 +124,8 @@ public struct Interpolator<T: UniformInterpolatable>  {
         valueStart: $0.outputValueStart,
         valueEnd: $0.outputValueEnd,
         percent: $1,
-        easingMap: easingMap
+        easingMap: easingMap,
+        clampingMap: clampingMap
       );
     };
   };
@@ -138,7 +135,8 @@ public struct Interpolator<T: UniformInterpolatable>  {
     inputValueEnd: CGFloat,
     outputValueStart: T,
     outputValueEnd: T,
-    easingMap: T.EasingKeyPathMap = [:] // TODO: Impl. clamping config
+    easingMap: T.EasingKeyPathMap = [:], // TODO: Impl. clamping config
+    clampingMap: T.ClampingKeyPathMap = [:]
   ) where T: CompositeInterpolatable {
   
     self.inputValueStart = inputValueStart
@@ -153,7 +151,8 @@ public struct Interpolator<T: UniformInterpolatable>  {
         inputValueEnd: $0.inputValueEnd,
         outputValueStart: $0.outputValueStart,
         outputValueEnd: $0.outputValueEnd,
-        easingMap: easingMap
+        easingMap: easingMap,
+        clampingMap: clampingMap
       );
     };
     
@@ -164,7 +163,8 @@ public struct Interpolator<T: UniformInterpolatable>  {
         inputValueEnd: $0.inputValueEnd,
         outputValueStart: $0.outputValueStart,
         outputValueEnd: $0.outputValueEnd,
-        easingMap: easingMap
+        easingMap: easingMap,
+        clampingMap: clampingMap
       );
     };
   };

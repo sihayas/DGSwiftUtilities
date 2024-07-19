@@ -16,7 +16,8 @@ public protocol UniformInterpolatable: Comparable {
     valueStart: Self,
     valueEnd: Self,
     percent: CGFloat,
-    easing: InterpolationEasing?
+    easing: InterpolationEasing?,
+    clampingOptions: ClampingOptions
   ) -> Self;
 };
 
@@ -30,21 +31,21 @@ public extension UniformInterpolatable {
     valueStart: Self,
     valueEnd: Self,
     percent: CGFloat,
-    easing: InterpolationEasing?,
-    shouldClampLeft: Bool,
-    shouldClampRight: Bool
+    easing: InterpolationEasing? = nil,
+    clampingOptions: ClampingOptions = .none
   ) -> Self {
   
     let percentClamped = percent.clamped(
-      min: shouldClampLeft  ? 0 : nil,
-      max: shouldClampRight ? 1 : nil
+      min: clampingOptions.shouldClampLeft  ? 0 : nil,
+      max: clampingOptions.shouldClampRight ? 1 : nil
     );
   
     return Self.lerp(
       valueStart: valueStart,
       valueEnd: valueEnd,
       percent: percentClamped,
-      easing: easing
+      easing: easing,
+      clampingOptions: clampingOptions
     );
   };
   
@@ -55,13 +56,12 @@ public extension UniformInterpolatable {
     outputValueStart: Self,
     outputValueEnd: Self,
     easing: InterpolationEasing? = nil,
-    shouldClampLeft: Bool = false,
-    shouldClampRight: Bool = false
+    clampingOptions: ClampingOptions = .none
   ) -> Self {
   
     let inputValueClamped = inputValue.clamped(
-      min: shouldClampLeft  ? inputValueStart : nil,
-      max: shouldClampRight ? inputValueEnd   : nil
+      min: clampingOptions.shouldClampLeft  ? inputValueStart : nil,
+      max: clampingOptions.shouldClampRight ? inputValueEnd   : nil
     );
 
     let inputValueAdj   = inputValueClamped - inputValueStart;
@@ -72,9 +72,10 @@ public extension UniformInterpolatable {
     
     return Self.lerp(
       valueStart: outputValueStart,
-      valueEnd  : outputValueEnd,
-      percent   : progress,
-      easing    : easing
+      valueEnd: outputValueEnd,
+      percent: progress,
+      easing: easing,
+      clampingOptions: clampingOptions
     );
   };
   
@@ -85,16 +86,15 @@ public extension UniformInterpolatable {
     outputValueStart: Self,
     outputValueEnd: Self,
     easing: InterpolationEasing? = nil,
-    shouldClampLeft: Bool = false,
-    shouldClampRight: Bool = false
+    clampingOptions: ClampingOptions = .none
   ) -> Self {
     
     let rangeDelta = abs(inputValueStart - inputValueEnd);
     let inputValue = rangeDelta * relativePercent;
     
     let inputValueClamped = inputValue.clamped(
-      min: shouldClampLeft  ? inputValueStart : nil,
-      max: shouldClampRight ? inputValueEnd   : nil
+      min: clampingOptions.shouldClampLeft  ? inputValueStart : nil,
+      max: clampingOptions.shouldClampRight ? inputValueEnd   : nil
     );
     
     let percentRaw = inputValueClamped / rangeDelta;
@@ -102,9 +102,10 @@ public extension UniformInterpolatable {
     
     return Self.lerp(
       valueStart: outputValueStart,
-      valueEnd  : outputValueEnd,
-      percent   : percent,
-      easing    : easing
+      valueEnd: outputValueEnd,
+      percent: percent,
+      easing: easing,
+      clampingOptions: clampingOptions
     );
   };
 };

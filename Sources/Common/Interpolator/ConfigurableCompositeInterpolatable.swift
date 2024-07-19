@@ -16,6 +16,7 @@ public protocol ConfigurableCompositeInterpolatable: CompositeInterpolatable {
   associatedtype InterpolatableElements: CompositeInterpolatableElements;
   
   typealias EasingElementMap = [InterpolatableElements: InterpolationEasing];
+  typealias ClampingElementMap = [InterpolatableElements: ClampingOptions];
 };
 
 public extension ConfigurableCompositeInterpolatable {
@@ -24,7 +25,8 @@ public extension ConfigurableCompositeInterpolatable {
     valueStart: Self,
     valueEnd: Self,
     percent: CGFloat,
-    easingMap: EasingElementMap
+    easingMap: EasingElementMap,
+    clampingMap: ClampingElementMap
   ) -> Self {
     
     var keyPathEasingMap: EasingKeyPathMap = [:];
@@ -38,11 +40,23 @@ public extension ConfigurableCompositeInterpolatable {
       };
     };
     
+    var keyPathClampingMap: ClampingKeyPathMap = [:];
+    
+    for (element, clampingOptions) in clampingMap {
+      let associatedPartialKeyPaths =
+        element.getAssociatedPartialKeyPaths(forType: Self.self);
+      
+      associatedPartialKeyPaths.forEach {
+        keyPathClampingMap[$0] = clampingOptions;
+      };
+    };
+    
     return Self.lerp(
       valueStart: valueStart,
       valueEnd: valueEnd,
       percent: percent,
-      easingMap: keyPathEasingMap
+      easingMap: keyPathEasingMap,
+      clampingMap: keyPathClampingMap
     );
   };
 };
