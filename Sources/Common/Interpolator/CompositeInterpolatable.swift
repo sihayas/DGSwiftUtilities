@@ -13,7 +13,7 @@ public protocol CompositeInterpolatable: UniformInterpolatable {
   typealias InterpolatableValuesMap =
     [PartialKeyPath<Self>: any UniformInterpolatable.Type];
     
-  typealias EasingKeyPathMap = [PartialKeyPath<Self>: InterpolationEasing];
+  typealias EasingKeyPathMap = [AnyKeyPath: InterpolationEasing];
 
   static var interpolatablePropertiesMap: InterpolatableValuesMap { get };
   
@@ -21,7 +21,7 @@ public protocol CompositeInterpolatable: UniformInterpolatable {
     valueStart: Self,
     valueEnd: Self,
     percent: CGFloat,
-    easingMap: [PartialKeyPath<Self>: InterpolationEasing]
+    easingMap: EasingKeyPathMap
   ) -> Self;
 };
 
@@ -155,7 +155,7 @@ public extension CompositeInterpolatable {
       valueStart: valueStart,
       valueEnd: valueEnd,
       percent: percent,
-      easingMap: [:]
+      easingMap: [:] // TODO
     );
   };
 };

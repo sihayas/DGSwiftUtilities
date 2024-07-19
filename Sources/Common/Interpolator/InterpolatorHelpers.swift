@@ -129,16 +129,12 @@ public struct InterpolatorHelpers {
     valueStart: T,
     valueEnd: T,
     percent: CGFloat,
-    easingMap: [AnyKeyPath: InterpolationEasing],
+    easingMap: U.EasingKeyPathMap,
     writeTo target: inout T
   ) -> Bool {
   
     guard let keyPath = keyPath as? WritableKeyPath<T, U> else {
       return false;
-    };
-    
-    let easingMap = easingMap.compactMapKeys {
-      $0 as? PartialKeyPath<U>;
     };
     
     let valueStart = valueStart[keyPath: keyPath];
