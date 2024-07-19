@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-// TODO: Move to `DGSwiftUtilities`
+
 public extension Dictionary where Key == String {
   
   func getValueFromDictionary<T>(
@@ -199,5 +199,19 @@ public extension Dictionary where Key == String {
       forKey: dictValue,
       valueType: KeyPathValue.self
     );
+  };
+};
+
+
+extension Dictionary {
+
+  func compactMapKeys<T>(
+    _ transform: (Key) throws -> T?
+  ) rethrows -> Dictionary<T, Value> {
+    
+    try self.reduce(into: [:]){
+      guard let newKey = try transform($1.key) else { return };
+      $0[newKey] = $1.value;
+    };
   };
 };
