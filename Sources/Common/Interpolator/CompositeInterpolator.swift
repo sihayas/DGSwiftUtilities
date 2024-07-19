@@ -10,6 +10,8 @@ import Foundation
 
 public struct CompositeInterpolator<T: CompositeInterpolatable>: Interpolator {
 
+  typealias UniformInterpolator = DGSwiftUtilities.UniformInterpolator<T>;
+
   public var inputValueStart: CGFloat;
   public var inputValueEnd: CGFloat;
   

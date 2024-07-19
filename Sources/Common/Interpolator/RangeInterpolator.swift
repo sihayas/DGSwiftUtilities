@@ -23,6 +23,9 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
     return T.self;
   };
   
+  // typealias X = UniformInterpolator<T>;
+  // typealias Y = CompositeInterpolator<T>;
+  
   // MARK: - Properties
   // ------------------
 
@@ -96,23 +99,15 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
     shouldClampMax: Bool = false
     // TODO: Impl. easing - To be impl.
   ) throws {
-      
-    guard rangeInput.count == rangeOutput.count else {
-      throw GenericError(
-        errorCode: .invalidArgument,
-        description: "count of rangeInput and rangeOutput are different"
-      );
-    };
     
-    guard rangeInput.count >= 2 else {
-      throw GenericError(
-        errorCode: .invalidArgument,
-        description: "rangeInput and rangeOutput must have at least contain 2 items"
-      );
-    };
+    try Self.checkIfValid(
+      rangeInput: rangeInput,
+      rangeOutput: rangeOutput
+    );
     
     self.rangeInput = rangeInput;
     self.rangeOutput = rangeOutput;
+    
     self.shouldClampMin = shouldClampMin;
     self.shouldClampMax = shouldClampMax;
     
@@ -156,6 +151,70 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
       outputValueEnd: rangeOutput.last!,
       easing: .linear // TODO: WIP - To be impl.
     );
+  };
+  
+  public init(
+    rangeInput: [CGFloat],
+    rangeOutput: [T],
+    easingConfig: T.EasingKeyPathMap = [:]
+  ) throws where T: CompositeInterpolatable  {
+    
+    try Self.checkIfValid(
+      rangeInput: rangeInput,
+      rangeOutput: rangeOutput
+    );
+    
+    self.rangeInput = rangeInput;
+    self.rangeOutput = rangeOutput;
+    
+    self.shouldClampMin = false; // TODO: WIP - To be impl.
+    self.shouldClampMax = false; // TODO: WIP - To be impl.
+    
+    self.rangeInputMin = rangeInput.indexedMin!;
+    self.rangeInputMax = rangeInput.indexedMax!;
+    
+    var interpolators: [any Interpolator] = [];
+    
+    for index in 0..<rangeInput.count - 1 {
+      let inputStart = rangeInput[index];
+      let inputEnd   = rangeInput[index + 1];
+      
+      let outputStart = rangeOutput[index];
+      let outputEnd   = rangeOutput[index + 1];
+      
+      typealias A = CompositeInterpolator<T>;
+      
+      let interpolator = A(
+        inputValueStart : inputStart ,
+        inputValueEnd   : inputEnd   ,
+        outputValueStart: outputStart,
+        outputValueEnd  : outputEnd
+      );
+      
+      //let x = interpolator as? UniformInterpolator<T>;
+      //print(index, "interpolator", x);
+      //continue;
+      
+      // let a = interpolator as? Box<T>;
+      // let b = interpolator as? UniformInterpolator<T>;
+      // let c = interpolator as? CompositeInterpolator<T>.UniformInterpolator;
+      // let d = interpolator as? A.UniformInterpolator
+      
+      let a = interpolator as? Box<T>;
+      let b = interpolator as? UniformInterpolator<T> ;
+      let c = interpolator as? CompositeInterpolator<T>.UniformInterpolator;
+      let d = interpolator as? A.UniformInterpolator
+      
+      interpolators.append(interpolator);
+    };
+    
+    //self.interpolators = interpolators;
+    
+    //let any: Any = 1;
+    //let b: Int = any;
+    
+    
+    fatalError();
   };
   
   // MARK: Functions
@@ -214,11 +273,26 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
       withStartIndex: self.currentInterpolationIndex
     );
     
+    if false {
+      let x: (any Interpolator)? = nil;
+      let y = x!;
+      
+      let z = y.interpolate(
+        inputValue: inputValue,
+        easing: nil,
+        shouldClampLeft: false,
+        shouldClampRight: false
+      );
+      
+      //return z;
+    };
+    
     if let (interpolatorIndex, interpolator) = matchInterpolator {
       self.interpolationModeCurrent =
         .interpolate(interpolatorIndex: interpolatorIndex);
         
-      return interpolator.interpolate(inputValue: inputValue);
+      let temp =  interpolator.interpolate(inputValue: inputValue);
+      return temp;
     };
     
     // extrapolate left
@@ -261,6 +335,58 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
   };
 };
 
+private extension RangeInterpolator {
+  
+  static func checkIfValid(
+    rangeInput: [CGFloat],
+    rangeOutput: [T]
+  ) throws {
+    guard rangeInput.count == rangeOutput.count else {
+      throw GenericError(
+        errorCode: .invalidArgument,
+        description: "count of rangeInput and rangeOutput are different"
+      );
+    };
+    
+    guard rangeInput.count >= 2 else {
+      throw GenericError(
+        errorCode: .invalidArgument,
+        description: "rangeInput and rangeOutput must have at least contain 2 items"
+      );
+    };
+  };
+  
+  static func createInBetweenInterpolators(
+    rangeInput: [CGFloat],
+    rangeOutput: [T]
+  ) -> [UniformInterpolator<T>] {
+  
+    var interpolators: [UniformInterpolator<T>] = [];
+    
+    let a = rangeOutput as? [any CompositeInterpolatable];
+    let b = T.self as? any CompositeInterpolatable.Type;
+    
+    for index in 0..<rangeInput.count - 1 {
+      let inputStart = rangeInput[index];
+      let inputEnd   = rangeInput[index + 1];
+      
+      let outputStart = rangeOutput[index];
+      let outputEnd   = rangeOutput[index + 1];
+      
+      let interpolator = UniformInterpolator<T>(
+        inputValueStart : inputStart ,
+        inputValueEnd   : inputEnd   ,
+        outputValueStart: outputStart,
+        outputValueEnd  : outputEnd
+      );
+      
+      interpolators.append(interpolator);
+    };
+    
+    return interpolators;
+  };
+};
+
 // MARK: - Array+UniformInterpolator
 // ---------------------------------
 
@@ -286,4 +412,29 @@ fileprivate extension Array {
       predicate(item.value);
     };
   };
+};
+
+
+
+
+
+
+
+
+public struct Box<T: UniformInterpolatable>: Interpolator {
+  public init(inputValueStart: CGFloat, inputValueEnd: CGFloat, outputValueStart: T, outputValueEnd: T, hasCustomInputRange: Bool) {
+    fatalError()
+  }
+  
+  public var inputValueStart: CGFloat
+  
+  public var inputValueEnd: CGFloat
+  
+  public var outputValueStart: T
+  
+  public var outputValueEnd: T
+  
+  public var hasCustomInputRange: Bool
+  
+  public typealias InterpolatableValue = T;
 };

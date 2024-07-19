@@ -7,6 +7,11 @@
 
 import Foundation
 
+
+
+
+
+
 public protocol Interpolator {
   
   associatedtype InterpolatableValue: UniformInterpolatable;

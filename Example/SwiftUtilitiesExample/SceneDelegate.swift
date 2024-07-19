@@ -8,6 +8,19 @@
 import UIKit
 import DGSwiftUtilities
 
+protocol a {};
+struct A: a {};
+
+protocol b: a {};
+struct B: b {};
+
+func test(){
+  let test1 = B() as? a; // some
+  let test2 = A() as? b; // none
+  
+  return;
+};
+
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   
   var window: UIWindow?;
@@ -148,12 +161,30 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     };
     
-    if true {
+    if false {
       let x: [CGRect.InterpolatableElements: InterpolationEasing] = [
         .height: .easeInCubic,
         .width: .easeInCubic,
       ];
     };
+    
+    
+    
+    
+    
+    if true {
+      
+      
+      test();
+  
+    };
+    
+    
+    
+    
+    
+    
+    
   };
   
   func sceneDidDisconnect(_ scene: UIScene) {

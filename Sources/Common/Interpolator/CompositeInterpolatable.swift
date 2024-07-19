@@ -9,6 +9,8 @@ import Foundation
 
 
 public protocol CompositeInterpolatable: UniformInterpolatable {
+
+  //typealias UniformInterpolator = DGSwiftUtilities.UniformInterpolator<Self>;
   
   typealias InterpolatableValuesMap =
     [PartialKeyPath<Self>: any UniformInterpolatable.Type];

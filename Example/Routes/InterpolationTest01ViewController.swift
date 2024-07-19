@@ -11,6 +11,10 @@ import DGSwiftUtilities
 
 
 
+
+
+
+
 class InterpolationTest01ViewController: UIViewController {
   
   override func viewDidLoad() {
@@ -75,7 +79,8 @@ class InterpolationTest01ViewController: UIViewController {
                 rangeInput : sharedRangeInputValues,
                 rangeOutput: sharedRangeOutputValues.map {
                   .init(x: $0, y: $0, width: $0, height: $0)
-                }
+                },
+                easingConfig: [:]
               );
               
               let results = Helpers.invokeRangedInterpolatorAndGetResults(
