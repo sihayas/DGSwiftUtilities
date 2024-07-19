@@ -8,36 +8,54 @@
 import Foundation
 
 
-public struct Interpolator<T: UniformInterpolatable> {
+public struct Interpolator<T: UniformInterpolatable>  {
 
-  public var inputValueStart: CGFloat = 0;
-  public var inputValueEnd: CGFloat = 1;
+  public let inputValueStart: CGFloat;
+  public let inputValueEnd: CGFloat;
   
   public var outputValueStart: T;
   public var outputValueEnd: T;
   
-  public var easing: InterpolationEasing;
+  private let interpolatorPercent: (_ self: Self, _ percent   : CGFloat) -> T;
+  private let interpolatorValue  : (_ self: Self, _ inputValue: CGFloat) -> T;
   
-  public var shouldClampLeft: Bool = false;
-  public var shouldClampRight: Bool = false;
-  
-  private var _hasCustomInputRange = false;
-  
-  // MARK: - Init
-  // ------------
+  // MARK: - Init - UniformInterpolatable
+  // ------------------------------------
   
   public init(
     valueStart: T,
     valueEnd: T,
-    easing: InterpolationEasing = .linear,
+    easing: InterpolationEasing? = nil,
     shouldClampLeft: Bool = false,
     shouldClampRight: Bool = false
   ) {
+  
+    self.inputValueStart = 0;
+    self.inputValueEnd = 1;
     self.outputValueStart = valueStart;
     self.outputValueEnd = valueEnd;
-    self.easing = easing;
-    self.shouldClampLeft = shouldClampLeft;
-    self.shouldClampRight = shouldClampRight;
+    
+    self.interpolatorPercent = {
+      T.lerp(
+        valueStart: $0.outputValueStart,
+        valueEnd: $0.outputValueEnd,
+        percent: $1,
+        easing: easing,
+        shouldClampLeft: shouldClampLeft,
+        shouldClampRight: shouldClampRight
+      );
+    };
+    
+    self.interpolatorValue = {
+      T.lerp(
+        valueStart: $0.outputValueStart,
+        valueEnd: $0.outputValueEnd,
+        percent: $1,
+        easing: easing,
+        shouldClampLeft: shouldClampLeft,
+        shouldClampRight: shouldClampRight
+      );
+    };
   };
   
   public init(
@@ -45,71 +63,51 @@ public struct Interpolator<T: UniformInterpolatable> {
     inputValueEnd: CGFloat,
     outputValueStart: T,
     outputValueEnd: T,
-    easing: InterpolationEasing = .linear,
+    easing: InterpolationEasing? = nil,
     shouldClampLeft: Bool = false,
     shouldClampRight: Bool = false
   ) {
-    self.inputValueStart = inputValueStart;
-    self.inputValueEnd = inputValueEnd;
-    self.outputValueStart = outputValueStart;
-    self.outputValueEnd = outputValueEnd;
-    self.easing = easing;
-    self.shouldClampLeft = shouldClampLeft;
-    self.shouldClampRight = shouldClampRight;
+  
+    self.inputValueStart = inputValueStart
+    self.inputValueEnd = inputValueEnd
+    self.outputValueStart = outputValueStart
+    self.outputValueEnd = outputValueEnd
     
-    self._hasCustomInputRange = true;
+    self.interpolatorPercent = {
+      T.interpolate(
+        relativePercent: $1,
+        inputValueStart: $0.inputValueStart,
+        inputValueEnd: $0.inputValueEnd,
+        outputValueStart: $0.outputValueStart,
+        outputValueEnd: $0.outputValueEnd,
+        easing: easing,
+        shouldClampLeft: shouldClampLeft,
+        shouldClampRight: shouldClampRight
+      );
+    };
+    
+    self.interpolatorValue = {
+      T.interpolate(
+        inputValue: $1,
+        inputValueStart: $0.inputValueStart,
+        inputValueEnd: $0.inputValueEnd,
+        outputValueStart: $0.outputValueStart,
+        outputValueEnd: $0.outputValueEnd,
+        easing: easing,
+        shouldClampLeft: shouldClampLeft,
+        shouldClampRight: shouldClampRight
+      );
+    };
   };
   
   // MARK: - Functions
   // -----------------
   
-  public func interpolate(
-    percent: CGFloat,
-    easingOverride: InterpolationEasing? = nil,
-    shouldClampLeftOverride: Bool? = nil,
-    shouldClampRightOverride: Bool? = nil
-  ) -> T {
-  
-    if self._hasCustomInputRange {
-      return T.interpolate(
-        relativePercent: percent,
-        inputValueStart: inputValueStart,
-        inputValueEnd: inputValueEnd,
-        outputValueStart: outputValueStart,
-        outputValueEnd: outputValueEnd,
-        easing: easingOverride ?? self.easing,
-        shouldClampLeft: shouldClampLeftOverride ?? self.shouldClampLeft,
-        shouldClampRight: shouldClampRightOverride ?? self.shouldClampRight
-      );
-    };
-    
-    return T.lerp(
-      valueStart: self.outputValueStart,
-      valueEnd: self.outputValueEnd,
-      percent: percent,
-      easing: easingOverride ?? self.easing,
-      shouldClampLeft: shouldClampLeftOverride ?? self.shouldClampLeft,
-      shouldClampRight: shouldClampRightOverride ?? self.shouldClampRight
-    );
+  public func interpolate(percent: CGFloat) -> T {
+    self.interpolatorPercent(self, percent);
   };
   
-  public func interpolate(
-    inputValue: CGFloat,
-    easingOverride: InterpolationEasing? = nil,
-    shouldClampLeftOverride: Bool? = nil,
-    shouldClampRightOverride: Bool? = nil
-  ) -> T {
-  
-    return T.interpolate(
-      inputValue: inputValue,
-      inputValueStart: self.inputValueStart,
-      inputValueEnd: self.inputValueEnd,
-      outputValueStart: self.outputValueStart,
-      outputValueEnd: self.outputValueEnd,
-      easing: easingOverride ?? self.easing,
-      shouldClampLeft: shouldClampLeftOverride ?? self.shouldClampLeft,
-      shouldClampRight: shouldClampRightOverride ?? self.shouldClampRight
-    );
+  public func interpolate(inputValue: CGFloat) -> T {
+    self.interpolatorValue(self, inputValue);
   };
 };
-

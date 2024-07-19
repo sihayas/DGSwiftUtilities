@@ -227,10 +227,7 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
         return rangeOutput.first!;
       };
       
-      return self.extrapolatorLeft.interpolate(
-        inputValue: inputValue,
-        easingOverride: .linear
-      );
+      return self.extrapolatorLeft.interpolate(inputValue: inputValue);
     };
     
     // extrapolate right
@@ -241,10 +238,7 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
         return rangeOutput.last!;
       };
         
-      return self.extrapolatorRight.interpolate(
-        inputValue: inputValue,
-        easingOverride: .linear
-      );
+      return self.extrapolatorRight.interpolate(inputValue: inputValue);
     };
     
     // this shouldn't be called
