@@ -100,6 +100,75 @@ public struct Interpolator<T: UniformInterpolatable>  {
     };
   };
   
+  // MARK: - Init - CompositeInterpolatable
+  // --------------------------------------
+  
+  public init(
+    valueStart: T,
+    valueEnd: T,
+    easingMap: T.EasingKeyPathMap = [:] // TODO: Impl. clamping config
+  ) where T: CompositeInterpolatable  {
+    
+    self.inputValueStart = 0;
+    self.inputValueEnd = 1;
+    self.outputValueStart = valueStart;
+    self.outputValueEnd = valueEnd;
+    
+    self.interpolatorPercent = {
+      T.lerp(
+        valueStart: $0.outputValueStart,
+        valueEnd: $0.outputValueEnd,
+        percent: $1,
+        easingMap: easingMap
+      );
+    };
+    
+    self.interpolatorValue = {
+      T.lerp(
+        valueStart: $0.outputValueStart,
+        valueEnd: $0.outputValueEnd,
+        percent: $1,
+        easingMap: easingMap
+      );
+    };
+  };
+  
+  public init(
+    inputValueStart: CGFloat,
+    inputValueEnd: CGFloat,
+    outputValueStart: T,
+    outputValueEnd: T,
+    easingMap: T.EasingKeyPathMap = [:] // TODO: Impl. clamping config
+  ) where T: CompositeInterpolatable {
+  
+    self.inputValueStart = inputValueStart
+    self.inputValueEnd = inputValueEnd
+    self.outputValueStart = outputValueStart
+    self.outputValueEnd = outputValueEnd
+    
+    self.interpolatorPercent = {
+      T.interpolate(
+        relativePercent: $1,
+        inputValueStart: $0.inputValueStart,
+        inputValueEnd: $0.inputValueEnd,
+        outputValueStart: $0.outputValueStart,
+        outputValueEnd: $0.outputValueEnd,
+        easingMap: easingMap
+      );
+    };
+    
+    self.interpolatorValue = {
+      T.interpolate(
+        inputValue: $1,
+        inputValueStart: $0.inputValueStart,
+        inputValueEnd: $0.inputValueEnd,
+        outputValueStart: $0.outputValueStart,
+        outputValueEnd: $0.outputValueEnd,
+        easingMap: easingMap
+      );
+    };
+  };
+  
   // MARK: - Functions
   // -----------------
   
