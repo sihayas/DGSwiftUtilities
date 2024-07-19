@@ -38,6 +38,20 @@ public extension CompositeInterpolatable {
     
     for (partialKeyPath, type) in Self.interpolatablePropertiesMap {
       let easing = easingMap[partialKeyPath];
+      
+      if let type2 = type as? any CompositeInterpolatable.Type,
+         InterpolatorHelpers.lerp(
+           type: type2,
+           keyPath: partialKeyPath,
+           valueStart: valueStart,
+           valueEnd: valueEnd,
+           percent: percent,
+           easingMap: easingMap,
+           writeTo: &newValue
+         )
+      {
+        fatalError("\(type)")
+      };
 
       if InterpolatorHelpers.lerp(
         type: type,

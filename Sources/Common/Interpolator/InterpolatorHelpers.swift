@@ -123,6 +123,83 @@ public struct InterpolatorHelpers {
     return true;
   };
   
+  public static func lerp<T, U: CompositeInterpolatable>(
+    type: U.Type = U.self,
+    keyPath: PartialKeyPath<T>,
+    valueStart: T,
+    valueEnd: T,
+    percent: CGFloat,
+    easingMap: [AnyKeyPath: InterpolationEasing],
+    writeTo target: inout T
+  ) -> Bool {
+  
+    guard let keyPath = keyPath as? WritableKeyPath<T, U> else {
+      return false;
+    };
+    
+    let test: [AnyKeyPath: InterpolationEasing] = [
+      \CGPoint.x: .linear,
+      \CGPoint.y: .linear,
+      
+      \CGSize.width : .linear,
+      \CGSize.height: .linear,
+      
+      \CGRect.size  : .linear,
+      \CGRect.origin: .linear,
+    ];
+    
+    let test2 = test as? [PartialKeyPath<CGPoint>: InterpolationEasing];
+    let test3 = test as? [PartialKeyPath<T>: InterpolationEasing];
+    
+    let test4 = {
+      var result: [PartialKeyPath<CGPoint>: InterpolationEasing] = [:];
+      
+      for (key, value) in test {
+        if let key2 = key as? PartialKeyPath<CGPoint> {
+          result[key2] = value;
+        };
+      };
+      
+      return result;
+    }();
+    
+    let test5 = {
+      var result: [PartialKeyPath<T>: InterpolationEasing] = [:];
+      
+      for (key, value) in test {
+        if let key2 = key as? PartialKeyPath<T> {
+          result[key2] = value;
+        };
+      };
+      
+      return result;
+    }();
+    
+    let test6 = {
+      var result: [PartialKeyPath<T>: InterpolationEasing] = test.reduce(into: [:]){
+        guard let newKey = $1.key as? PartialKeyPath<T> else { return };
+        $0[newKey] = $1.value;
+      };
+      
+      test.compactMapValues(<#T##transform: (InterpolationEasing) throws -> T?##(InterpolationEasing) throws -> T?#>)
+    }();
+    
+    
+    
+    let valueStart = valueStart[keyPath: keyPath];
+    let valueEnd   = valueEnd  [keyPath: keyPath];
+    
+    let interpolatedValue = U.lerp(
+      valueStart: valueStart,
+      valueEnd: valueEnd,
+      percent: percent,
+      easingMap: [:]
+    );
+    
+    target[keyPath: keyPath] = interpolatedValue;
+    return true;
+  };
+  
   public static func interpolate(
     inputValue: CGFloat,
     inputValueStart: CGFloat,
@@ -245,3 +322,4 @@ public struct InterpolatorHelpers {
     );
   };
 };
+
