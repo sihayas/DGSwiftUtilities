@@ -41,6 +41,9 @@ public protocol RangeInterpolating {
   var inputInterpolators : [InputInterpolator ] { get };
   var outputInterpolators: [OutputInterpolator] { get };
   
+  var inputExtrapolatorLeft : InputInterpolator { get };
+  var inputExtrapolatorRight: InputInterpolator { get };
+  
   var outputExtrapolatorLeft : OutputInterpolator { get };
   var outputExtrapolatorRight: OutputInterpolator { get };
   
@@ -52,6 +55,8 @@ public protocol RangeInterpolating {
     rangeInputMax: RangeItem,
     outputInterpolators: [OutputInterpolator],
     inputInterpolators: [InputInterpolator],
+    inputExtrapolatorLeft: InputInterpolator,
+    inputExtrapolatorRight: InputInterpolator,
     outputExtrapolatorLeft: OutputInterpolator,
     outputExtrapolatorRight: OutputInterpolator
   );
@@ -137,13 +142,16 @@ public extension RangeInterpolating {
       outputInterpolators.append(outputInterpolator);
     };
     
+    var extrapolatorEasingLeft : InterpolationEasing? = nil;
+    var extrapolatorEasingRight: InterpolationEasing? = nil;
+        
     let outputExtrapolatorLeft: OutputInterpolator = {
       let inputStart  = rangeInput [1];
       let inputEnd    = rangeInput [0];
       let outputStart = rangeOutput[1];
       let outputEnd   = rangeOutput[0];
     
-      let easing = easingProvider?(
+      extrapolatorEasingLeft = easingProvider?(
         /* rangeIndex      : */ -1,
         /* interpolatorType: */ .extrapolateLeft,
         /* inputValueStart : */ inputStart,
@@ -157,7 +165,7 @@ public extension RangeInterpolating {
         inputValueEnd: inputEnd,
         outputValueStart: outputStart,
         outputValueEnd: outputEnd,
-        easing: easing,
+        easing: extrapolatorEasingLeft,
         clampingOptions: clampingOptions.shouldClampLeft ? .left : .none
       );
     }();
@@ -168,7 +176,7 @@ public extension RangeInterpolating {
       let outputStart = rangeOutput.secondToLast!;
       let outputEnd   = rangeOutput.last!;
     
-      let easing = easingProvider?(
+      extrapolatorEasingRight = easingProvider?(
         /* rangeIndex      : */ -1,
         /* interpolatorType: */ .extrapolateRight,
         /* inputValueStart : */ inputStart,
@@ -182,7 +190,39 @@ public extension RangeInterpolating {
         inputValueEnd: inputEnd,
         outputValueStart: outputStart,
         outputValueEnd: outputEnd,
-        easing: easing,
+        easing: extrapolatorEasingRight,
+        clampingOptions: clampingOptions.shouldClampLeft ? .right : .none
+      );
+    }();
+    
+    let inputExtrapolatorLeft: InputInterpolator = {
+      let inputStart  = inputInterpolators[1].inputValueStart;
+      let inputEnd    = inputInterpolators[0].inputValueEnd;
+      let outputStart = rangeInput[1];
+      let outputEnd   = rangeInput[0];
+    
+      return .init(
+        inputValueStart: inputStart,
+        inputValueEnd: inputEnd,
+        outputValueStart: outputStart,
+        outputValueEnd: outputEnd,
+        easing: extrapolatorEasingLeft,
+        clampingOptions: clampingOptions.shouldClampLeft ? .left : .none
+      );
+    }();
+    
+    let inputExtrapolatorRight: InputInterpolator = {
+      let inputStart  = outputExtrapolatorRight.inputValueStart;
+      let inputEnd    = outputExtrapolatorRight.inputValueEnd;
+      let outputStart = rangeInput.secondToLast!;
+      let outputEnd   = rangeInput.last!;
+      
+      return .init(
+        inputValueStart: inputStart,
+        inputValueEnd: inputEnd,
+        outputValueStart: outputStart,
+        outputValueEnd: outputEnd,
+        easing: extrapolatorEasingRight,
         clampingOptions: clampingOptions.shouldClampLeft ? .right : .none
       );
     }();
@@ -195,6 +235,8 @@ public extension RangeInterpolating {
       rangeInputMax: rangeInputMax,
       outputInterpolators: outputInterpolators,
       inputInterpolators: inputInterpolators,
+      inputExtrapolatorLeft: inputExtrapolatorLeft,
+      inputExtrapolatorRight: inputExtrapolatorRight,
       outputExtrapolatorLeft: outputExtrapolatorLeft,
       outputExtrapolatorRight: outputExtrapolatorRight
     );
