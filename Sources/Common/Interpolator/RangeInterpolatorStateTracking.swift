@@ -7,15 +7,19 @@
 
 import Foundation
 
-public protocol RangeInterpolatorStateTracking {
-
-  associatedtype InterpolatableValue: UniformInterpolatable;
+public protocol RangeInterpolatorStateTracking: RangeInterpolating {
+  
+  var inputValuePrev: CGFloat? { get set };
+  var inputValueCurrent: CGFloat? { get set };
+  
+  var outputValuePrev: InterpolatableValue? { get set };
+  var outputValueCurrent: InterpolatableValue? { get set };
   
   var interpolationModePrevious: RangeInterpolationMode? { get set };
   var interpolationModeCurrent: RangeInterpolationMode? { get set };
 };
 
-public extension RangeInterpolatorStateTracking where Self: RangeInterpolating {
+public extension RangeInterpolatorStateTracking {
   
   var currentInputInterpolator: Self.InputInterpolator? {
     guard let interpolationModeCurrent = self.interpolationModeCurrent else {
@@ -68,27 +72,51 @@ public extension RangeInterpolatorStateTracking where Self: RangeInterpolating {
     };
   };
   
-  mutating func interpolate(inputValue: CGFloat) -> InterpolatableValue {
-    let result = self.interpolate(
+  mutating func interpolate(
+    inputValue: CGFloat,
+    shouldUpdateState: Bool = true
+  ) -> InterpolatableValue {
+  
+    let (result, nextInterpolationMode) = self.interpolate(
       inputValue: inputValue,
       currentInterpolationIndex: self.currentInterpolationIndex
     );
     
-    self.interpolationModePrevious = self.interpolationModeCurrent;
-    self.interpolationModeCurrent = result.interpolationMode;
+    if shouldUpdateState {
+      self.inputValuePrev = self.inputValueCurrent;
+      self.inputValueCurrent = inputValue;
+      
+      self.outputValuePrev = self.outputValueCurrent;
+      self.outputValueCurrent = result;
+      
+      self.interpolationModePrevious = self.interpolationModeCurrent;
+      self.interpolationModeCurrent = nextInterpolationMode;
+    };
     
-    return result.result;
+    return result;
   };
   
-  mutating func interpolate(inputPercent: CGFloat) -> InterpolatableValue {
-    let result = self.interpolate(
+  mutating func interpolate(
+    inputPercent: CGFloat,
+    shouldUpdateState: Bool = true
+  ) -> InterpolatableValue {
+  
+    let (result, nextInterpolationMode, inputValue) = self.interpolate(
       inputPercent: inputPercent,
       currentInterpolationIndex: self.currentInterpolationIndex
     );
     
-    self.interpolationModePrevious = self.interpolationModeCurrent;
-    self.interpolationModeCurrent = result.interpolationMode;
+    if shouldUpdateState {
+      self.inputValuePrev = self.inputValueCurrent;
+      self.inputValueCurrent = inputValue;
+      
+      self.outputValuePrev = self.outputValueCurrent;
+      self.outputValueCurrent = result;
+      
+      self.interpolationModePrevious = self.interpolationModeCurrent;
+      self.interpolationModeCurrent = nextInterpolationMode;
+    };
     
-    return result.result;
+    return result;
   };
 };
