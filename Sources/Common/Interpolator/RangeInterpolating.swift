@@ -402,12 +402,11 @@ public extension RangeInterpolating {
 
 extension RangeInterpolating where Self: RangeInterpolatorStateTracking {
 
-  mutating func interpolateAndApplyToTarget(
-    inputValue: CGFloat,
+  mutating func interpolate(
+    usingInputValue inputValue: CGFloat,
     shouldUpdateState: Bool = true
-  ){
-    guard let targetBlock = self.targetBlock else { return };
-    
+  ) -> InterpolatableValue {
+  
     let (result, interpolationMode) = self.compute(
       usingInputValue: inputValue,
       currentInterpolationIndex: self.currentInterpolationIndex
@@ -416,19 +415,48 @@ extension RangeInterpolating where Self: RangeInterpolatorStateTracking {
     self.interpolationModePrevious = self.interpolationModeCurrent;
     self.interpolationModeCurrent = interpolationMode;
     
+    return result;
+  };
+  
+  mutating func interpolate(
+    usingInputPercent inputPercent: CGFloat,
+    shouldUpdateState: Bool = true
+  ) -> InterpolatableValue {
+  
+    let inputValue = self.interpolateRangeInput(inputPercent: inputPercent);
+    
+    return self.interpolate(
+      inputValue: inputValue,
+      shouldUpdateState: shouldUpdateState
+    );
+  };
+
+  mutating func interpolateAndApplyToTarget(
+    usingInputValue inputValue: CGFloat,
+    shouldUpdateState: Bool = true
+  ){
+    guard let targetBlock = self.targetBlock else { return };
+    
+    let result = self.interpolate(
+      inputValue: inputValue,
+      shouldUpdateState: shouldUpdateState
+    );
+    
     targetBlock(self, result);
   };
   
   mutating func interpolateAndApplyToTarget(
-    inputPercent: CGFloat,
+    usingInputPercent inputPercent: CGFloat,
     shouldUpdateState: Bool = true
   ){
-    let inputValue = self.interpolateRangeInput(inputPercent: inputPercent);
+    guard let targetBlock = self.targetBlock else { return };
     
-    self.interpolateAndApplyToTarget(
-      inputValue: inputValue,
+    let result = self.interpolate(
+      inputPercent: inputPercent,
       shouldUpdateState: shouldUpdateState
     );
+    
+    targetBlock(self, result);
   };
 };
 
