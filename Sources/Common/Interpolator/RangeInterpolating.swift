@@ -298,8 +298,7 @@ public extension RangeInterpolating {
   
   func interpolate(
     inputValue: CGFloat,
-    currentInterpolationIndex: Int? = nil,
-    interpolationModeChangeBlock: ((RangeInterpolationMode) -> Void)? = nil
+    currentInterpolationIndex: Int? = nil
   ) -> (
     result: InterpolatableValue,
     interpolationMode: RangeInterpolationMode
@@ -319,8 +318,6 @@ public extension RangeInterpolating {
     
     // extrapolate left
     if inputValue < self.rangeInput.first! {
-      interpolationModeChangeBlock?(.extrapolateLeft);
-      
       return (
         result: self.outputExtrapolatorLeft.interpolate(inputValue: inputValue),
         interpolationMode: .extrapolateLeft
@@ -349,11 +346,11 @@ public extension RangeInterpolating {
   
   func interpolate(
     inputPercent: CGFloat,
-    currentInterpolationIndex: Int? = nil,
-    interpolationModeChangeBlock: ((RangeInterpolationMode) -> Void)? = nil
+    currentInterpolationIndex: Int? = nil
   ) -> (
     result: InterpolatableValue,
-    interpolationMode: RangeInterpolationMode
+    interpolationMode: RangeInterpolationMode,
+    inputValue: CGFloat
   ) {
     
     var inputValue: CGFloat! = nil;
