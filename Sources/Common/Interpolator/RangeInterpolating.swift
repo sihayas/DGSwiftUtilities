@@ -58,6 +58,10 @@ public extension RangeInterpolating {
     return InterpolatableValue.self;
   };
   
+  var isTargetBlockSet: Bool {
+    self.targetBlock != nil;
+  };
+  
   // MARK: - Init
   // ------------
 
