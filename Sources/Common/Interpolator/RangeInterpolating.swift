@@ -41,8 +41,8 @@ public protocol RangeInterpolating {
   var inputInterpolators : [InputInterpolator ] { get };
   var outputInterpolators: [OutputInterpolator] { get };
   
-  var extrapolatorLeft : OutputInterpolator { get };
-  var extrapolatorRight: OutputInterpolator { get };
+  var outputExtrapolatorLeft : OutputInterpolator { get };
+  var outputExtrapolatorRight: OutputInterpolator { get };
   
   init(
     rangeInput: [CGFloat],
@@ -50,10 +50,10 @@ public protocol RangeInterpolating {
     targetBlock: TargetBlock?,
     rangeInputMin: RangeItem,
     rangeInputMax: RangeItem,
-    interpolators: [OutputInterpolator],
+    outputInterpolators: [OutputInterpolator],
     inputInterpolators: [InputInterpolator],
-    extrapolatorLeft: OutputInterpolator,
-    extrapolatorRight: OutputInterpolator
+    outputExtrapolatorLeft: OutputInterpolator,
+    outputExtrapolatorRight: OutputInterpolator
   );
 };
 
@@ -137,7 +137,7 @@ public extension RangeInterpolating {
       outputInterpolators.append(outputInterpolator);
     };
     
-    let extrapolatorLeft: OutputInterpolator = {
+    let outputExtrapolatorLeft: OutputInterpolator = {
       let inputStart  = rangeInput [1];
       let inputEnd    = rangeInput [0];
       let outputStart = rangeOutput[1];
@@ -162,7 +162,7 @@ public extension RangeInterpolating {
       );
     }();
     
-    let extrapolatorRight: OutputInterpolator = {
+    let outputExtrapolatorRight: OutputInterpolator = {
       let inputStart  = rangeInput.secondToLast!;
       let inputEnd    = rangeInput.last!;
       let outputStart = rangeOutput.secondToLast!;
@@ -193,10 +193,10 @@ public extension RangeInterpolating {
       targetBlock: targetBlock,
       rangeInputMin: rangeInputMin,
       rangeInputMax: rangeInputMax,
-      interpolators: outputInterpolators,
+      outputInterpolators: outputInterpolators,
       inputInterpolators: inputInterpolators,
-      extrapolatorLeft: extrapolatorLeft,
-      extrapolatorRight: extrapolatorRight
+      outputExtrapolatorLeft: outputExtrapolatorLeft,
+      outputExtrapolatorRight: outputExtrapolatorRight
     );
   };
   
@@ -268,7 +268,7 @@ public extension RangeInterpolating {
       interpolationModeChangeBlock?(.extrapolateLeft);
       
       return (
-        result: self.extrapolatorLeft.interpolate(inputValue: inputValue),
+        result: self.outputExtrapolatorLeft.interpolate(inputValue: inputValue),
         interpolationMode: .extrapolateLeft
       );
     };
@@ -276,7 +276,7 @@ public extension RangeInterpolating {
     // extrapolate right
     if inputValue > rangeInput.last! {
       return (
-        result: self.extrapolatorRight.interpolate(inputValue: inputValue),
+        result: self.outputExtrapolatorRight.interpolate(inputValue: inputValue),
         interpolationMode: .extrapolateRight
       );
     };
