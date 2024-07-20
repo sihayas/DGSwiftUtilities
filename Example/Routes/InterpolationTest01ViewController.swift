@@ -393,7 +393,7 @@ fileprivate struct Helpers {
       $0.append(.init(text: "\($1.offset). "));
       $0 += rangedInterpolator.interpolateAndGetMetadataAsAttributedStringConfig(inputValue: $1.element)
       
-      if let interpolator = rangedInterpolator.currentInterpolator {
+      if let interpolator = rangedInterpolator.currentOutputInterpolator {
         $0.append(.newLine);
         $0 += interpolator.metadataAsAttributedStringConfig;
       };
