@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 
 public struct InterpolatorHelpers {
@@ -275,6 +276,34 @@ public struct InterpolatorHelpers {
       outputValueEnd  : rangeOutputEnd,
       easing          : easing
     );
+  };
+  
+  public static func computeFinalPosition(
+    position: CGFloat,
+    initialVelocity: CGFloat,
+    decelerationRate: CGFloat = UIScrollView.DecelerationRate.normal.rawValue
+  ) -> CGFloat {
+    let pointPerSecond = abs(initialVelocity) / 1000.0;
+    let accelerationRate = 1 - decelerationRate;
+    
+    let displacement = (pointPerSecond * decelerationRate) / accelerationRate;
+    
+    return initialVelocity > 0
+      ? position + displacement
+      : position - displacement;
+  };
+  
+  public static func invertPercent(_ percent: CGFloat) -> CGFloat {
+    if percent >= 0 && percent <= 1 {
+      return 1 - percent;
+    };
+    
+    if percent < 0 {
+      return abs(percent) + 1;
+    };
+    
+    // percent > 1
+    return -(percent - 1);
   };
 };
 
