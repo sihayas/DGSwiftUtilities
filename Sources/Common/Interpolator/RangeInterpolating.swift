@@ -8,7 +8,7 @@
 import Foundation
 
 
-public protocol RangeInterpolating: TargetedInterpolator {
+public protocol RangeInterpolating {
 
   associatedtype InterpolatableValue: UniformInterpolatable;
 
@@ -381,29 +381,47 @@ public extension RangeInterpolating {
       inputValue = self.inputExtrapolatorRight.interpolate(inputValue: inputPercent);
     };
     
-    return self.interpolate(inputValue: inputValue);
+    let (result, interpolationMode) = self.interpolate(inputValue: inputValue);
+    return (result, interpolationMode, inputValue);
   };
-  
-  // MARK: TargetedInterpolator
-  // --------------------------
-  
-  func interpolateAndApplyToTarget(inputValue: CGFloat){
+};
+
+extension RangeInterpolating where Self: RangeInterpolatorStateTracking {
+
+  mutating func interpolateAndApplyToTarget(
+    inputValue: CGFloat,
+    shouldUpdateState: Bool = true
+  ){
     guard let targetBlock = self.targetBlock else { return };
     
-    let result = self.interpolate(inputValue: inputValue);
-    targetBlock(self, result.result);
+    let (result, interpolationMode) = self.interpolate(
+      inputValue: inputValue,
+      currentInterpolationIndex: self.currentInterpolationIndex
+    );
+    
+    self.interpolationModePrevious = self.interpolationModeCurrent;
+    self.interpolationModeCurrent = interpolationMode;
+    
+    targetBlock(self, result);
   };
   
-  func interpolateAndApplyToTarget(inputPercent: CGFloat){
+  mutating func interpolateAndApplyToTarget(inputPercent: CGFloat){
     guard let targetBlock = self.targetBlock else { return };
     
-    let result = self.interpolate(inputPercent: inputPercent);
-    targetBlock(self, result.result);
+    let (result, interpolationMode) = self.interpolate(
+      inputValue: inputPercent,
+      currentInterpolationIndex: self.currentInterpolationIndex
+    );
+    
+    self.interpolationModePrevious = self.interpolationModeCurrent;
+    self.interpolationModeCurrent = interpolationMode;
+    
+    targetBlock(self, result);
   };
 };
 
 // MARK: - Array+UniformInterpolator
-// --------------------------
+// ---------------------------------
 
 extension Array {
 
