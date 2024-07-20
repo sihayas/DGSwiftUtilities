@@ -288,11 +288,11 @@ public extension RangeInterpolating {
     return interpolator;
   };
   
-  func interpolate(
-    inputValue: CGFloat,
+  func compute(
+    usingInputValue inputValue: CGFloat,
     currentInterpolationIndex: Int? = nil
   ) -> (
-    result: InterpolatableValue,
+    interpolatedValue: InterpolatableValue,
     interpolationMode: RangeInterpolationMode
   ) {
   
@@ -303,7 +303,7 @@ public extension RangeInterpolating {
     
     if let (interpolatorIndex, interpolator) = matchInterpolator {
       return (
-        result: interpolator.compute(usingInputValue: inputValue),
+        interpolatedValue: interpolator.compute(usingInputValue: inputValue),
         interpolationMode: .interpolate(interpolatorIndex: interpolatorIndex)
       );
     };
@@ -311,7 +311,7 @@ public extension RangeInterpolating {
     // extrapolate left
     if inputValue < self.rangeInput.first! {
       return (
-        result: self.outputExtrapolatorLeft.compute(usingInputValue: inputValue),
+        interpolatedValue: self.outputExtrapolatorLeft.compute(usingInputValue: inputValue),
         interpolationMode: .extrapolateLeft
       );
     };
@@ -319,7 +319,7 @@ public extension RangeInterpolating {
     // extrapolate right
     if inputValue > rangeInput.last! {
       return (
-        result: self.outputExtrapolatorRight.compute(usingInputValue: inputValue),
+        interpolatedValue: self.outputExtrapolatorRight.compute(usingInputValue: inputValue),
         interpolationMode: .extrapolateRight
       );
     };
@@ -336,8 +336,8 @@ public extension RangeInterpolating {
     return (result, .interpolate(interpolatorIndex: 0));
   };
   
-  func interpolate(
-    inputPercent: CGFloat,
+  func compute(
+    usingInputPercent inputPercent: CGFloat,
     currentInterpolationIndex: Int? = nil
   ) -> (
     result: InterpolatableValue,
@@ -346,14 +346,14 @@ public extension RangeInterpolating {
   ) {
     
     let inputValue = self.interpolateRangeInput(inputPercent: inputPercent);
-    let (result, interpolationMode) = self.interpolate(inputValue: inputValue);
+    let (result, interpolationMode) = self.compute(usingInputValue: inputValue);
     
     return (result, interpolationMode, inputValue);
   };
   
   @discardableResult
-  func interpolateAndApplyToTarget(
-    inputValue: CGFloat,
+  func computeAndApplyToTarget(
+    usingInputValue inputValue: CGFloat,
     currentInterpolationIndex: Int? = nil
   ) -> RangeInterpolationMode? {
   
@@ -361,8 +361,8 @@ public extension RangeInterpolating {
       return nil;
     };
     
-    let (result, interpolationMode) = self.interpolate(
-      inputValue: inputValue,
+    let (result, interpolationMode) = self.compute(
+      usingInputValue: inputValue,
       currentInterpolationIndex: currentInterpolationIndex
     );
     
@@ -371,7 +371,8 @@ public extension RangeInterpolating {
   };
   
   @discardableResult
-  func interpolateAndApplyToTarget(inputPercent: CGFloat,
+  func computeAndApplyToTarget(
+    usingInputPercent inputPercent: CGFloat,
     currentInterpolationIndex: Int? = nil
   )  -> (
     interpolationMode: RangeInterpolationMode,
@@ -383,8 +384,8 @@ public extension RangeInterpolating {
       currentInterpolationIndex: currentInterpolationIndex
     );
     
-    let interpolationMode = self.interpolateAndApplyToTarget(
-      inputValue: inputValue,
+    let interpolationMode = self.computeAndApplyToTarget(
+      usingInputValue: inputValue,
       currentInterpolationIndex: currentInterpolationIndex
     );
     
@@ -407,8 +408,8 @@ extension RangeInterpolating where Self: RangeInterpolatorStateTracking {
   ){
     guard let targetBlock = self.targetBlock else { return };
     
-    let (result, interpolationMode) = self.interpolate(
-      inputValue: inputValue,
+    let (result, interpolationMode) = self.compute(
+      usingInputValue: inputValue,
       currentInterpolationIndex: self.currentInterpolationIndex
     );
     

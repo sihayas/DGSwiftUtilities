@@ -101,8 +101,8 @@ public struct RangeInterpolatorGroup: AnyRangeInterpolating, AnyRangeInterpolato
   
     for (index, rangeInterpolator) in rangeInterpolators.enumerated() {
     
-      let interpolationMode = rangeInterpolator.interpolateAndApplyToTarget(
-        inputValue: inputValue,
+      let interpolationMode = rangeInterpolator.computeAndApplyToTarget(
+        usingInputValue: inputValue,
         currentInterpolationIndex: self.currentInterpolationIndex
       );
       

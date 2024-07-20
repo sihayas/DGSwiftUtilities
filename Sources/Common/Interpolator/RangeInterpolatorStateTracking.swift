@@ -41,8 +41,8 @@ public extension RangeInterpolatorStateTracking {
     shouldUpdateState: Bool = true
   ) -> InterpolatableValue {
   
-    let (result, nextInterpolationMode) = self.interpolate(
-      inputValue: inputValue,
+    let (result, nextInterpolationMode) = self.compute(
+      usingInputValue: inputValue,
       currentInterpolationIndex: self.currentInterpolationIndex
     );
     
@@ -65,8 +65,8 @@ public extension RangeInterpolatorStateTracking {
     shouldUpdateState: Bool = true
   ) -> InterpolatableValue {
   
-    let (result, nextInterpolationMode, inputValue) = self.interpolate(
-      inputPercent: inputPercent,
+    let (result, nextInterpolationMode, inputValue) = self.compute(
+      usingInputPercent: inputPercent,
       currentInterpolationIndex: self.currentInterpolationIndex
     );
     
