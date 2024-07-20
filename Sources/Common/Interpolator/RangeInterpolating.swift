@@ -15,8 +15,9 @@ public protocol RangeInterpolating {
   typealias RangeItem = IndexValuePair<CGFloat>;
   typealias RangeItemOutput = IndexValuePair<InterpolatableValue>;
   
-  typealias OutputInterpolator = DGSwiftUtilities.Interpolator<InterpolatableValue>;
   typealias InputInterpolator = DGSwiftUtilities.Interpolator<CGFloat>;
+  typealias OutputInterpolator = DGSwiftUtilities.Interpolator<InterpolatableValue>;
+  
   
   typealias TargetBlock = (
     _ sender: Self,
@@ -38,8 +39,8 @@ public protocol RangeInterpolating {
   var rangeInputMin: RangeItem { get };
   var rangeInputMax: RangeItem { get };
   
-  var outputInterpolators: [OutputInterpolator] { get };
   var inputInterpolators : [InputInterpolator ] { get };
+  var outputInterpolators: [OutputInterpolator] { get };
   
   var extrapolatorLeft : OutputInterpolator { get };
   var extrapolatorRight: OutputInterpolator { get };
