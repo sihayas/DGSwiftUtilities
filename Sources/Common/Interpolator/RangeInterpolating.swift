@@ -346,7 +346,54 @@ public extension RangeInterpolating {
     
     return (result, interpolationMode, inputValue);
   };
+  
+  @discardableResult
+  func interpolateAndApplyToTarget(
+    inputValue: CGFloat,
+    currentInterpolationIndex: Int? = nil
+  ) -> RangeInterpolationMode? {
+  
+    guard let targetBlock = self.targetBlock else {
+      return nil;
+    };
+    
+    let (result, interpolationMode) = self.interpolate(
+      inputValue: inputValue,
+      currentInterpolationIndex: currentInterpolationIndex
+    );
+    
+    targetBlock(self, result);
+    return interpolationMode;
+  };
+  
+  @discardableResult
+  func interpolateAndApplyToTarget(inputPercent: CGFloat,
+    currentInterpolationIndex: Int? = nil
+  )  -> (
+    interpolationMode: RangeInterpolationMode,
+    inputValue: CGFloat
+  )? {
+    
+    let inputValue = self.interpolateRangeInput(
+      inputPercent: inputPercent,
+      currentInterpolationIndex: currentInterpolationIndex
+    );
+    
+    let interpolationMode = self.interpolateAndApplyToTarget(
+      inputValue: inputValue,
+      currentInterpolationIndex: currentInterpolationIndex
+    );
+    
+    guard let interpolationMode = interpolationMode else {
+      return nil;
+    };
+    
+    return (interpolationMode, inputValue);
+  };
 };
+
+// MARK: - RangeInterpolating+RangeInterpolatorStateTracking
+// ---------------------------------------------------------
 
 extension RangeInterpolating where Self: RangeInterpolatorStateTracking {
 
@@ -367,18 +414,16 @@ extension RangeInterpolating where Self: RangeInterpolatorStateTracking {
     targetBlock(self, result);
   };
   
-  mutating func interpolateAndApplyToTarget(inputPercent: CGFloat){
-    guard let targetBlock = self.targetBlock else { return };
+  mutating func interpolateAndApplyToTarget(
+    inputPercent: CGFloat,
+    shouldUpdateState: Bool = true
+  ){
+    let inputValue = self.interpolateRangeInput(inputPercent: inputPercent);
     
-    let (result, interpolationMode) = self.interpolate(
-      inputValue: inputPercent,
-      currentInterpolationIndex: self.currentInterpolationIndex
+    self.interpolateAndApplyToTarget(
+      inputValue: inputValue,
+      shouldUpdateState: shouldUpdateState
     );
-    
-    self.interpolationModePrevious = self.interpolationModeCurrent;
-    self.interpolationModeCurrent = interpolationMode;
-    
-    targetBlock(self, result);
   };
 };
 
