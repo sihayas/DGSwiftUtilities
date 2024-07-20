@@ -27,6 +27,9 @@ public protocol CompositeInterpolatable: UniformInterpolatable {
   ) -> Self;
 };
 
+// MARK: Default Conformance - `CompositeInterpolatable`
+// ----------------------------------------------------
+
 public extension CompositeInterpolatable {
   
   static func lerp(
@@ -100,6 +103,34 @@ public extension CompositeInterpolatable {
     
     return newValue;
   };
+};
+
+// MARK: Default Conformance - `UniformInterpolatable`
+// --------------------------------------------------
+
+public extension CompositeInterpolatable {
+  
+  static func lerp(
+    valueStart: Self,
+    valueEnd: Self,
+    percent: CGFloat,
+    easing: InterpolationEasing? = nil
+  ) -> Self {
+    
+    Self.lerp(
+      valueStart: valueStart,
+      valueEnd: valueEnd,
+      percent: percent,
+      easingMap: [:], // MARK: TODO
+      clampingMap: [:] // MARK: TODO
+    );
+  };
+};
+
+// MARK: - Functions - Helpers
+// ---------------------------
+
+public extension CompositeInterpolatable {
   
   static func interpolate(
     inputValue: CGFloat,
@@ -148,25 +179,6 @@ public extension CompositeInterpolatable {
       percent: percent,
       easingMap: easingMap,
       clampingMap: clampingMap
-    );
-  };
-  
-  // MARK: - `UniformInterpolatable` Conformance
-  // -------------------------------------------
-  
-  static func lerp(
-    valueStart: Self,
-    valueEnd: Self,
-    percent: CGFloat,
-    easing: InterpolationEasing? = nil
-  ) -> Self {
-    
-    Self.lerp(
-      valueStart: valueStart,
-      valueEnd: valueEnd,
-      percent: percent,
-      easingMap: [:], // MARK: TODO
-      clampingMap: [:] // MARK: TODO
     );
   };
 };
