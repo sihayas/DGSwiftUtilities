@@ -122,7 +122,7 @@ class InterpolationTest01ViewController: UIViewController {
                 ];
                 
                 for (index, percentPreset) in sharedInputPercentPresets.enumerated() {
-                  let result = interpolator.interpolate(percent: percentPreset);
+                  let result = interpolator.compute(usingPercentValue: percentPreset);
                   
                   results += [
                     .init(text: "percentPreset: \(index+1) of \(sharedInputPercentPresets.count)"),

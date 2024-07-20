@@ -36,17 +36,17 @@ public extension AnyRangeInterpolating {
     );
     
     if let (_, interpolator) = matchInterpolator {
-      return interpolator.interpolate(inputValue: inputPercent);
+      return interpolator.compute(usingInputValue: inputPercent);
     };
     
     // extrapolate left
     if inputPercent < self.rangeInput.first! {
-      return self.inputExtrapolatorLeft.interpolate(inputValue: inputPercent);
+      return self.inputExtrapolatorLeft.compute(usingInputValue: inputPercent);
     };
     
     // extrapolate right
     if inputPercent > self.rangeInput.last! {
-      return self.inputExtrapolatorRight.interpolate(inputValue: inputPercent);
+      return self.inputExtrapolatorRight.compute(usingInputValue: inputPercent);
     };
     
     // this should never be called

@@ -172,11 +172,11 @@ public struct Interpolator<T: UniformInterpolatable>  {
   // MARK: - Functions
   // -----------------
   
-  public func interpolate(percent: CGFloat) -> T {
+  public func compute(usingPercentValue percent: CGFloat) -> T {
     self.interpolatorPercent(self, percent);
   };
   
-  public func interpolate(inputValue: CGFloat) -> T {
+  public func compute(usingInputValue inputValue: CGFloat) -> T {
     self.interpolatorValue(self, inputValue);
   };
 };

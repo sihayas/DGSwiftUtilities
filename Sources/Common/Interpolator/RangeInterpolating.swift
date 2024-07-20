@@ -303,7 +303,7 @@ public extension RangeInterpolating {
     
     if let (interpolatorIndex, interpolator) = matchInterpolator {
       return (
-        result: interpolator.interpolate(inputValue: inputValue),
+        result: interpolator.compute(usingInputValue: inputValue),
         interpolationMode: .interpolate(interpolatorIndex: interpolatorIndex)
       );
     };
@@ -311,7 +311,7 @@ public extension RangeInterpolating {
     // extrapolate left
     if inputValue < self.rangeInput.first! {
       return (
-        result: self.outputExtrapolatorLeft.interpolate(inputValue: inputValue),
+        result: self.outputExtrapolatorLeft.compute(usingInputValue: inputValue),
         interpolationMode: .extrapolateLeft
       );
     };
@@ -319,7 +319,7 @@ public extension RangeInterpolating {
     // extrapolate right
     if inputValue > rangeInput.last! {
       return (
-        result: self.outputExtrapolatorRight.interpolate(inputValue: inputValue),
+        result: self.outputExtrapolatorRight.compute(usingInputValue: inputValue),
         interpolationMode: .extrapolateRight
       );
     };
