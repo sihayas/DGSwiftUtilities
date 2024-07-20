@@ -71,7 +71,7 @@ public struct InterpolatorHelpers {
     );
   };
   
-  public static func lerp<T, U: UniformInterpolatable>(
+  public static func rangedLerp<T, U: UniformInterpolatable>(
     type: U.Type = U.self,
     keyPath: PartialKeyPath<T>,
     valueStart: T,
@@ -95,7 +95,7 @@ public struct InterpolatorHelpers {
     );
   };
   
-  public static func lerp<T, U: UniformInterpolatable>(
+  public static func rangedLerp<T, U: UniformInterpolatable>(
     type: U.Type = U.self,
     keyPath: PartialKeyPath<T>,
     valueStart: T,
@@ -125,7 +125,7 @@ public struct InterpolatorHelpers {
     return true;
   };
   
-  public static func lerp<T, U: CompositeInterpolatable>(
+  public static func rangedLerp<T, U: CompositeInterpolatable>(
     type: U.Type = U.self,
     keyPath: PartialKeyPath<T>,
     valueStart: T,
@@ -155,7 +155,7 @@ public struct InterpolatorHelpers {
     return true;
   };
   
-  public static func interpolate(
+  public static func rangedLerp(
     inputValue: CGFloat,
     inputValueStart: CGFloat,
     inputValueEnd: CGFloat,
@@ -177,7 +177,7 @@ public struct InterpolatorHelpers {
     );
   };
   
-  public static func interpolate(
+  public static func rangedLerp(
     relativePercent: CGFloat,
     inputValueStart: CGFloat,
     inputValueEnd: CGFloat,
@@ -199,7 +199,7 @@ public struct InterpolatorHelpers {
     );
   };
 
-  public static func interpolate(
+  public static func rangedLerp(
     inputValue: CGFloat,
     rangeInput: [CGFloat],
     rangeOutput: [CGFloat],
@@ -228,7 +228,7 @@ public struct InterpolatorHelpers {
       let rangeOutputStart = rangeOutput.first!;
       let rangeOutputEnd = rangeOutput[1];
       
-      return Self.interpolate(
+      return Self.rangedLerp(
         inputValue: inputValue,
         inputValueStart: rangeInputEnd,
         inputValueEnd: rangeInputStart,
@@ -267,7 +267,7 @@ public struct InterpolatorHelpers {
           let rangeOutputEnd   = rangeOutput[safeIndex: rangeEndIndex  ]
     else { return nil };
     
-    return Self.interpolate(
+    return Self.rangedLerp(
       inputValue      : inputValue,
       inputValueStart : rangeInputStart,
       inputValueEnd   : rangeInputEnd,

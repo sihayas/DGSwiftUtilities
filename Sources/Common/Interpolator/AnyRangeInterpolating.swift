@@ -50,7 +50,7 @@ public extension AnyRangeInterpolating {
     };
     
     // this should never be called
-    return InterpolatorHelpers.interpolate(
+    return InterpolatorHelpers.rangedLerp(
       inputValue: inputPercent,
       inputValueStart: self.inputInterpolators.first!.inputValueStart,
       inputValueEnd: self.inputInterpolators.last!.inputValueEnd,

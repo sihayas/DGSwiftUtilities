@@ -100,7 +100,7 @@ public struct Interpolator<T: UniformInterpolatable>  {
   public init(
     valueStart: T,
     valueEnd: T,
-    easingMap: T.EasingKeyPathMap = [:], // TODO: Impl. clamping config
+    easingMap: T.EasingKeyPathMap = [:],
     clampingMap: T.ClampingKeyPathMap = [:]
   ) where T: CompositeInterpolatable  {
     
@@ -135,7 +135,7 @@ public struct Interpolator<T: UniformInterpolatable>  {
     inputValueEnd: CGFloat,
     outputValueStart: T,
     outputValueEnd: T,
-    easingMap: T.EasingKeyPathMap = [:], // TODO: Impl. clamping config
+    easingMap: T.EasingKeyPathMap = [:],
     clampingMap: T.ClampingKeyPathMap = [:]
   ) where T: CompositeInterpolatable {
   

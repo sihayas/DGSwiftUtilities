@@ -47,7 +47,7 @@ public extension CompositeInterpolatable {
       let clampingOptions = clampingMap[partialKeyPath];
       
       if let type = type as? any CompositeInterpolatable.Type,
-         InterpolatorHelpers.lerp(
+         InterpolatorHelpers.rangedLerp(
            type: type,
            keyPath: partialKeyPath,
            valueStart: valueStart,
@@ -61,7 +61,7 @@ public extension CompositeInterpolatable {
         continue;
       };
 
-      if InterpolatorHelpers.lerp(
+      if InterpolatorHelpers.rangedLerp(
         type: type,
         keyPath: partialKeyPath,
         valueStart: valueStart,
