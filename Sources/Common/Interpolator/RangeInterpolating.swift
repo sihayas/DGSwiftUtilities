@@ -325,7 +325,7 @@ public extension RangeInterpolating {
     };
     
     // this shouldn't be called
-    let result = InterpolatableValue.interpolate(
+    let result = InterpolatableValue.rangedLerp(
       inputValue: inputValue,
       inputValueStart: self.rangeInput.first!,
       inputValueEnd: self.rangeInput.last!,

@@ -70,7 +70,7 @@ public struct Interpolator<T: UniformInterpolatable>  {
     self.outputValueEnd = outputValueEnd
     
     self.interpolatorPercent = {
-      T.interpolate(
+      T.rangedLerp(
         relativePercent: $1,
         inputValueStart: $0.inputValueStart,
         inputValueEnd: $0.inputValueEnd,
@@ -82,7 +82,7 @@ public struct Interpolator<T: UniformInterpolatable>  {
     };
     
     self.interpolatorValue = {
-      T.interpolate(
+      T.rangedLerp(
         inputValue: $1,
         inputValueStart: $0.inputValueStart,
         inputValueEnd: $0.inputValueEnd,

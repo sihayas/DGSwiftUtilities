@@ -47,7 +47,7 @@ public extension UniformInterpolatable {
     );
   };
   
-  static func interpolate(
+  static func rangedLerp(
     inputValue: CGFloat,
     inputValueStart: CGFloat,
     inputValueEnd: CGFloat,
@@ -77,7 +77,7 @@ public extension UniformInterpolatable {
     );
   };
   
-  static func interpolate(
+  static func rangedLerp(
     relativePercent: CGFloat,
     inputValueStart: CGFloat,
     inputValueEnd: CGFloat,
