@@ -334,6 +334,43 @@ public extension RangeInterpolating {
     
     return (result, .interpolate(interpolatorIndex: 0));
   };
+  
+  func interpolate(
+    inputPercent: CGFloat,
+    currentInterpolationIndex: Int? = nil,
+    interpolationModeChangeBlock: ((RangeInterpolationMode) -> Void)? = nil
+  ) -> (
+    result: InterpolatableValue,
+    interpolationMode: RangeInterpolationMode
+  ) {
+    
+    var inputValue: CGFloat! = nil;
+    
+    let matchInterpolator = self.inputInterpolators.getInterpolator(
+      forInputValue: inputPercent,
+      withStartIndex: currentInterpolationIndex
+    );
+    
+    if let (_, interpolator) = matchInterpolator {
+      inputValue = interpolator.interpolate(inputValue: inputPercent);
+    };
+    
+    // extrapolate left
+    if inputValue == nil,
+       inputPercent < self.rangeInput.first!
+    {
+      inputValue = self.inputExtrapolatorLeft.interpolate(inputValue: inputPercent);
+    };
+    
+    // extrapolate right
+    if inputValue == nil,
+       inputPercent > self.rangeInput.last!
+    {
+      inputValue = self.inputExtrapolatorRight.interpolate(inputValue: inputPercent);
+    };
+    
+    return self.interpolate(inputValue: inputValue);
+  };
 };
 
 // MARK: - Array+UniformInterpolator
