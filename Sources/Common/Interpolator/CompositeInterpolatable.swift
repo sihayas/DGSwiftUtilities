@@ -132,7 +132,7 @@ public extension CompositeInterpolatable {
 
 public extension CompositeInterpolatable {
   
-  static func interpolate(
+  static func rangedLerp(
     inputValue: CGFloat,
     inputValueStart: CGFloat,
     inputValueEnd: CGFloat,
@@ -157,7 +157,7 @@ public extension CompositeInterpolatable {
     );
   };
   
-  static func interpolate(
+  static func rangedLerp(
     relativePercent: CGFloat,
     inputValueStart: CGFloat,
     inputValueEnd: CGFloat,
