@@ -15,7 +15,7 @@ public protocol RangeInterpolating {
   typealias RangeItem = IndexValuePair<CGFloat>;
   typealias RangeItemOutput = IndexValuePair<InterpolatableValue>;
   
-  typealias Interpolator = DGSwiftUtilities.Interpolator<InterpolatableValue>;
+  typealias OutputInterpolator = DGSwiftUtilities.Interpolator<InterpolatableValue>;
   typealias InputInterpolator = DGSwiftUtilities.Interpolator<CGFloat>;
   
   typealias TargetBlock = (
@@ -38,11 +38,11 @@ public protocol RangeInterpolating {
   var rangeInputMin: RangeItem { get };
   var rangeInputMax: RangeItem { get };
   
-  var interpolators: [Interpolator] { get };
-  var inputInterpolators: [InputInterpolator] { get };
+  var outputInterpolators: [OutputInterpolator] { get };
+  var inputInterpolators : [InputInterpolator ] { get };
   
-  var extrapolatorLeft : Interpolator { get };
-  var extrapolatorRight: Interpolator { get };
+  var extrapolatorLeft : OutputInterpolator { get };
+  var extrapolatorRight: OutputInterpolator { get };
   
   init(
     rangeInput: [CGFloat],
@@ -50,10 +50,10 @@ public protocol RangeInterpolating {
     targetBlock: TargetBlock?,
     rangeInputMin: RangeItem,
     rangeInputMax: RangeItem,
-    interpolators: [Interpolator],
+    interpolators: [OutputInterpolator],
     inputInterpolators: [InputInterpolator],
-    extrapolatorLeft: Interpolator,
-    extrapolatorRight: Interpolator
+    extrapolatorLeft: OutputInterpolator,
+    extrapolatorRight: OutputInterpolator
   );
 };
 
@@ -85,7 +85,7 @@ public extension RangeInterpolating {
     let rangeInputMax = rangeInput.indexedMax!;
     
     var inputInterpolators: [InputInterpolator] = [];
-    var interpolators: [Interpolator] = [];
+    var outputInterpolators: [OutputInterpolator] = [];
     
     for index in 0..<rangeInput.count - 1 {
       let isFirstIndex = index == 0;
@@ -126,7 +126,7 @@ public extension RangeInterpolating {
       
       inputInterpolators.append(inputInterpolator);
       
-      let interpolator: Interpolator = .init(
+      let outputInterpolator: OutputInterpolator = .init(
         inputValueStart: inputStart,
         inputValueEnd: inputEnd,
         outputValueStart: outputStart,
@@ -134,10 +134,10 @@ public extension RangeInterpolating {
         easing: easing
       );
       
-      interpolators.append(interpolator);
+      outputInterpolators.append(outputInterpolator);
     };
     
-    let extrapolatorLeft: Interpolator = .init(
+    let extrapolatorLeft: OutputInterpolator = .init(
       inputValueStart: rangeInput[1],
       inputValueEnd: rangeInput[0],
       outputValueStart: rangeOutput[1],
@@ -146,7 +146,7 @@ public extension RangeInterpolating {
       clampingOptions: clampingOptions.shouldClampLeft ? .left : .none
     );
     
-    let extrapolatorRight: Interpolator = .init(
+    let extrapolatorRight: OutputInterpolator = .init(
       inputValueStart: rangeInput.secondToLast!,
       inputValueEnd: rangeInput.last!,
       outputValueStart: rangeOutput.secondToLast!,
@@ -161,7 +161,7 @@ public extension RangeInterpolating {
       targetBlock: targetBlock,
       rangeInputMin: rangeInputMin,
       rangeInputMax: rangeInputMax,
-      interpolators: interpolators,
+      interpolators: outputInterpolators,
       inputInterpolators: inputInterpolators,
       extrapolatorLeft: extrapolatorLeft,
       extrapolatorRight: extrapolatorRight
@@ -171,7 +171,7 @@ public extension RangeInterpolating {
   func createDirectInterpolator(
     fromStartIndex startIndex: Int,
     toEndIndex endIndex: Int
-  ) throws -> Interpolator {
+  ) throws -> OutputInterpolator {
     
     guard startIndex >= 0 && startIndex < self.rangeInput.count else {
       throw GenericError(
@@ -200,7 +200,7 @@ public extension RangeInterpolating {
     let outputStart = rangeOutput[endIndex];
     let outputEnd   = rangeOutput[endIndex];
     
-    let interpolator: Interpolator = .init(
+    let interpolator: OutputInterpolator = .init(
       inputValueStart : inputStart ,
       inputValueEnd   : inputEnd   ,
       outputValueStart: outputStart,
@@ -219,7 +219,7 @@ public extension RangeInterpolating {
     interpolationMode: RangeInterpolationMode
   ) {
   
-    let matchInterpolator = self.interpolators.getInterpolator(
+    let matchInterpolator = self.outputInterpolators.getInterpolator(
       forInputValue: inputValue,
       withStartIndex: currentInterpolationIndex
     );
