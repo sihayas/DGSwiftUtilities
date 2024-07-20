@@ -8,7 +8,7 @@
 import Foundation
 
 
-public protocol RangeInterpolating {
+public protocol RangeInterpolating: TargetedInterpolator {
 
   associatedtype InterpolatableValue: UniformInterpolatable;
 
@@ -34,6 +34,8 @@ public protocol RangeInterpolating {
 
   var rangeInput : [CGFloat] { get };
   var rangeOutput: [InterpolatableValue] { get };
+  
+  var targetBlock: TargetBlock? { get };
   
   var rangeInputMin: RangeItem { get };
   var rangeInputMax: RangeItem { get };
@@ -63,6 +65,13 @@ public protocol RangeInterpolating {
 };
 
 public extension RangeInterpolating {
+
+  static var genericType: InterpolatableValue.Type {
+    return InterpolatableValue.self;
+  };
+  
+  // MARK: - Init
+  // ------------
 
   init(
     rangeInput: [CGFloat],
@@ -242,6 +251,9 @@ public extension RangeInterpolating {
     );
   };
   
+  // MARK: - Functions
+  // -----------------
+  
   func createDirectInterpolator(
     fromStartIndex startIndex: Int,
     toEndIndex endIndex: Int
@@ -370,6 +382,23 @@ public extension RangeInterpolating {
     };
     
     return self.interpolate(inputValue: inputValue);
+  };
+  
+  // MARK: TargetedInterpolator
+  // --------------------------
+  
+  func interpolateAndApplyToTarget(inputValue: CGFloat){
+    guard let targetBlock = self.targetBlock else { return };
+    
+    let result = self.interpolate(inputValue: inputValue);
+    targetBlock(self, result.result);
+  };
+  
+  func interpolateAndApplyToTarget(inputPercent: CGFloat){
+    guard let targetBlock = self.targetBlock else { return };
+    
+    let result = self.interpolate(inputPercent: inputPercent);
+    targetBlock(self, result.result);
   };
 };
 
