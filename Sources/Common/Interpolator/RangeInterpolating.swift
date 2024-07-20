@@ -8,14 +8,11 @@
 import Foundation
 
 
-public protocol RangeInterpolating {
+public protocol RangeInterpolating: AnyRangeInterpolating {
 
   associatedtype InterpolatableValue: UniformInterpolatable;
 
-  typealias RangeItem = IndexValuePair<CGFloat>;
   typealias RangeItemOutput = IndexValuePair<InterpolatableValue>;
-  
-  typealias InputInterpolator = DGSwiftUtilities.Interpolator<CGFloat>;
   typealias OutputInterpolator = DGSwiftUtilities.Interpolator<InterpolatableValue>;
   
   typealias TargetBlock = (
@@ -32,22 +29,13 @@ public protocol RangeInterpolating {
     _ outputValueEnd: InterpolatableValue
   ) -> InterpolationEasing;
 
-  var rangeInput : [CGFloat] { get };
   var rangeOutput: [InterpolatableValue] { get };
-  
-  var targetBlock: TargetBlock? { get };
-  
-  var rangeInputMin: RangeItem { get };
-  var rangeInputMax: RangeItem { get };
-  
-  var inputInterpolators : [InputInterpolator ] { get };
+
   var outputInterpolators: [OutputInterpolator] { get };
-  
-  var inputExtrapolatorLeft : InputInterpolator { get };
-  var inputExtrapolatorRight: InputInterpolator { get };
-  
   var outputExtrapolatorLeft : OutputInterpolator { get };
   var outputExtrapolatorRight: OutputInterpolator { get };
+  
+  var targetBlock: TargetBlock? { get };
   
   init(
     rangeInput: [CGFloat],
@@ -353,32 +341,9 @@ public extension RangeInterpolating {
     inputValue: CGFloat
   ) {
     
-    var inputValue: CGFloat! = nil;
-    
-    let matchInterpolator = self.inputInterpolators.getInterpolator(
-      forInputValue: inputPercent,
-      withStartIndex: currentInterpolationIndex
-    );
-    
-    if let (_, interpolator) = matchInterpolator {
-      inputValue = interpolator.interpolate(inputValue: inputPercent);
-    };
-    
-    // extrapolate left
-    if inputValue == nil,
-       inputPercent < self.rangeInput.first!
-    {
-      inputValue = self.inputExtrapolatorLeft.interpolate(inputValue: inputPercent);
-    };
-    
-    // extrapolate right
-    if inputValue == nil,
-       inputPercent > self.rangeInput.last!
-    {
-      inputValue = self.inputExtrapolatorRight.interpolate(inputValue: inputPercent);
-    };
-    
+    let inputValue = self.interpolateRangeInput(inputPercent: inputPercent);
     let (result, interpolationMode) = self.interpolate(inputValue: inputValue);
+    
     return (result, interpolationMode, inputValue);
   };
 };
