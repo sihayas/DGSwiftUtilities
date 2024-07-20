@@ -16,8 +16,7 @@ public protocol UniformInterpolatable: Comparable {
     valueStart: Self,
     valueEnd: Self,
     percent: CGFloat,
-    easing: InterpolationEasing?,
-    clampingOptions: ClampingOptions
+    easing: InterpolationEasing?
   ) -> Self;
 };
 
@@ -44,8 +43,7 @@ public extension UniformInterpolatable {
       valueStart: valueStart,
       valueEnd: valueEnd,
       percent: percentClamped,
-      easing: easing,
-      clampingOptions: clampingOptions
+      easing: easing
     );
   };
   

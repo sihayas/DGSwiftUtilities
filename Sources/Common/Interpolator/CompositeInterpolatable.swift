@@ -158,8 +158,7 @@ public extension CompositeInterpolatable {
     valueStart: Self,
     valueEnd: Self,
     percent: CGFloat,
-    easing: InterpolationEasing? = nil,
-    clampingOptions: ClampingOptions = .none
+    easing: InterpolationEasing? = nil
   ) -> Self {
     
     Self.lerp(
