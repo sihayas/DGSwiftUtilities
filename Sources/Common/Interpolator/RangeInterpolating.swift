@@ -18,7 +18,6 @@ public protocol RangeInterpolating {
   typealias InputInterpolator = DGSwiftUtilities.Interpolator<CGFloat>;
   typealias OutputInterpolator = DGSwiftUtilities.Interpolator<InterpolatableValue>;
   
-  
   typealias TargetBlock = (
     _ sender: Self,
     _ interpolatedValue: InterpolatableValue
@@ -138,23 +137,55 @@ public extension RangeInterpolating {
       outputInterpolators.append(outputInterpolator);
     };
     
-    let extrapolatorLeft: OutputInterpolator = .init(
-      inputValueStart: rangeInput[1],
-      inputValueEnd: rangeInput[0],
-      outputValueStart: rangeOutput[1],
-      outputValueEnd: rangeOutput[0],
-      easing: .linear, // TODO: Impl. custom easing
-      clampingOptions: clampingOptions.shouldClampLeft ? .left : .none
-    );
+    let extrapolatorLeft: OutputInterpolator = {
+      let inputStart  = rangeInput [1];
+      let inputEnd    = rangeInput [0];
+      let outputStart = rangeOutput[1];
+      let outputEnd   = rangeOutput[0];
     
-    let extrapolatorRight: OutputInterpolator = .init(
-      inputValueStart: rangeInput.secondToLast!,
-      inputValueEnd: rangeInput.last!,
-      outputValueStart: rangeOutput.secondToLast!,
-      outputValueEnd: rangeOutput.last!,
-      easing: .linear, // TODO: Impl. custom easing
-      clampingOptions: clampingOptions.shouldClampRight ? .right : .none
-    );
+      let easing = easingProvider?(
+        /* rangeIndex      : */ -1,
+        /* interpolatorType: */ .extrapolateLeft,
+        /* inputValueStart : */ inputStart,
+        /* inputValueEnd   : */ inputEnd,
+        /* outputValueStart: */ outputStart,
+        /* outputValueEnd  : */ outputEnd
+      );
+      
+      return .init(
+        inputValueStart: inputStart,
+        inputValueEnd: inputEnd,
+        outputValueStart: outputStart,
+        outputValueEnd: outputEnd,
+        easing: easing,
+        clampingOptions: clampingOptions.shouldClampLeft ? .left : .none
+      );
+    }();
+    
+    let extrapolatorRight: OutputInterpolator = {
+      let inputStart  = rangeInput.secondToLast!;
+      let inputEnd    = rangeInput.last!;
+      let outputStart = rangeOutput.secondToLast!;
+      let outputEnd   = rangeOutput.last!;
+    
+      let easing = easingProvider?(
+        /* rangeIndex      : */ -1,
+        /* interpolatorType: */ .extrapolateRight,
+        /* inputValueStart : */ inputStart,
+        /* inputValueEnd   : */ inputEnd,
+        /* outputValueStart: */ outputStart,
+        /* outputValueEnd  : */ outputEnd
+      );
+      
+      return .init(
+        inputValueStart: inputStart,
+        inputValueEnd: inputEnd,
+        outputValueStart: outputStart,
+        outputValueEnd: outputEnd,
+        easing: easing,
+        clampingOptions: clampingOptions.shouldClampLeft ? .right : .none
+      );
+    }();
     
     self.init(
       rangeInput: rangeInput,
