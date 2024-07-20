@@ -20,18 +20,14 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
   
   public typealias EasingProviderBlock = (
     _ rangeIndex: Int,
-    _ interpolatorType: InterpolationMode,
+    _ interpolatorType: RangeInterpolationMode,
     _ inputValueStart: CGFloat,
     _ inputValueEnd: CGFloat,
     _ outputValueStart: T,
     _ outputValueEnd: T
   ) -> InterpolationEasing;
   
-  public enum InterpolationMode {
-    case extrapolateLeft;
-    case extrapolateRight;
-    case interpolate(interpolatorIndex: Int);
-  };
+  
   
   public static var genericType: T.Type {
     return T.self;
@@ -53,8 +49,8 @@ public struct RangeInterpolator<T: UniformInterpolatable> {
   private(set) public var extrapolatorLeft: Interpolator<T>;
   private(set) public var extrapolatorRight: Interpolator<T>;
   
-  private var interpolationModePrevious: InterpolationMode?;
-  private var interpolationModeCurrent: InterpolationMode? {
+  private var interpolationModePrevious: RangeInterpolationMode?;
+  private var interpolationModeCurrent: RangeInterpolationMode? {
     willSet {
       self.interpolationModePrevious = newValue;
     }
