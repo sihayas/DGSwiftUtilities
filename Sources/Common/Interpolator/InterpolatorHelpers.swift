@@ -11,6 +11,9 @@ import UIKit
 
 public struct InterpolatorHelpers {
 
+  // MARK: - Lerp-Related
+  // --------------------
+  
   public static func lerp(
     valueStart: CGFloat,
     valueEnd: CGFloat,
@@ -71,6 +74,9 @@ public struct InterpolatorHelpers {
       easing: easing
     );
   };
+  
+  // MARK: - "Ranged Lerp"-Related
+  // -----------------------------
   
   public static func rangedLerp<T, U: UniformInterpolatable>(
     type: U.Type = U.self,
@@ -277,6 +283,9 @@ public struct InterpolatorHelpers {
       easing          : easing
     );
   };
+  
+  // MARK: - Misc
+  // ------------
   
   public static func computeFinalPosition(
     position: CGFloat,
