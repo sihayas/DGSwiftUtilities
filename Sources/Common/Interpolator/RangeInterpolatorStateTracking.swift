@@ -7,36 +7,15 @@
 
 import Foundation
 
-public protocol RangeInterpolatorStateTracking: RangeInterpolating {
-  
-  var inputValuePrev: CGFloat? { get set };
-  var inputValueCurrent: CGFloat? { get set };
+
+
+public protocol RangeInterpolatorStateTracking: AnyRangeInterpolatorStateTracking, RangeInterpolating {
   
   var outputValuePrev: InterpolatableValue? { get set };
   var outputValueCurrent: InterpolatableValue? { get set };
-  
-  var interpolationModePrevious: RangeInterpolationMode? { get set };
-  var interpolationModeCurrent: RangeInterpolationMode? { get set };
 };
 
 public extension RangeInterpolatorStateTracking {
-  
-  var currentInputInterpolator: Self.InputInterpolator? {
-    guard let interpolationModeCurrent = self.interpolationModeCurrent else {
-      return nil;
-    };
-    
-    switch interpolationModeCurrent {
-      case .extrapolateLeft:
-        return self.inputExtrapolatorLeft;
-        
-      case .extrapolateRight:
-        return self.inputExtrapolatorRight;
-        
-      case let .interpolate(interpolatorIndex):
-        return self.inputInterpolators[interpolatorIndex];
-    };
-  };
   
   var currentOutputInterpolator: Self.OutputInterpolator? {
     guard let interpolationModeCurrent = self.interpolationModeCurrent else {
@@ -55,22 +34,7 @@ public extension RangeInterpolatorStateTracking {
     };
   };
   
-  var currentInterpolationIndex: Int? {
-    guard let interpolationModeCurrent = self.interpolationModeCurrent else {
-      return nil;
-    };
-    
-    switch interpolationModeCurrent {
-      case .extrapolateLeft:
-        return 0;
-        
-      case .extrapolateRight:
-        return self.rangeInput.count - 1;
-        
-      case let .interpolate(interpolatorIndex):
-        return interpolatorIndex;
-    };
-  };
+  
   
   mutating func interpolate(
     inputValue: CGFloat,
