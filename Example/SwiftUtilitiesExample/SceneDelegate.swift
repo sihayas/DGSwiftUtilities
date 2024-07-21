@@ -155,7 +155,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       ];
     };
     
-    if true {
+    if false {
       let items: [(desc: String, options: ClampingOptions)] = [
         ("empty", []),
         (".none", [.none]),
@@ -178,6 +178,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         );
       }
     };
+    
+    if false {
+      let a: (any RangeInterpolating)? = nil;
+      let b = a!;
+      let x = b.rangeInput;
+    };
+    
+    
+    
   };
   
   func sceneDidDisconnect(_ scene: UIScene) {

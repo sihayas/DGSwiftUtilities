@@ -9,8 +9,6 @@ import UIKit
 import DGSwiftUtilities
 
 
-
-
 class InterpolationTest01ViewController: UIViewController {
   
   override func viewDidLoad() {
@@ -31,14 +29,6 @@ class InterpolationTest01ViewController: UIViewController {
     var cardConfig: [CardConfig] = [];
     
     cardConfig.append({
-      let sharedRangeInputValues: [CGFloat] = [-100, -1, 0, 1, 100];
-      let sharedRangeOutputValues: [CGFloat] = [-1000, -10, 0, 10, 1000];
-      
-      let sharedInputValues: [CGFloat] = [
-        -100, -1, 0, 1, 100,
-        -1000, -500, -200, -50, -0.5, 0.5, 50, 75, 200, 500, 1000,
-      ];
-      
       let sharedInputPercentPresets: [CGFloat] = [
         -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2,
       ];
@@ -50,6 +40,9 @@ class InterpolationTest01ViewController: UIViewController {
           .filledButton(
             title: [
               .init(text: "Interpolator<CGRect>"),
+            ],
+            subtitle: [
+              .init(text: "Tests for easingMap"),
             ],
             handler: { _,_ in
               let easingMapPresets: [(
@@ -141,6 +134,105 @@ class InterpolationTest01ViewController: UIViewController {
                   ];
                 }
               };
+              
+              Helpers.logAndPresent(
+                textItems: results,
+                parentVC: self
+              );
+            }
+          ),
+          
+          .filledButton(
+            title: [
+              .init(text: "Interpolator<CGRect>"),
+            ],
+            subtitle: [
+              .init(text: "Tests for clamping"),
+            ],
+            handler: { _,_ in
+              let clampingMapPresets: [(
+                desc: String,
+                clampingMap: CGRect.ClampingKeyPathMap
+              )] = [
+                (
+                  desc: "Empty easingMap",
+                  clampingMap: [:]
+                ),
+                (
+                  desc: "clamp left for x, clamp right for width",
+                  clampingMap: [
+                    \CGPoint.x: .left,
+                    \CGSize.width: .right,
+                  ]
+                ),
+                (
+                  desc: "clamp left for y, clamp right for height",
+                  clampingMap: [
+                    \CGPoint.y: .left,
+                    \CGSize.height: .right,
+                  ]
+                ),
+                (
+                  desc: (
+                      "clamp right for x, clamp left for y,"
+                    + "clamp left for width, clamp right for height"
+                  ),
+                  clampingMap: [
+                    \CGPoint.x: .right,
+                    \CGPoint.y: .left,
+                    \CGSize.width: .left,
+                    \CGSize.height: .right,
+                  ]
+                ),
+                (
+                  desc: "clamp leftAndRight for all",
+                  clampingMap: [
+                    \CGPoint.x: .leftAndRight,
+                    \CGPoint.y: .leftAndRight,
+                    \CGSize.width: .leftAndRight,
+                    \CGSize.height: .leftAndRight,
+                  ]
+                ),
+              ];
+              
+              var results: [AttributedStringConfig] = [];
+              var didLogInterpolatorMetadata = false;
+              
+              for (index, preset) in clampingMapPresets.enumerated() {
+                let interpolator: Interpolator<CGRect> = .init(
+                  valueStart : .init(x: 0  , y: 0  , width: 0  , height: 0  ),
+                  valueEnd   : .init(x: 100, y: 100, width: 100, height: 100),
+                  clampingMap: preset.clampingMap
+                );
+                
+                if !didLogInterpolatorMetadata {
+                  results += interpolator.metadataAsAttributedStringConfig;
+                  results.append(.newLines(2));
+                  didLogInterpolatorMetadata = true;
+                };
+                
+                results += [
+                  .init(text: "easingMapPreset: \(index+1) of \(clampingMapPresets.count)"),
+                  .newLine,
+                  .init(text: "preset desc: \(preset.desc)"),
+                  .newLine,
+                  .init(text: "preset clampingMap: \(preset.clampingMap)"),
+                  .newLines(2),
+                ];
+                
+                for (index, percentPreset) in sharedInputPercentPresets.enumerated() {
+                  let result = interpolator.compute(usingPercentValue: percentPreset);
+                  
+                  results += [
+                    .init(text: "percentPreset: \(index+1) of \(sharedInputPercentPresets.count)"),
+                    .newLine,
+                    .init(text: "inputPercent: \(percentPreset)"),
+                    .newLine,
+                    .init(text: "result: \(result)"),
+                    .newLines(2),
+                  ];
+                }
+              }
               
               Helpers.logAndPresent(
                 textItems: results,
