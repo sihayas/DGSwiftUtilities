@@ -29,6 +29,119 @@ class InterpolationTest01ViewController: UIViewController {
     var cardConfig: [CardConfig] = [];
     
     cardConfig.append({
+      let sharedRangeInputValues: [CGFloat] = [-100, -1, 0, 1, 100];
+      let sharedRangeOutputValues: [CGFloat] = [-1000, -10, 0, 10, 1000];
+      
+      let sharedInputValues: [CGFloat] = [
+        -100, -1, 0, 1, 100,
+        -1000, -500, -200, -50, -0.5, 0.5, 50, 75, 200, 500, 1000,
+      ];
+      
+      return .init(
+        title: "Basic Tests for RangeInterpolator",
+        desc: [],
+        content: [
+          .filledButton(
+            title: [
+              .init(text: "RangeInterpolator<CGFloat>"),
+            ],
+            handler: { _,_ in
+              var rangedInterpolator = try! RangeInterpolator<CGFloat>(
+                rangeInput : sharedRangeInputValues,
+                rangeOutput: sharedRangeOutputValues
+              );
+              
+              let results = Helpers.invokeRangedInterpolatorAndGetResults(
+                with: sharedInputValues,
+                rangedInterpolator: &rangedInterpolator
+              );
+              
+              Helpers.logAndPresent(
+                textItems: results,
+                parentVC: self
+              );
+            }
+          ),
+          
+          .filledButton(
+            title: [
+              .init(text: "RangeInterpolator<CGRect>"),
+            ],
+            handler: { _,_ in
+            
+              var rangedInterpolator = try! RangeInterpolator<CGRect>(
+                rangeInput : sharedRangeInputValues,
+                rangeOutput: sharedRangeOutputValues.map {
+                  .init(x: $0, y: $0, width: $0, height: $0)
+                }
+              );
+              
+              let results = Helpers.invokeRangedInterpolatorAndGetResults(
+                with: sharedInputValues,
+                rangedInterpolator: &rangedInterpolator
+              );
+              
+              Helpers.logAndPresent(
+                textItems: results,
+                parentVC: self
+              );
+            }
+          ),
+          
+          .filledButton(
+            title: [
+              .init(text: "RangeInterpolator<CGSize>"),
+            ],
+            handler: { _,_ in
+            
+              var rangedInterpolator = try! RangeInterpolator<CGSize>(
+                rangeInput : sharedRangeInputValues,
+                rangeOutput: sharedRangeOutputValues.map {
+                  .init(width: $0, height: $0)
+                }
+              );
+              
+              let results = Helpers.invokeRangedInterpolatorAndGetResults(
+                with: sharedInputValues,
+                rangedInterpolator: &rangedInterpolator
+              );
+              
+              Helpers.logAndPresent(
+                textItems: results,
+                parentVC: self
+              );
+            }
+          ),
+          
+          .filledButton(
+            title: [
+              .init(text: "RangeInterpolator<CGPoint>"),
+            ],
+            handler: { _,_ in
+            
+              var rangedInterpolator = try! RangeInterpolator<CGPoint>(
+                rangeInput : sharedRangeInputValues,
+                rangeOutput: sharedRangeOutputValues.map {
+                  .init(x: $0, y: $0)
+                }
+              );
+              
+              let results = Helpers.invokeRangedInterpolatorAndGetResults(
+                with: sharedInputValues,
+                rangedInterpolator: &rangedInterpolator
+              );
+              
+              Helpers.logAndPresent(
+                textItems: results,
+                parentVC: self
+              );
+            }
+          ),
+        ]
+      );
+    }());
+    
+    cardConfig.append({
       let sharedInputPercentPresets: [CGFloat] = [
         -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2,
       ];
@@ -243,121 +356,8 @@ class InterpolationTest01ViewController: UIViewController {
         ]
       );
     }());
-    
-    cardConfig.append({
-      let sharedRangeInputValues: [CGFloat] = [-100, -1, 0, 1, 100];
-      let sharedRangeOutputValues: [CGFloat] = [-1000, -10, 0, 10, 1000];
-      
-      let sharedInputValues: [CGFloat] = [
-        -100, -1, 0, 1, 100,
-        -1000, -500, -200, -50, -0.5, 0.5, 50, 75, 200, 500, 1000,
-      ];
-      
-      return .init(
-        title: "Basic Testing by Logging",
-        desc: [],
-        content: [
-          .filledButton(
-            title: [
-              .init(text: "RangeInterpolator<CGFloat>"),
-            ],
-            handler: { _,_ in
-              var rangedInterpolator = try! RangeInterpolator<CGFloat>(
-                rangeInput : sharedRangeInputValues,
-                rangeOutput: sharedRangeOutputValues
-              );
-              
-              let results = Helpers.invokeRangedInterpolatorAndGetResults(
-                with: sharedInputValues,
-                rangedInterpolator: &rangedInterpolator
-              );
-              
-              Helpers.logAndPresent(
-                textItems: results,
-                parentVC: self
-              );
-            }
-          ),
-          
-          .filledButton(
-            title: [
-              .init(text: "RangeInterpolator<CGRect>"),
-            ],
-            handler: { _,_ in
-            
-              var rangedInterpolator = try! RangeInterpolator<CGRect>(
-                rangeInput : sharedRangeInputValues,
-                rangeOutput: sharedRangeOutputValues.map {
-                  .init(x: $0, y: $0, width: $0, height: $0)
-                }
-              );
-              
-              let results = Helpers.invokeRangedInterpolatorAndGetResults(
-                with: sharedInputValues,
-                rangedInterpolator: &rangedInterpolator
-              );
-              
-              Helpers.logAndPresent(
-                textItems: results,
-                parentVC: self
-              );
-            }
-          ),
-          
-          .filledButton(
-            title: [
-              .init(text: "RangeInterpolator<CGSize>"),
-            ],
-            handler: { _,_ in
-            
-              var rangedInterpolator = try! RangeInterpolator<CGSize>(
-                rangeInput : sharedRangeInputValues,
-                rangeOutput: sharedRangeOutputValues.map {
-                  .init(width: $0, height: $0)
-                }
-              );
-              
-              let results = Helpers.invokeRangedInterpolatorAndGetResults(
-                with: sharedInputValues,
-                rangedInterpolator: &rangedInterpolator
-              );
-              
-              Helpers.logAndPresent(
-                textItems: results,
-                parentVC: self
-              );
-            }
-          ),
-          
-          .filledButton(
-            title: [
-              .init(text: "RangeInterpolator<CGPoint>"),
-            ],
-            handler: { _,_ in
-            
-              var rangedInterpolator = try! RangeInterpolator<CGPoint>(
-                rangeInput : sharedRangeInputValues,
-                rangeOutput: sharedRangeOutputValues.map {
-                  .init(x: $0, y: $0)
-                }
-              );
-              
-              let results = Helpers.invokeRangedInterpolatorAndGetResults(
-                with: sharedInputValues,
-                rangedInterpolator: &rangedInterpolator
-              );
-              
-              Helpers.logAndPresent(
-                textItems: results,
-                parentVC: self
-              );
-            }
-          ),
-        ]
-      );
-    }());
-    
-    cardConfig.forEach {
+        
+    cardConfig.reversed().forEach {
       let cardView = $0.createCardView();
       stackView.addArrangedSubview(cardView.rootVStack);
       stackView.setCustomSpacing(15, after: cardView.rootVStack);
