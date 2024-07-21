@@ -133,25 +133,16 @@ public extension Collection {
     
     let startIndex = startIndex ?? (self.count - 1) / 2;
     
-    var seekForwardIndex =
-      startIndex.clamped(min: 0, max: self.count - 1);
-      
-    var seekBackwardIndex =
-      (startIndex - 1).clamped(min: 0, max: seekForwardIndex - 1);
+    var seekForwardIndex  = startIndex;
+    var seekBackwardIndex = seekForwardIndex - 1;
     
-    let totalIterations =
-      (seekForwardIndex + seekBackwardIndex + 1).clamped(max: self.count);
-  
-    for count in 0..<totalIterations {
-      let isCountEven = count % 2 == 0;
-      
+    while true {
       let canSeekForwards  = seekForwardIndex < self.count;
       let canSeekBackwards = seekBackwardIndex >= 0;
-    
-      if isCountEven && canSeekForwards {
+      
+      if canSeekForwards {
         let index = self.index(self.startIndex, offsetBy: seekForwardIndex);
         let element = self[index];
-        seekForwardIndex += 1;
         
         let indexedElement: IndexElementPair = (seekForwardIndex, element);
         let result = predicate(indexedElement, false);
@@ -159,12 +150,13 @@ public extension Collection {
         if result {
           return indexedElement;
         };
+        
+        seekForwardIndex += 1;
       };
       
-      if !isCountEven && canSeekBackwards {
+      if canSeekBackwards {
         let index = self.index(self.startIndex, offsetBy: seekBackwardIndex);
         let element = self[index];
-        seekBackwardIndex -= 1;
         
         let indexedElement: IndexElementPair = (seekBackwardIndex, element);
         let result = predicate(indexedElement, true);
@@ -172,10 +164,14 @@ public extension Collection {
         if result {
           return indexedElement;
         };
+        
+        seekBackwardIndex -= 1;
+      };
+      
+      if !canSeekBackwards && !canSeekForwards {
+        return nil;
       };
     };
-    
-    return nil;
   };
   
   func firstBySeekingForwardAndBackwards(
