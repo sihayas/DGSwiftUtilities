@@ -50,6 +50,24 @@ public protocol RangeInterpolating: AnyRangeInterpolating {
     _ outputValueEnd: InterpolatableValue
   ) -> CompositeInterpolatable.ClampingKeyPathMap;
   
+  typealias EasingElementMapProviderBlock<T: ConfigurableCompositeInterpolatable> = (
+    _ rangeIndex: Int,
+    _ interpolatorType: RangeInterpolationMode,
+    _ inputValueStart: CGFloat,
+    _ inputValueEnd: CGFloat,
+    _ outputValueStart: InterpolatableValue,
+    _ outputValueEnd: InterpolatableValue
+  ) -> T.EasingElementMap;
+  
+  typealias ClampingElementMapProviderBlock<T: ConfigurableCompositeInterpolatable> = (
+    _ rangeIndex: Int,
+    _ interpolatorType: RangeInterpolationMode,
+    _ inputValueStart: CGFloat,
+    _ inputValueEnd: CGFloat,
+    _ outputValueStart: InterpolatableValue,
+    _ outputValueEnd: InterpolatableValue
+  ) -> T.ClampingElementMap;
+  
   // MARK: - Property Requirements
   // -----------------------------
 
@@ -91,6 +109,7 @@ public extension RangeInterpolating {
   // MARK: - Init
   // ------------
   
+  /// Shared internal init
   internal init(
     rangeInput: [CGFloat],
     rangeOutput: [InterpolatableValue],
@@ -392,6 +411,62 @@ public extension RangeInterpolating {
       outputInterpolators: outputInterpolators,
       outputExtrapolatorLeft: outputExtrapolatorLeft,
       outputExtrapolatorRight: outputExtrapolatorRight
+    );
+  };
+  
+  init(
+    rangeInput: [CGFloat],
+    rangeOutput: [InterpolatableValue],
+    easingElementMapProvider: EasingElementMapProviderBlock<InterpolatableValue>?,
+    clampingElementMapProvider: ClampingElementMapProviderBlock<InterpolatableValue>?,
+    targetBlock: TargetBlock? = nil
+  ) throws where InterpolatableValue: ConfigurableCompositeInterpolatable {
+  
+    var easingMapProvider: EasingMapProviderBlock?;
+    var clampingMapProvider: ClampingMapProviderBlock?;
+
+    if let easingElementMapProvider = easingElementMapProvider {
+      easingMapProvider = {
+        let easingElementMap = easingElementMapProvider(
+          /* rangeIndex      : */ $0,
+          /* interpolatorType: */ $1,
+          /* inputValueStart : */ $2,
+          /* inputValueEnd   : */ $3,
+          /* outputValueStart: */ $4,
+          /* outputValueEnd  : */ $5
+        );
+        
+        return .init(
+          type: InterpolatableValue.self,
+          easingElementMap: easingElementMap
+        );
+      };
+    };
+    
+    if let clampingElementMapProvider = clampingElementMapProvider {
+      clampingMapProvider = {
+        let clampingElementMap = clampingElementMapProvider(
+          /* rangeIndex      : */ $0,
+          /* interpolatorType: */ $1,
+          /* inputValueStart : */ $2,
+          /* inputValueEnd   : */ $3,
+          /* outputValueStart: */ $4,
+          /* outputValueEnd  : */ $5
+        );
+        
+        return .init(
+          type: InterpolatableValue.self,
+          clampingElementMap: clampingElementMap
+        );
+      };
+    };
+    
+    try self.init(
+      rangeInput: rangeInput,
+      rangeOutput: rangeOutput,
+      clampingMapProvider: clampingMapProvider,
+      easingMapProvider: easingMapProvider,
+      targetBlock: targetBlock
     );
   };
   

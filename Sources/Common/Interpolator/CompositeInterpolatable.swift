@@ -196,7 +196,7 @@ public extension CompositeInterpolatable {
 
 extension Dictionary where Self == CompositeInterpolatable.EasingKeyPathMap {
 
-  public init<T>(
+  init<T>(
     type: T.Type = T.self,
     easingElementMap: T.EasingElementMap
   ) where T: ConfigurableCompositeInterpolatable {
@@ -214,7 +214,7 @@ extension Dictionary where Self == CompositeInterpolatable.EasingKeyPathMap {
 
 extension Dictionary where Self == CompositeInterpolatable.ClampingKeyPathMap {
 
-  public init<T>(
+  init<T>(
     type: T.Type = T.self,
     clampingElementMap: T.ClampingElementMap
   ) where T: ConfigurableCompositeInterpolatable {
