@@ -34,8 +34,6 @@ public extension RangeInterpolatorStateTracking {
     };
   };
   
-  
-  
   mutating func interpolate(
     inputValue: CGFloat,
     shouldUpdateState: Bool = true
@@ -65,22 +63,11 @@ public extension RangeInterpolatorStateTracking {
     shouldUpdateState: Bool = true
   ) -> InterpolatableValue {
   
-    let (result, nextInterpolationMode, inputValue) = self.compute(
-      usingInputPercent: inputPercent,
-      currentInterpolationIndex: self.currentInterpolationIndex
+    let inputValue = self.interpolateRangeInput(inputPercent: inputPercent);
+    
+    return self.interpolate(
+      inputValue: inputValue,
+      shouldUpdateState: shouldUpdateState
     );
-    
-    if shouldUpdateState {
-      self.inputValuePrev = self.inputValueCurrent;
-      self.inputValueCurrent = inputValue;
-      
-      self.outputValuePrev = self.outputValueCurrent;
-      self.outputValueCurrent = result;
-      
-      self.interpolationModePrevious = self.interpolationModeCurrent;
-      self.interpolationModeCurrent = nextInterpolationMode;
-    };
-    
-    return result;
   };
 };
