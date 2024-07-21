@@ -218,9 +218,10 @@ class InterpolationTest01ViewController: UIViewController {
               
               for (index, easingMapPreset) in easingMapPresets.enumerated() {
                 let interpolator: Interpolator<CGRect> = .init(
-                  valueStart: .init(x: 0  , y: 0  , width: 0  , height: 0  ),
-                  valueEnd  : .init(x: 100, y: 100, width: 100, height: 100),
-                  easingMap: easingMapPreset.easingMap
+                  valueStart : .init(x: 0  , y: 0  , width: 0  , height: 0  ),
+                  valueEnd   : .init(x: 100, y: 100, width: 100, height: 100),
+                  easingMap  : easingMapPreset.easingMap,
+                  clampingMap: [:]
                 );
                 
                 if !didLogInterpolatorMetadata {
@@ -319,6 +320,7 @@ class InterpolationTest01ViewController: UIViewController {
                 let interpolator: Interpolator<CGRect> = .init(
                   valueStart : .init(x: 0  , y: 0  , width: 0  , height: 0  ),
                   valueEnd   : .init(x: 100, y: 100, width: 100, height: 100),
+                  easingMap  : [:],
                   clampingMap: preset.clampingMap
                 );
                 

@@ -100,9 +100,9 @@ public struct Interpolator<T: UniformInterpolatable>: AnyInterpolator  {
   public init(
     valueStart: T,
     valueEnd: T,
-    easingMap: T.EasingKeyPathMap = [:],
-    clampingMap: T.ClampingKeyPathMap = [:]
-  ) where T: CompositeInterpolatable  {
+    easingMap: T.EasingKeyPathMap,
+    clampingMap: T.ClampingKeyPathMap
+  ) where T: CompositeInterpolatable {
     
     self.inputValueStart = 0;
     self.inputValueEnd = 1;
@@ -135,8 +135,8 @@ public struct Interpolator<T: UniformInterpolatable>: AnyInterpolator  {
     inputValueEnd: CGFloat,
     outputValueStart: T,
     outputValueEnd: T,
-    easingMap: T.EasingKeyPathMap = [:],
-    clampingMap: T.ClampingKeyPathMap = [:]
+    easingMap: T.EasingKeyPathMap,
+    clampingMap: T.ClampingKeyPathMap
   ) where T: CompositeInterpolatable {
   
     self.inputValueStart = inputValueStart
@@ -167,6 +167,55 @@ public struct Interpolator<T: UniformInterpolatable>: AnyInterpolator  {
         clampingMap: clampingMap
       );
     };
+  };
+  
+  // MARK: - Init - ConfigurableCompositeInterpolatable
+  // --------------------------------------------------
+  
+  public init(
+    valueStart: T,
+    valueEnd: T,
+    easingElementMap: T.EasingElementMap,
+    clampingElementMap: T.ClampingElementMap
+  ) where T: ConfigurableCompositeInterpolatable {
+  
+    let easingMap: T.EasingKeyPathMap =
+      .init(type: T.self, easingElementMap: easingElementMap);
+      
+    let clampingMap: T.ClampingKeyPathMap =
+      .init(type: T.self, clampingElementMap: clampingElementMap);
+    
+    self.init(
+      valueStart: valueStart,
+      valueEnd: valueEnd,
+      easingMap: easingMap,
+      clampingMap: clampingMap
+    );
+  };
+  
+  public init(
+    inputValueStart: CGFloat,
+    inputValueEnd: CGFloat,
+    outputValueStart: T,
+    outputValueEnd: T,
+    easingElementMap: T.EasingElementMap,
+    clampingElementMap: T.ClampingElementMap
+  ) where T: ConfigurableCompositeInterpolatable {
+    
+    let easingMap: T.EasingKeyPathMap =
+      .init(type: T.self, easingElementMap: easingElementMap);
+      
+    let clampingMap: T.ClampingKeyPathMap =
+      .init(type: T.self, clampingElementMap: clampingElementMap);
+      
+    self = .init(
+      inputValueStart: inputValueStart,
+      inputValueEnd: inputValueEnd,
+      outputValueStart: outputValueStart,
+      outputValueEnd: outputValueEnd,
+      easingMap: easingMap,
+      clampingMap: clampingMap
+    );
   };
   
   // MARK: - Functions

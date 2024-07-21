@@ -186,3 +186,39 @@ public extension CompositeInterpolatable {
     );
   };
 };
+
+// MARK: - Dictionary+CompositeInterpolatable.EasingKeyPathMap
+// -----------------------------------------------------------
+
+extension Dictionary where Self == CompositeInterpolatable.EasingKeyPathMap {
+
+  public init<T>(
+    type: T.Type = T.self,
+    easingElementMap: T.EasingElementMap
+  ) where T: ConfigurableCompositeInterpolatable {
+  
+    self = easingElementMap.reduce(into: [:]) {
+      for keyPath in  $1.key.associatedAnyKeyPaths {
+        $0[keyPath] = $1.value;
+      };
+    };
+  };
+};
+
+// MARK: - Dictionary+CompositeInterpolatable.EasingKeyPathMap
+// -----------------------------------------------------------
+
+extension Dictionary where Self == CompositeInterpolatable.ClampingKeyPathMap {
+
+  public init<T>(
+    type: T.Type = T.self,
+    clampingElementMap: T.ClampingElementMap
+  ) where T: ConfigurableCompositeInterpolatable {
+  
+    self = clampingElementMap.reduce(into: [:]) {
+      for keyPath in  $1.key.associatedAnyKeyPaths {
+        $0[keyPath] = $1.value;
+      };
+    };
+  };
+};
