@@ -68,30 +68,6 @@ public extension AnyRangeInterpolating {
 
 extension RangeInterpolating {
   
-  static func createRangeInputInterpolatorItem(
-    index: Int,
-    rangeInput: [CGFloat]
-  ) -> InputInterpolator {
-    
-    let isFirstIndex = index == 0;
-    let isLastIndex  = index == rangeInput.count - 1;
-    
-    let inputStart: CGFloat = isFirstIndex
-      ? 0
-      : CGFloat(index) + 1 / CGFloat(rangeInput.count);
-      
-    let inputEnd: CGFloat = isLastIndex
-      ? 1
-      : CGFloat(index) + 2 / CGFloat(rangeInput.count);
-    
-    return .init(
-      inputValueStart: inputStart,
-      inputValueEnd: inputEnd,
-      outputValueStart: rangeInput[index],
-      outputValueEnd: rangeInput[index + 1]
-    );
-  };
-  
   static func createInputExtrapolatorLeft(
     rangeInput: [CGFloat],
     inputInterpolators: [InputInterpolator],

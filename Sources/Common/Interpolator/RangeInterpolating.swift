@@ -11,6 +11,9 @@ import Foundation
 public protocol RangeInterpolating: AnyRangeInterpolating {
 
   associatedtype InterpolatableValue: UniformInterpolatable;
+  
+  // MARK: - Embedded Types
+  // ----------------------
 
   typealias RangeItemOutput = IndexValuePair<InterpolatableValue>;
   typealias OutputInterpolator = DGSwiftUtilities.Interpolator<InterpolatableValue>;
@@ -46,6 +49,9 @@ public protocol RangeInterpolating: AnyRangeInterpolating {
     _ outputValueStart: InterpolatableValue,
     _ outputValueEnd: InterpolatableValue
   ) -> CompositeInterpolatable.ClampingKeyPathMap;
+  
+  // MARK: - Property Requirements
+  // -----------------------------
 
   var rangeOutput: [InterpolatableValue] { get };
 
@@ -54,6 +60,9 @@ public protocol RangeInterpolating: AnyRangeInterpolating {
   var outputExtrapolatorRight: OutputInterpolator { get };
   
   var targetBlock: TargetBlock? { get };
+  
+  // MARK: - Init Requirements
+  // -------------------------
   
   init(
     rangeInput: [CGFloat],
@@ -81,6 +90,70 @@ public extension RangeInterpolating {
   
   // MARK: - Init
   // ------------
+  
+  internal init(
+    rangeInput: [CGFloat],
+    rangeOutput: [InterpolatableValue],
+    targetBlock: TargetBlock?,
+    outputInterpolators: [OutputInterpolator],
+    outputExtrapolatorLeft: OutputInterpolator,
+    outputExtrapolatorRight: OutputInterpolator
+  ) {
+  
+    let rangeInputMin = rangeInput.indexedMin!;
+    let rangeInputMax = rangeInput.indexedMax!;
+    
+    var inputInterpolators: [InputInterpolator] = [];
+    
+    for index in 0..<rangeInput.count - 1 {
+      let isFirstIndex = index == 0;
+      let isLastIndex  = index == rangeInput.count - 1;
+      
+      let inputStart: CGFloat = isFirstIndex
+        ? 0
+        : CGFloat(index) + 1 / CGFloat(rangeInput.count);
+        
+      let inputEnd: CGFloat = isLastIndex
+        ? 1
+        : CGFloat(index) + 2 / CGFloat(rangeInput.count);
+      
+      let inputInterpolator: InputInterpolator = .init(
+        inputValueStart: inputStart,
+        inputValueEnd: inputEnd,
+        outputValueStart: rangeInput[index],
+        outputValueEnd: rangeInput[index + 1]
+      );
+      
+      inputInterpolators.append(inputInterpolator);
+    };
+
+    let inputExtrapolatorLeft = Self.createInputExtrapolatorLeft(
+      rangeInput: rangeInput,
+      inputInterpolators: inputInterpolators,
+      clampingOptions: .none
+    );
+    
+    let inputExtrapolatorRight = Self.createInputExtrapolatorRight(
+      rangeInput: rangeInput,
+      inputInterpolators: inputInterpolators,
+      clampingOptions: .none
+    );
+    
+    self.init(
+      rangeInput: rangeInput,
+      rangeOutput: rangeOutput,
+      targetBlock: targetBlock,
+      rangeInputMin: rangeInputMin,
+      rangeInputMax: rangeInputMax,
+      outputInterpolators: outputInterpolators,
+      inputInterpolators: inputInterpolators,
+      inputExtrapolatorLeft: inputExtrapolatorLeft,
+      inputExtrapolatorRight: inputExtrapolatorRight,
+      outputExtrapolatorLeft: outputExtrapolatorLeft,
+      outputExtrapolatorRight: outputExtrapolatorRight
+    );
+  };
+  
 
   init(
     rangeInput: [CGFloat],
@@ -95,10 +168,6 @@ public extension RangeInterpolating {
       rangeOutput: rangeOutput
     );
     
-    let rangeInputMin = rangeInput.indexedMin!;
-    let rangeInputMax = rangeInput.indexedMax!;
-    
-    var inputInterpolators: [InputInterpolator] = [];
     var outputInterpolators: [OutputInterpolator] = [];
     
     for index in 0..<rangeInput.count - 1 {
@@ -116,13 +185,6 @@ public extension RangeInterpolating {
         /* outputValueStart: */ outputStart,
         /* outputValueEnd  : */ outputEnd
       );
-      
-      let inputInterpolator = Self.createRangeInputInterpolatorItem(
-        index: index,
-        rangeInput: rangeInput
-      );
-      
-      inputInterpolators.append(inputInterpolator);
       
       let outputInterpolator: OutputInterpolator = .init(
         inputValueStart: inputStart,
@@ -185,28 +247,11 @@ public extension RangeInterpolating {
       );
     }();
     
-    let inputExtrapolatorLeft = Self.createInputExtrapolatorLeft(
-      rangeInput: rangeInput,
-      inputInterpolators: inputInterpolators,
-      clampingOptions: clampingOptions
-    );
-    
-    let inputExtrapolatorRight = Self.createInputExtrapolatorRight(
-      rangeInput: rangeInput,
-      inputInterpolators: inputInterpolators,
-      clampingOptions: clampingOptions
-    );
-    
     self.init(
       rangeInput: rangeInput,
       rangeOutput: rangeOutput,
       targetBlock: targetBlock,
-      rangeInputMin: rangeInputMin,
-      rangeInputMax: rangeInputMax,
       outputInterpolators: outputInterpolators,
-      inputInterpolators: inputInterpolators,
-      inputExtrapolatorLeft: inputExtrapolatorLeft,
-      inputExtrapolatorRight: inputExtrapolatorRight,
       outputExtrapolatorLeft: outputExtrapolatorLeft,
       outputExtrapolatorRight: outputExtrapolatorRight
     );
@@ -225,16 +270,9 @@ public extension RangeInterpolating {
       rangeOutput: rangeOutput
     );
     
-    let rangeInputMin = rangeInput.indexedMin!;
-    let rangeInputMax = rangeInput.indexedMax!;
-    
-    var inputInterpolators: [InputInterpolator] = [];
     var outputInterpolators: [OutputInterpolator] = [];
     
     for index in 0..<rangeInput.count - 1 {
-      let isFirstIndex = index == 0;
-      let isLastIndex  = index == rangeInput.count - 1;
-    
       let inputStart = rangeInput[index];
       let inputEnd   = rangeInput[index + 1];
       
@@ -258,26 +296,7 @@ public extension RangeInterpolating {
         /* outputValueStart: */ outputStart,
         /* outputValueEnd  : */ outputEnd
       );
-      
-      let inputInterpolator: InputInterpolator = {
-        let inputStart: CGFloat = isFirstIndex
-          ? 0
-          : CGFloat(index) + 1 / CGFloat(rangeInput.count);
-          
-        let inputEnd: CGFloat = isLastIndex
-          ? 1
-          : CGFloat(index) + 2 / CGFloat(rangeInput.count);
-        
-        return .init(
-          inputValueStart: inputStart,
-          inputValueEnd: inputEnd,
-          outputValueStart: inputStart,
-          outputValueEnd: inputEnd
-        );
-      }();
-      
-      inputInterpolators.append(inputInterpolator);
-      
+
       let outputInterpolator: OutputInterpolator = .init(
         inputValueStart: inputStart,
         inputValueEnd: inputEnd,
@@ -366,28 +385,11 @@ public extension RangeInterpolating {
       );
     }();
     
-    let inputExtrapolatorLeft = Self.createInputExtrapolatorLeft(
-      rangeInput: rangeInput,
-      inputInterpolators: inputInterpolators,
-      clampingOptions: .none
-    );
-  
-    let inputExtrapolatorRight = Self.createInputExtrapolatorRight(
-      rangeInput: rangeInput,
-      inputInterpolators: inputInterpolators,
-      clampingOptions: .none
-    );
-    
     self.init(
       rangeInput: rangeInput,
       rangeOutput: rangeOutput,
       targetBlock: targetBlock,
-      rangeInputMin: rangeInputMin,
-      rangeInputMax: rangeInputMax,
       outputInterpolators: outputInterpolators,
-      inputInterpolators: inputInterpolators,
-      inputExtrapolatorLeft: inputExtrapolatorLeft,
-      inputExtrapolatorRight: inputExtrapolatorRight,
       outputExtrapolatorLeft: outputExtrapolatorLeft,
       outputExtrapolatorRight: outputExtrapolatorRight
     );
@@ -550,12 +552,12 @@ public extension RangeInterpolating {
 // MARK: - RangeInterpolating+StaticHelpers
 // ----------------------------------------
 
-public extension RangeInterpolating {
-  static var genericType: InterpolatableValue.Type {
+extension RangeInterpolating {
+  public static var genericType: InterpolatableValue.Type {
     return InterpolatableValue.self;
   };
   
-  static func checkIfValid(
+  internal static func checkIfValid(
     rangeInput: [CGFloat],
     rangeOutput: [InterpolatableValue]
   ) throws {
