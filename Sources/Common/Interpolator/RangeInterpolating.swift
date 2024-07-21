@@ -94,9 +94,6 @@ public extension RangeInterpolating {
     var outputInterpolators: [OutputInterpolator] = [];
     
     for index in 0..<rangeInput.count - 1 {
-      let isFirstIndex = index == 0;
-      let isLastIndex  = index == rangeInput.count - 1;
-    
       let inputStart = rangeInput[index];
       let inputEnd   = rangeInput[index + 1];
       
@@ -112,23 +109,10 @@ public extension RangeInterpolating {
         /* outputValueEnd  : */ outputEnd
       );
       
-      let inputInterpolator: InputInterpolator = {
-        let inputStart: CGFloat = isFirstIndex
-          ? 0
-          : CGFloat(index) + 1 / CGFloat(rangeInput.count);
-          
-        let inputEnd: CGFloat = isLastIndex
-          ? 1
-          : CGFloat(index) + 2 / CGFloat(rangeInput.count);
-        
-        return .init(
-          inputValueStart: inputStart,
-          inputValueEnd: inputEnd,
-          outputValueStart: inputStart,
-          outputValueEnd: inputEnd,
-          easing: easing
-        );
-      }();
+      let inputInterpolator = Self.createRangeInputInterpolatorItem(
+        index: index,
+        rangeInput: rangeInput
+      );
       
       inputInterpolators.append(inputInterpolator);
       
@@ -142,9 +126,6 @@ public extension RangeInterpolating {
       
       outputInterpolators.append(outputInterpolator);
     };
-    
-    var extrapolatorEasingLeft : InterpolationEasing? = nil;
-    var extrapolatorEasingRight: InterpolationEasing? = nil;
         
     let outputExtrapolatorLeft: OutputInterpolator = {
       let inputStart  = rangeInput [1];
@@ -152,7 +133,7 @@ public extension RangeInterpolating {
       let outputStart = rangeOutput[1];
       let outputEnd   = rangeOutput[0];
     
-      extrapolatorEasingLeft = easingProvider?(
+      let easing = easingProvider?(
         /* rangeIndex      : */ -1,
         /* interpolatorType: */ .extrapolateLeft,
         /* inputValueStart : */ inputStart,
@@ -166,7 +147,7 @@ public extension RangeInterpolating {
         inputValueEnd: inputEnd,
         outputValueStart: outputStart,
         outputValueEnd: outputEnd,
-        easing: extrapolatorEasingLeft,
+        easing: easing,
         clampingOptions: clampingOptions.shouldClampLeft ? .left : .none
       );
     }();
@@ -177,7 +158,7 @@ public extension RangeInterpolating {
       let outputStart = rangeOutput.secondToLast!;
       let outputEnd   = rangeOutput.last!;
     
-      extrapolatorEasingRight = easingProvider?(
+      let easing = easingProvider?(
         /* rangeIndex      : */ -1,
         /* interpolatorType: */ .extrapolateRight,
         /* inputValueStart : */ inputStart,
@@ -191,42 +172,22 @@ public extension RangeInterpolating {
         inputValueEnd: inputEnd,
         outputValueStart: outputStart,
         outputValueEnd: outputEnd,
-        easing: extrapolatorEasingRight,
+        easing: easing,
         clampingOptions: clampingOptions.shouldClampLeft ? .right : .none
       );
     }();
     
-    let inputExtrapolatorLeft: InputInterpolator = {
-      let inputStart  = inputInterpolators[1].inputValueStart;
-      let inputEnd    = inputInterpolators[0].inputValueEnd;
-      let outputStart = rangeInput[1];
-      let outputEnd   = rangeInput[0];
+    let inputExtrapolatorLeft = Self.createInputExtrapolatorLeft(
+      rangeInput: rangeInput,
+      inputInterpolators: inputInterpolators,
+      clampingOptions: clampingOptions
+    );
     
-      return .init(
-        inputValueStart: inputStart,
-        inputValueEnd: inputEnd,
-        outputValueStart: outputStart,
-        outputValueEnd: outputEnd,
-        easing: extrapolatorEasingLeft,
-        clampingOptions: clampingOptions.shouldClampLeft ? .left : .none
-      );
-    }();
-    
-    let inputExtrapolatorRight: InputInterpolator = {
-      let inputStart  = outputExtrapolatorRight.inputValueStart;
-      let inputEnd    = outputExtrapolatorRight.inputValueEnd;
-      let outputStart = rangeInput.secondToLast!;
-      let outputEnd   = rangeInput.last!;
-      
-      return .init(
-        inputValueStart: inputStart,
-        inputValueEnd: inputEnd,
-        outputValueStart: outputStart,
-        outputValueEnd: outputEnd,
-        easing: extrapolatorEasingRight,
-        clampingOptions: clampingOptions.shouldClampLeft ? .right : .none
-      );
-    }();
+    let inputExtrapolatorRight = Self.createInputExtrapolatorRight(
+      rangeInput: rangeInput,
+      inputInterpolators: inputInterpolators,
+      clampingOptions: clampingOptions
+    );
     
     self.init(
       rangeInput: rangeInput,

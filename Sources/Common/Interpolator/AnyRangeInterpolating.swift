@@ -18,10 +18,13 @@ public protocol AnyRangeInterpolating {
   var rangeInputMin: RangeItem { get };
   var rangeInputMax: RangeItem { get };
   
-  var inputInterpolators : [InputInterpolator] { get };
-  var inputExtrapolatorLeft : InputInterpolator { get };
+  var inputInterpolators: [InputInterpolator] { get };
+  var inputExtrapolatorLeft: InputInterpolator { get };
   var inputExtrapolatorRight: InputInterpolator { get };
 };
+
+// MARK: - RangeInterpolating+Helpers
+// ----------------------------------------
 
 public extension AnyRangeInterpolating {
   
@@ -56,6 +59,77 @@ public extension AnyRangeInterpolating {
       inputValueEnd: self.inputInterpolators.last!.inputValueEnd,
       outputValueStart: self.rangeInput.first!,
       outputValueEnd: self.rangeInput.last!
+    );
+  };
+};
+
+// MARK: - RangeInterpolating+StaticHelpers
+// ----------------------------------------
+
+extension RangeInterpolating {
+  
+  static func createRangeInputInterpolatorItem(
+    index: Int,
+    rangeInput: [CGFloat]
+  ) -> InputInterpolator {
+    
+    let isFirstIndex = index == 0;
+    let isLastIndex  = index == rangeInput.count - 1;
+    
+    let inputStart: CGFloat = isFirstIndex
+      ? 0
+      : CGFloat(index) + 1 / CGFloat(rangeInput.count);
+      
+    let inputEnd: CGFloat = isLastIndex
+      ? 1
+      : CGFloat(index) + 2 / CGFloat(rangeInput.count);
+    
+    return .init(
+      inputValueStart: inputStart,
+      inputValueEnd: inputEnd,
+      outputValueStart: rangeInput[index],
+      outputValueEnd: rangeInput[index + 1]
+    );
+  };
+  
+  static func createInputExtrapolatorLeft(
+    rangeInput: [CGFloat],
+    inputInterpolators: [InputInterpolator],
+    clampingOptions: ClampingOptions
+  ) -> InputInterpolator {
+  
+    let inputStart  = inputInterpolators[0].inputValueStart;
+    let inputEnd    = inputInterpolators[0].inputValueEnd;
+    let outputStart = rangeInput[1];
+    let outputEnd   = rangeInput[0];
+  
+    return .init(
+      inputValueStart: inputStart,
+      inputValueEnd: inputEnd,
+      outputValueStart: outputStart,
+      outputValueEnd: outputEnd,
+      clampingOptions: clampingOptions.shouldClampLeft ? .left : .none
+    );
+  }
+  
+  static func createInputExtrapolatorRight(
+    rangeInput: [CGFloat],
+    inputInterpolators: [InputInterpolator],
+    clampingOptions: ClampingOptions
+  ) -> InputInterpolator {
+  
+    let inputStart  = inputInterpolators.last!.inputValueStart;
+    let inputEnd    = inputInterpolators.last!.inputValueEnd;
+    let outputStart = rangeInput.secondToLast!;
+    let outputEnd   = rangeInput.last!;
+    
+    return .init(
+      inputValueStart: inputStart,
+      inputValueEnd: inputEnd,
+      outputValueStart: outputStart,
+      outputValueEnd: outputEnd,
+      easing: .linear,
+      clampingOptions: clampingOptions.shouldClampLeft ? .right : .none
     );
   };
 };
