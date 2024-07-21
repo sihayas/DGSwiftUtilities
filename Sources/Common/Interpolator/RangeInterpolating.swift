@@ -177,8 +177,8 @@ public extension RangeInterpolating {
   init(
     rangeInput: [CGFloat],
     rangeOutput: [InterpolatableValue],
-    clampingOptions: ClampingOptions = .none,
     easingProvider: EasingProviderBlock?,
+    clampingOptions: ClampingOptions = .none,
     targetBlock: TargetBlock? = nil
   ) throws {
       
@@ -279,8 +279,8 @@ public extension RangeInterpolating {
   init(
     rangeInput: [CGFloat],
     rangeOutput: [InterpolatableValue],
-    clampingMapProvider: ClampingMapProviderBlock?,
     easingMapProvider: EasingMapProviderBlock?,
+    clampingMapProvider: ClampingMapProviderBlock?,
     targetBlock: TargetBlock? = nil
   ) throws where InterpolatableValue: CompositeInterpolatable {
     
@@ -464,8 +464,8 @@ public extension RangeInterpolating {
     try self.init(
       rangeInput: rangeInput,
       rangeOutput: rangeOutput,
-      clampingMapProvider: clampingMapProvider,
       easingMapProvider: easingMapProvider,
+      clampingMapProvider: clampingMapProvider,
       targetBlock: targetBlock
     );
   };
