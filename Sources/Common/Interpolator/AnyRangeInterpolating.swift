@@ -129,7 +129,7 @@ extension RangeInterpolating {
       outputValueStart: outputStart,
       outputValueEnd: outputEnd,
       easing: .linear,
-      clampingOptions: clampingOptions.shouldClampLeft ? .right : .none
+      clampingOptions: clampingOptions.shouldClampRight ? .right : .none
     );
   };
 };

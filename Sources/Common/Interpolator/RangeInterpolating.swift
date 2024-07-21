@@ -181,7 +181,7 @@ public extension RangeInterpolating {
         outputValueStart: outputStart,
         outputValueEnd: outputEnd,
         easing: easing,
-        clampingOptions: clampingOptions.shouldClampLeft ? .right : .none
+        clampingOptions: clampingOptions.shouldClampRight ? .right : .none
       );
     }();
     
