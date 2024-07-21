@@ -22,7 +22,7 @@ public protocol RangeInterpolating: AnyRangeInterpolating {
     _ sender: Self,
     _ interpolatedValue: InterpolatableValue
   ) -> Void;
-  
+
   typealias EasingProviderBlock = (
     _ rangeIndex: Int,
     _ interpolatorType: RangeInterpolationMode,
@@ -475,29 +475,14 @@ public extension RangeInterpolating {
   
   func createDirectInterpolator(
     fromStartIndex startIndex: Int,
-    toEndIndex endIndex: Int
+    toEndIndex endIndex: Int,
+    shouldEmbedTargetBlock: Bool = true
   ) throws -> OutputInterpolator {
-    
-    guard startIndex >= 0 && startIndex < self.rangeInput.count else {
-      throw GenericError(
-        errorCode: .indexOutOfBounds,
-        description: "startIndex out of bounds"
-      );
-    };
-    
-    guard endIndex >= 0 && endIndex < self.rangeInput.count else {
-      throw GenericError(
-        errorCode: .indexOutOfBounds,
-        description: "endIndex out of bounds"
-      );
-    };
-    
-    guard startIndex != endIndex else {
-      throw GenericError(
-        errorCode: .indexOutOfBounds,
-        description: "startIndex and endIndex cannot be the same"
-      );
-    };
+  
+    try self.checkIfValid(
+      rangeStartIndex: startIndex,
+      rangeEndIndex: endIndex
+    );
     
     let inputStart = rangeInput[startIndex];
     let inputEnd   = rangeInput[startIndex];
@@ -505,12 +490,25 @@ public extension RangeInterpolating {
     let outputStart = rangeOutput[endIndex];
     let outputEnd   = rangeOutput[endIndex];
     
-    let interpolator: OutputInterpolator = .init(
+    var interpolator: OutputInterpolator = .init(
       inputValueStart : inputStart ,
       inputValueEnd   : inputEnd   ,
       outputValueStart: outputStart,
       outputValueEnd  : outputEnd
     );
+    
+    if shouldEmbedTargetBlock,
+       let targetBlock = self.targetBlock
+    {
+      let rangeInterpolatorTargetBlock = { (value: InterpolatableValue) in
+        // note: target receives a copy/"snapshot" of self
+        targetBlock(self, value);
+      };
+      
+      interpolator.targetBlock = { _, value in
+        rangeInterpolatorTargetBlock(value);
+      };
+    };
     
     return interpolator;
   };
@@ -621,6 +619,36 @@ public extension RangeInterpolating {
     };
     
     return (interpolationMode, inputValue);
+  };
+  
+  // MARK: Internal Helpers
+  // ----------------------
+  
+  internal func checkIfValid(
+    rangeStartIndex: Int,
+    rangeEndIndex: Int
+  ) throws {
+    
+    guard rangeStartIndex >= 0 && rangeStartIndex < self.rangeInput.count else {
+      throw GenericError(
+        errorCode: .indexOutOfBounds,
+        description: "startIndex out of bounds"
+      );
+    };
+    
+    guard rangeEndIndex >= 0 && rangeEndIndex < self.rangeInput.count else {
+      throw GenericError(
+        errorCode: .indexOutOfBounds,
+        description: "endIndex out of bounds"
+      );
+    };
+    
+    guard rangeStartIndex != rangeEndIndex else {
+      throw GenericError(
+        errorCode: .indexOutOfBounds,
+        description: "startIndex and endIndex cannot be the same"
+      );
+    };
   };
 };
 
