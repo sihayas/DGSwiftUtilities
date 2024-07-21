@@ -63,8 +63,10 @@ class InterpolationTest01ViewController: UIViewController {
                 (
                   desc: "easeInCubic for size, easeOutCubic for origin",
                   easingMap: [
-                    \CGRect.size: .easeInCubic,
-                    \CGRect.origin: .easeOutCubic
+                    \CGSize.width: .easeInCubic,
+                    \CGSize.height: .easeInCubic,
+                    \CGPoint.x: .easeOutCubic,
+                    \CGPoint.y: .easeOutCubic
                   ]
                 ),
                 (
@@ -87,8 +89,13 @@ class InterpolationTest01ViewController: UIViewController {
                   ]
                 ),
                 (
-                  desc: "easeInOutQuart for width, easeInOutQuint for height",
+                  desc: (
+                      "easeInSine for x, easeOutExpo for y, "
+                    + "easeInOutQuart for width, easeInOutQuint for height"
+                  ),
                   easingMap: [
+                    \CGPoint.x: .easeInSine,
+                    \CGPoint.y: .easeOutExpo,
                     \CGSize.width: .easeInOutQuart,
                     \CGSize.height: .easeInOutQuint
                   ]

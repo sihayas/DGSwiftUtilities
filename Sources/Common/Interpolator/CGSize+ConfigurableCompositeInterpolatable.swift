@@ -18,13 +18,19 @@ extension CGSize: ConfigurableCompositeInterpolatable {
     public static let height = Self(rawValue: 1 << 1);
     
     public var associatedAnyKeyPaths: [AnyKeyPath] {
-      var keyPaths: [AnyKeyPath] = [];
+      guard !self.isEmpty else {
+        return [];
+      };
       
-      keyPaths.unwrapThenAppend(
-          self.contains(.width ) ? \CGSize.width
-        : self.contains(.height) ? \CGSize.height
-        : nil
-      );
+      var keyPaths: [PartialKeyPath<CGSize>] = [];
+      
+      if self.contains(.height) {
+        keyPaths.append(\.height);
+      };
+      
+      if self.contains(.width) {
+        keyPaths.append(\.width);
+      };
       
       return keyPaths;
     };

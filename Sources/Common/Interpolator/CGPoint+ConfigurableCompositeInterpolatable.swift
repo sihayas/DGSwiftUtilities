@@ -18,14 +18,20 @@ extension CGPoint: ConfigurableCompositeInterpolatable {
     public static let y = Self(rawValue: 1 << 3);
     
     public var associatedAnyKeyPaths: [AnyKeyPath] {
-      var keyPaths: [AnyKeyPath] = [];
-    
-      keyPaths.unwrapThenAppend(
-          self.contains(.x) ? \CGPoint.x
-        : self.contains(.y) ? \CGPoint.y
-        : nil
-      );
+      guard !self.isEmpty else {
+        return [];
+      };
       
+      var keyPaths: [PartialKeyPath<CGPoint>] = [];
+      
+      if self.contains(.x) {
+        keyPaths.append(\.x);
+      };
+      
+      if self.contains(.y) {
+        keyPaths.append(\.y);
+      };
+
       return keyPaths;
     };
     

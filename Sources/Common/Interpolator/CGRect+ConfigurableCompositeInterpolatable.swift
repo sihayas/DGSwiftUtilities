@@ -21,23 +21,30 @@ extension CGRect: ConfigurableCompositeInterpolatable {
     
     public static let size  : Self = [.width, .height];
     public static let origin: Self = [.x, .y];
+    public static let none  : Self = [];
     
     public var associatedAnyKeyPaths: [AnyKeyPath] {
+      guard !self.isEmpty else {
+        return [];
+      };
+      
       var keyPaths: [AnyKeyPath] = [];
       
-      keyPaths.unwrapThenAppend(
-          self.contains(.size  ) ? \CGRect.size
-        : self.contains(.width ) ? \CGSize.width
-        : self.contains(.height) ? \CGSize.height
-        : nil
-      );
+      if self.contains(.height) {
+        keyPaths.append(\CGSize.height);
+      };
       
-      keyPaths.unwrapThenAppend(
-          self.contains(.origin) ? \CGRect.origin
-        : self.contains(.x     ) ? \CGPoint.x
-        : self.contains(.y     ) ? \CGPoint.y
-        : nil
-      );
+      if self.contains(.width) {
+        keyPaths.append(\CGSize.width);
+      };
+      
+      if self.contains(.x) {
+        keyPaths.append(\CGPoint.x);
+      };
+      
+      if self.contains(.y) {
+        keyPaths.append(\CGPoint.y);
+      };
       
       return keyPaths;
     };
