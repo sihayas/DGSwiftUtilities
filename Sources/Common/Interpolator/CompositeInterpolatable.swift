@@ -116,9 +116,13 @@ public extension CompositeInterpolatable {
     percent: CGFloat,
     easing: InterpolationEasing? = nil
   ) -> Self {
-  
-    let easingMap: EasingKeyPathMap = Self.interpolatablePropertiesMap.reduce(into: [:]){
-      $0[$1.key] = easing;
+    
+    var easingMap: EasingKeyPathMap = [:];
+    
+    if let easing = easing {
+      easingMap = Self.interpolatablePropertiesMap.reduce(into: [:]){
+        $0[$1.key] = easing;
+      };
     };
     
     return Self.lerp(
@@ -126,7 +130,7 @@ public extension CompositeInterpolatable {
       valueEnd: valueEnd,
       percent: percent,
       easingMap: easingMap,
-      clampingMap: [:] // MARK: TODO
+      clampingMap: [:] 
     );
   };
 };
