@@ -47,8 +47,9 @@ class InterpolationTest01ViewController: UIViewController {
             ],
             handler: { _,_ in
               var rangedInterpolator = try! RangeInterpolator<CGFloat>(
-                rangeInput : sharedRangeInputValues,
-                rangeOutput: sharedRangeOutputValues
+                rangeInput: sharedRangeInputValues,
+                rangeOutput: sharedRangeOutputValues,
+                easingProvider: nil
               );
               
               let results = Helpers.invokeRangedInterpolatorAndGetResults(
@@ -70,10 +71,11 @@ class InterpolationTest01ViewController: UIViewController {
             handler: { _,_ in
             
               var rangedInterpolator = try! RangeInterpolator<CGRect>(
-                rangeInput : sharedRangeInputValues,
+                rangeInput: sharedRangeInputValues,
                 rangeOutput: sharedRangeOutputValues.map {
                   .init(x: $0, y: $0, width: $0, height: $0)
-                }
+                },
+                easingProvider: nil
               );
               
               let results = Helpers.invokeRangedInterpolatorAndGetResults(
@@ -95,10 +97,11 @@ class InterpolationTest01ViewController: UIViewController {
             handler: { _,_ in
             
               var rangedInterpolator = try! RangeInterpolator<CGSize>(
-                rangeInput : sharedRangeInputValues,
+                rangeInput: sharedRangeInputValues,
                 rangeOutput: sharedRangeOutputValues.map {
                   .init(width: $0, height: $0)
-                }
+                },
+                easingProvider: nil
               );
               
               let results = Helpers.invokeRangedInterpolatorAndGetResults(
@@ -120,10 +123,11 @@ class InterpolationTest01ViewController: UIViewController {
             handler: { _,_ in
             
               var rangedInterpolator = try! RangeInterpolator<CGPoint>(
-                rangeInput : sharedRangeInputValues,
+                rangeInput: sharedRangeInputValues,
                 rangeOutput: sharedRangeOutputValues.map {
                   .init(x: $0, y: $0)
-                }
+                },
+                easingProvider: nil
               );
               
               let results = Helpers.invokeRangedInterpolatorAndGetResults(

@@ -28,6 +28,24 @@ public protocol RangeInterpolating: AnyRangeInterpolating {
     _ outputValueStart: InterpolatableValue,
     _ outputValueEnd: InterpolatableValue
   ) -> InterpolationEasing;
+  
+  typealias EasingMapProviderBlock = (
+    _ rangeIndex: Int,
+    _ interpolatorType: RangeInterpolationMode,
+    _ inputValueStart: CGFloat,
+    _ inputValueEnd: CGFloat,
+    _ outputValueStart: InterpolatableValue,
+    _ outputValueEnd: InterpolatableValue
+  ) -> CompositeInterpolatable.EasingKeyPathMap;
+  
+  typealias ClampingMapProviderBlock = (
+    _ rangeIndex: Int,
+    _ interpolatorType: RangeInterpolationMode,
+    _ inputValueStart: CGFloat,
+    _ inputValueEnd: CGFloat,
+    _ outputValueStart: InterpolatableValue,
+    _ outputValueEnd: InterpolatableValue
+  ) -> CompositeInterpolatable.ClampingKeyPathMap;
 
   var rangeOutput: [InterpolatableValue] { get };
 
@@ -52,11 +70,10 @@ public protocol RangeInterpolating: AnyRangeInterpolating {
   );
 };
 
-public extension RangeInterpolating {
+// MARK: - RangeInterpolating+Helpers
+// ----------------------------------
 
-  static var genericType: InterpolatableValue.Type {
-    return InterpolatableValue.self;
-  };
+public extension RangeInterpolating {
   
   var isTargetBlockSet: Bool {
     self.targetBlock != nil;
@@ -69,23 +86,14 @@ public extension RangeInterpolating {
     rangeInput: [CGFloat],
     rangeOutput: [InterpolatableValue],
     clampingOptions: ClampingOptions = .none,
-    easingProvider: EasingProviderBlock? = nil,
+    easingProvider: EasingProviderBlock?,
     targetBlock: TargetBlock? = nil
   ) throws {
       
-    guard rangeInput.count == rangeOutput.count else {
-      throw GenericError(
-        errorCode: .invalidArgument,
-        description: "count of rangeInput and rangeOutput are different"
-      );
-    };
-    
-    guard rangeInput.count >= 2 else {
-      throw GenericError(
-        errorCode: .invalidArgument,
-        description: "rangeInput and rangeOutput must have at least contain 2 items"
-      );
-    };
+    try Self.checkIfValid(
+      rangeInput: rangeInput,
+      rangeOutput: rangeOutput
+    );
     
     let rangeInputMin = rangeInput.indexedMin!;
     let rangeInputMax = rangeInput.indexedMax!;
@@ -187,6 +195,187 @@ public extension RangeInterpolating {
       rangeInput: rangeInput,
       inputInterpolators: inputInterpolators,
       clampingOptions: clampingOptions
+    );
+    
+    self.init(
+      rangeInput: rangeInput,
+      rangeOutput: rangeOutput,
+      targetBlock: targetBlock,
+      rangeInputMin: rangeInputMin,
+      rangeInputMax: rangeInputMax,
+      outputInterpolators: outputInterpolators,
+      inputInterpolators: inputInterpolators,
+      inputExtrapolatorLeft: inputExtrapolatorLeft,
+      inputExtrapolatorRight: inputExtrapolatorRight,
+      outputExtrapolatorLeft: outputExtrapolatorLeft,
+      outputExtrapolatorRight: outputExtrapolatorRight
+    );
+  };
+  
+  init(
+    rangeInput: [CGFloat],
+    rangeOutput: [InterpolatableValue],
+    clampingMapProvider: ClampingMapProviderBlock?,
+    easingMapProvider: EasingMapProviderBlock?,
+    targetBlock: TargetBlock? = nil
+  ) throws where InterpolatableValue: CompositeInterpolatable {
+    
+    try Self.checkIfValid(
+      rangeInput: rangeInput,
+      rangeOutput: rangeOutput
+    );
+    
+    let rangeInputMin = rangeInput.indexedMin!;
+    let rangeInputMax = rangeInput.indexedMax!;
+    
+    var inputInterpolators: [InputInterpolator] = [];
+    var outputInterpolators: [OutputInterpolator] = [];
+    
+    for index in 0..<rangeInput.count - 1 {
+      let isFirstIndex = index == 0;
+      let isLastIndex  = index == rangeInput.count - 1;
+    
+      let inputStart = rangeInput[index];
+      let inputEnd   = rangeInput[index + 1];
+      
+      let outputStart = rangeOutput[index];
+      let outputEnd   = rangeOutput[index + 1];
+      
+      let easingMap = easingMapProvider?(
+        /* rangeIndex      : */ index,
+        /* interpolatorType: */ .interpolate(interpolatorIndex: index),
+        /* inputValueStart : */ inputStart,
+        /* inputValueEnd   : */ inputEnd,
+        /* outputValueStart: */ outputStart,
+        /* outputValueEnd  : */ outputEnd
+      );
+      
+      let clampingMap = clampingMapProvider?(
+        /* rangeIndex      : */ index,
+        /* interpolatorType: */ .interpolate(interpolatorIndex: index),
+        /* inputValueStart : */ inputStart,
+        /* inputValueEnd   : */ inputEnd,
+        /* outputValueStart: */ outputStart,
+        /* outputValueEnd  : */ outputEnd
+      );
+      
+      let inputInterpolator: InputInterpolator = {
+        let inputStart: CGFloat = isFirstIndex
+          ? 0
+          : CGFloat(index) + 1 / CGFloat(rangeInput.count);
+          
+        let inputEnd: CGFloat = isLastIndex
+          ? 1
+          : CGFloat(index) + 2 / CGFloat(rangeInput.count);
+        
+        return .init(
+          inputValueStart: inputStart,
+          inputValueEnd: inputEnd,
+          outputValueStart: inputStart,
+          outputValueEnd: inputEnd
+        );
+      }();
+      
+      inputInterpolators.append(inputInterpolator);
+      
+      let outputInterpolator: OutputInterpolator = .init(
+        inputValueStart: inputStart,
+        inputValueEnd: inputEnd,
+        outputValueStart: outputStart,
+        outputValueEnd: outputEnd,
+        easingMap: easingMap ?? [:],
+        clampingMap: clampingMap ?? [:]
+      );
+      
+      outputInterpolators.append(outputInterpolator);
+    };
+    
+    let outputExtrapolatorLeft: OutputInterpolator = {
+      let inputStart  = rangeInput [1];
+      let inputEnd    = rangeInput [0];
+      let outputStart = rangeOutput[1];
+      let outputEnd   = rangeOutput[0];
+    
+      let easingMap = easingMapProvider?(
+        /* rangeIndex      : */ -1,
+        /* interpolatorType: */ .extrapolateLeft,
+        /* inputValueStart : */ inputStart,
+        /* inputValueEnd   : */ inputEnd,
+        /* outputValueStart: */ outputStart,
+        /* outputValueEnd  : */ outputEnd
+      );
+      
+      let clampingMap = clampingMapProvider?(
+        /* rangeIndex      : */ -1,
+        /* interpolatorType: */ .extrapolateLeft,
+        /* inputValueStart : */ inputStart,
+        /* inputValueEnd   : */ inputEnd,
+        /* outputValueStart: */ outputStart,
+        /* outputValueEnd  : */ outputEnd
+      );
+      
+      let clampingMapAdj = clampingMap?.mapValues {
+        $0.shouldClampLeft ? ClampingOptions.left : .none;
+      };
+      
+      return .init(
+        inputValueStart: inputStart,
+        inputValueEnd: inputEnd,
+        outputValueStart: outputStart,
+        outputValueEnd: outputEnd,
+        easingMap: easingMap ?? [:],
+        clampingMap: clampingMapAdj ?? [:]
+      );
+    }();
+    
+    let outputExtrapolatorRight: OutputInterpolator = {
+      let inputStart  = rangeInput.secondToLast!;
+      let inputEnd    = rangeInput.last!;
+      let outputStart = rangeOutput.secondToLast!;
+      let outputEnd   = rangeOutput.last!;
+    
+      let easingMap = easingMapProvider?(
+        /* rangeIndex      : */ -1,
+        /* interpolatorType: */ .extrapolateRight,
+        /* inputValueStart : */ inputStart,
+        /* inputValueEnd   : */ inputEnd,
+        /* outputValueStart: */ outputStart,
+        /* outputValueEnd  : */ outputEnd
+      );
+      
+      let clampingMap = clampingMapProvider?(
+        /* rangeIndex      : */ -1,
+        /* interpolatorType: */ .extrapolateRight,
+        /* inputValueStart : */ inputStart,
+        /* inputValueEnd   : */ inputEnd,
+        /* outputValueStart: */ outputStart,
+        /* outputValueEnd  : */ outputEnd
+      );
+      
+      let clampingMapAdj = clampingMap?.mapValues {
+        $0.shouldClampRight ? ClampingOptions.right : .none;
+      };
+      
+      return .init(
+        inputValueStart: inputStart,
+        inputValueEnd: inputEnd,
+        outputValueStart: outputStart,
+        outputValueEnd: outputEnd,
+        easingMap: easingMap ?? [:],
+        clampingMap: clampingMapAdj ?? [:]
+      );
+    }();
+    
+    let inputExtrapolatorLeft = Self.createInputExtrapolatorLeft(
+      rangeInput: rangeInput,
+      inputInterpolators: inputInterpolators,
+      clampingOptions: .none
+    );
+  
+    let inputExtrapolatorRight = Self.createInputExtrapolatorRight(
+      rangeInput: rangeInput,
+      inputInterpolators: inputInterpolators,
+      clampingOptions: .none
     );
     
     self.init(
@@ -355,6 +544,34 @@ public extension RangeInterpolating {
     };
     
     return (interpolationMode, inputValue);
+  };
+};
+
+// MARK: - RangeInterpolating+StaticHelpers
+// ----------------------------------------
+
+public extension RangeInterpolating {
+  static var genericType: InterpolatableValue.Type {
+    return InterpolatableValue.self;
+  };
+  
+  static func checkIfValid(
+    rangeInput: [CGFloat],
+    rangeOutput: [InterpolatableValue]
+  ) throws {
+    guard rangeInput.count == rangeOutput.count else {
+      throw GenericError(
+        errorCode: .invalidArgument,
+        description: "count of rangeInput and rangeOutput are different"
+      );
+    };
+    
+    guard rangeInput.count >= 2 else {
+      throw GenericError(
+        errorCode: .invalidArgument,
+        description: "rangeInput and rangeOutput must have at least contain 2 items"
+      );
+    };
   };
 };
 
