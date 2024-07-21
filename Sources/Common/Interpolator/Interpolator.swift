@@ -10,6 +10,11 @@ import Foundation
 
 public struct Interpolator<T: UniformInterpolatable>: AnyInterpolator  {
 
+  public typealias TargetBlock = (
+    _ sender: Self,
+    _ interpolatedValue: T
+  ) -> Void;
+
   public let inputValueStart: CGFloat;
   public let inputValueEnd: CGFloat;
   
@@ -18,6 +23,8 @@ public struct Interpolator<T: UniformInterpolatable>: AnyInterpolator  {
   
   private let interpolatorPercent: (_ self: Self, _ percent   : CGFloat) -> T;
   private let interpolatorValue  : (_ self: Self, _ inputValue: CGFloat) -> T;
+  
+  public var targetBlock: TargetBlock?;
   
   // MARK: - Init - UniformInterpolatable
   // ------------------------------------
@@ -227,5 +234,23 @@ public struct Interpolator<T: UniformInterpolatable>: AnyInterpolator  {
   
   public func compute(usingInputValue inputValue: CGFloat) -> T {
     self.interpolatorValue(self, inputValue);
+  };
+    
+  public func computeAndApplyToTarget(usingPercentValue percent: CGFloat) {
+    guard let targetBlock = self.targetBlock else {
+      return;
+    };
+    
+    let interpolatedValue = self.compute(usingPercentValue: percent)
+    targetBlock(self, interpolatedValue);
+  };
+  
+  public func computeAndApplyToTarget(usingInputValue inputValue: CGFloat) {
+    guard let targetBlock = self.targetBlock else {
+      return;
+    };
+    
+    let interpolatedValue = self.compute(usingInputValue: inputValue)
+    targetBlock(self, interpolatedValue);
   };
 };
