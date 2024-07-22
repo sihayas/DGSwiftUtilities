@@ -446,6 +446,38 @@ class InterpolationTest01ViewController: UIViewController {
           
           .filledButton(
             title: [
+              .init(text: "RangeInterpolator<CGFloat>"),
+            ],
+            subtitle: [
+              .init(text: "Test uniform clamping via clampingOptions")
+            ],
+            handler: { _,_ in
+              var rangedInterpolator = try! RangeInterpolator<CGFloat>(
+                rangeInput: sharedRangeInputValues,
+                rangeOutput: sharedRangeOutputValues,
+                easingProvider: nil,
+                clampingOptions: .leftAndRight
+              );
+              
+              var results: [AttributedStringConfig] = [
+                .init(text: "clampingOptions = leftAndRight "),
+                .newLines(2),
+              ];
+              
+              results += Helpers.invokeRangedInterpolatorAndGetResults(
+                with: sharedInputValues,
+                rangedInterpolator: &rangedInterpolator
+              );
+              
+              Helpers.logAndPresent(
+                textItems: results,
+                parentVC: self
+              );
+            }
+          ),
+          
+          .filledButton(
+            title: [
               .init(text: "RangeInterpolator<CGRect>"),
             ],
             subtitle: [
@@ -486,6 +518,55 @@ class InterpolationTest01ViewController: UIViewController {
                 .newLines(2),
                 .init(text: "When rangeIndex is odd, then: "),
                 .init(text: "x = easeOutQuad, y = easeOutCubic, width = easeOutQuart, height = easeOutQuint"),
+                .newLines(2),
+              ];
+              
+              results += Helpers.invokeRangedInterpolatorAndGetResults(
+                with: sharedInputValues,
+                rangedInterpolator: &rangedInterpolator
+              );
+              
+              Helpers.logAndPresent(
+                textItems: results,
+                parentVC: self
+              );
+            }
+          ),
+          
+          .filledButton(
+            title: [
+              .init(text: "RangeInterpolator<CGRect>"),
+            ],
+            subtitle: [
+              .init(text: "Test composite clamping via clampingMap")
+            ],
+            handler: { _,_ in
+              var rangedInterpolator = try! RangeInterpolator<CGRect>(
+                rangeInput: sharedRangeInputValues,
+                rangeOutput: sharedRangeOutputValues.map {
+                  .init(x: $0, y: $0, width: $0, height: $0)
+                },
+                easingMapProvider: nil,
+                clampingMapProvider: {
+                  rangeIndex,
+                  interpolatorType,
+                  inputValueStart,
+                  inputValueEnd,
+                  outputValueStart,
+                  outputValueEnd in
+                  
+                  return [
+                    \CGPoint.x: .left,
+                    \CGPoint.y: .right,
+                    \CGSize.width: .leftAndRight,
+                    \CGSize.height: .none,
+                  ];
+                }
+              );
+              
+              var results: [AttributedStringConfig] = [
+                .init(text: "clamping: "),
+                .init(text: "x = left, y = right, width = leftAndRight, height = none"),
                 .newLines(2),
               ];
               
