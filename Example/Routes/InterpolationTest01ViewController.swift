@@ -642,6 +642,140 @@ class InterpolationTest01ViewController: UIViewController {
         ]
       );
     }());
+    
+    cardConfig.append({
+      let sharedRangeInputValues: [CGFloat] = [-100, -1, 0, 1, 100];
+      let sharedRangeOutputValues: [CGFloat] = [100, 0, 200, 50, 255];
+      
+      let sharedInputValues: [CGFloat] = [
+        // exact
+        -100, -1, 0, 1, 100,
+        
+        // extrapolate left
+        -1000, -500, -200,
+        
+        // extrapolate right
+        200, 500, 1000,
+        
+        // interpolate
+        -80, -40, -50, -20, -10,
+        -0.75, -0.5, -0.3,
+        0.25, 0.5, 0.75,
+        10, 20, 25, 40, 50, 75, 80,
+      ];
+      
+      return .init(
+        title: "Basic Tests for Interpolating UIColor",
+        desc: [],
+        content: [
+          .filledButton(
+            title: [
+              .init(text: "RangeInterpolator<UIColor>"),
+            ],
+            subtitle: [
+              .init(text: "Test uniform easing via easingProvider")
+            ],
+            handler: { _,_ in
+              var rangedInterpolator = try! RangeInterpolator<UIColor>(
+                rangeInput: sharedRangeInputValues,
+                rangeOutput: sharedRangeOutputValues.map {
+                  .init(
+                    red: $0/255,
+                    green: $0/255,
+                    blue: $0/255,
+                    alpha: $0/255
+                  )
+                },
+                easingProvider: {
+                  rangeIndex,
+                  interpolatorType,
+                  inputValueStart,
+                  inputValueEnd,
+                  outputValueStart,
+                  outputValueEnd in
+                  
+                  switch interpolatorType {
+                    case .extrapolateLeft:
+                      return .easeOutCubic;
+                      
+                    case .extrapolateRight:
+                      return .easeInCubic;
+                      
+                    case .interpolate:
+                      break;
+                  };
+                  
+                  return (rangeIndex % 2 == 0)
+                    ? .easeInCubic
+                    : .easeOutCubic;
+                }
+              );
+              
+              var results: [AttributedStringConfig] = [
+                .init(text: "RangeInterpolator<UIColor>"),
+                .newLine,
+                .init(text: "Extrapolator left = .easeOutCubic, "),
+                .init(text: "extrapolator right = .easeInCubic, "),
+                .init(text: "interpolator = .easeInCubic when odd position,"),
+                .init(text: "interpolator = .easeOutCubic when even position,"),
+                .newLines(2),
+              ];
+              
+              results += Helpers.invokeRangedInterpolatorAndGetResults(
+                with: sharedInputValues,
+                rangedInterpolator: &rangedInterpolator
+              );
+              
+              Helpers.logAndPresent(
+                textItems: results,
+                parentVC: self
+              );
+            }
+          ),
+          
+          .filledButton(
+            title: [
+              .init(text: "RangeInterpolator<UIColor>"),
+            ],
+            subtitle: [
+              .init(text: "Test uniform clamping via clampingOptions")
+            ],
+            handler: { _,_ in
+              var rangedInterpolator = try! RangeInterpolator<UIColor>(
+                rangeInput: sharedRangeInputValues,
+                rangeOutput: sharedRangeOutputValues.map {
+                  .init(
+                    red: $0/255,
+                    green: $0/255,
+                    blue: $0/255,
+                    alpha: $0/255
+                  );
+                },
+                easingProvider: nil,
+                clampingOptions: .leftAndRight
+              );
+              
+              var results: [AttributedStringConfig] = [
+                .init(text: "RangeInterpolator<UIColor>"),
+                .newLine,
+                .init(text: "clampingOptions = leftAndRight "),
+                .newLines(2),
+              ];
+              
+              results += Helpers.invokeRangedInterpolatorAndGetResults(
+                with: sharedInputValues,
+                rangedInterpolator: &rangedInterpolator
+              );
+              
+              Helpers.logAndPresent(
+                textItems: results,
+                parentVC: self
+              );
+            }
+          ),
+        ]
+      );
+    }());
         
     cardConfig.forEach {
       let cardView = $0.createCardView();
