@@ -306,15 +306,6 @@ public extension RangeInterpolating {
         /* outputValueStart: */ outputStart,
         /* outputValueEnd  : */ outputEnd
       );
-      
-      let clampingMap = clampingMapProvider?(
-        /* rangeIndex      : */ index,
-        /* interpolatorType: */ .interpolate(interpolatorIndex: index),
-        /* inputValueStart : */ inputStart,
-        /* inputValueEnd   : */ inputEnd,
-        /* outputValueStart: */ outputStart,
-        /* outputValueEnd  : */ outputEnd
-      );
 
       let outputInterpolator: OutputInterpolator = .init(
         inputValueStart: inputStart,
@@ -322,7 +313,7 @@ public extension RangeInterpolating {
         outputValueStart: outputStart,
         outputValueEnd: outputEnd,
         easingMap: easingMap ?? [:],
-        clampingMap: clampingMap ?? [:]
+        clampingMap: [:]
       );
       
       outputInterpolators.append(outputInterpolator);
