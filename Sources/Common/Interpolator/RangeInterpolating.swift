@@ -541,19 +541,16 @@ public extension RangeInterpolating {
       );
     };
     
-    let x = self.rangeOutput.first;
-    
     // this shouldn't be called
-    fatalError();
-    //let result = InterpolatableValue.rangedLerp(
-    //  inputValue: inputValue,
-    //  inputValueStart: self.rangeInput.first!,
-    //  inputValueEnd: self.rangeInput.last!,
-    //  outputValueStart: self.rangeOutput.first!,
-    //  outputValueEnd: self.rangeOutput.last!
-    //);
-    //
-    //return (result, .interpolate(interpolatorIndex: 0));
+    let result = InterpolatableType.rangedLerp(
+      inputValue: inputValue,
+      inputValueStart: self.rangeInput.first!,
+      inputValueEnd: self.rangeInput.last!,
+      outputValueStart: self.rangeOutput.first!,
+      outputValueEnd: self.rangeOutput.last!
+    );
+    
+    return (result, .interpolate(interpolatorIndex: 0));
   };
   
   func compute(
