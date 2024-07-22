@@ -10,7 +10,7 @@ import Foundation
 
 public struct RangeInterpolatorStateless<U: UniformInterpolatable>: RangeInterpolating {
   
-  public typealias T = U;
+  public typealias InterpolatableType = U;
   
   private(set) public var rangeInput: [CGFloat];
   private(set) public var rangeOutput: [InterpolatableValue];

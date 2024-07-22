@@ -10,14 +10,14 @@ import Foundation
 
 public protocol RangeInterpolating: AnyRangeInterpolating {
 
-  associatedtype T: UniformInterpolatable;
-  typealias InterpolatableValue = T.InterpolatableValue;
+  associatedtype InterpolatableType: UniformInterpolatable;
+  typealias InterpolatableValue = InterpolatableType.InterpolatableValue;
   
   // MARK: - Embedded Types
   // ----------------------
 
-  typealias RangeItemOutput = IndexValuePair<T.InterpolatableValue>;
-  typealias OutputInterpolator = DGSwiftUtilities.Interpolator<T>;
+  typealias RangeItemOutput = IndexValuePair<InterpolatableType.InterpolatableValue>;
+  typealias OutputInterpolator = DGSwiftUtilities.Interpolator<InterpolatableType>;
   
   typealias TargetBlock = (
     _ sender: Self,
@@ -72,7 +72,7 @@ public protocol RangeInterpolating: AnyRangeInterpolating {
   // MARK: - Property Requirements
   // -----------------------------
 
-  var rangeOutput: [T.InterpolatableValue] { get };
+  var rangeOutput: [InterpolatableValue] { get };
 
   var outputInterpolators: [OutputInterpolator] { get };
   var outputExtrapolatorLeft : OutputInterpolator { get };
@@ -283,7 +283,7 @@ public extension RangeInterpolating {
     easingMapProvider: EasingMapProviderBlock?,
     clampingMapProvider: ClampingMapProviderBlock?,
     targetBlock: TargetBlock? = nil
-  ) throws where T: CompositeInterpolatable {
+  ) throws where InterpolatableType: CompositeInterpolatable {
     
     try Self.checkIfValid(
       rangeInput: rangeInput,
@@ -412,7 +412,7 @@ public extension RangeInterpolating {
     easingElementMapProvider: EasingElementMapProviderBlock<InterpolatableValue>?,
     clampingElementMapProvider: ClampingElementMapProviderBlock<InterpolatableValue>?,
     targetBlock: TargetBlock? = nil
-  ) throws where T: ConfigurableCompositeInterpolatable {
+  ) throws where InterpolatableType: ConfigurableCompositeInterpolatable {
   
     var easingMapProvider: EasingMapProviderBlock?;
     var clampingMapProvider: ClampingMapProviderBlock?;

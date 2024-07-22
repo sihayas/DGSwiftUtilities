@@ -10,7 +10,7 @@ import Foundation
 
 public struct RangeInterpolator<U: UniformInterpolatable>: RangeInterpolating, RangeInterpolatorStateTracking {
 
-  public typealias T = U;
+  public typealias InterpolatableType = U;
   
   public var rangeInput: [CGFloat];
   public var rangeOutput: [U.InterpolatableValue];
@@ -67,4 +67,3 @@ public struct RangeInterpolator<U: UniformInterpolatable>: RangeInterpolating, R
     self.outputExtrapolatorRight = outputExtrapolatorRight;
   };
 };
-
