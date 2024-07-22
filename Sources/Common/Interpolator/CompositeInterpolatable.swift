@@ -11,7 +11,7 @@ import Foundation
 public protocol CompositeInterpolatable: UniformInterpolatable {
   
   typealias InterpolatableValuesMap =
-    [PartialKeyPath<Self>: any UniformInterpolatable.Type];
+    [PartialKeyPath<InterpolatableValue>: any UniformInterpolatable.Type];
     
   typealias EasingKeyPathMap = [AnyKeyPath: InterpolationEasing];
   typealias ClampingKeyPathMap = [AnyKeyPath: ClampingOptions];
@@ -19,12 +19,12 @@ public protocol CompositeInterpolatable: UniformInterpolatable {
   static var interpolatablePropertiesMap: InterpolatableValuesMap { get };
   
   static func lerp(
-    valueStart: Self,
-    valueEnd: Self,
+    valueStart: InterpolatableValue,
+    valueEnd: InterpolatableValue,
     percent: CGFloat,
     easingMap: EasingKeyPathMap,
     clampingMap: ClampingKeyPathMap
-  ) -> Self;
+  ) -> InterpolatableValue;
 };
 
 // MARK: Default Conformance - `CompositeInterpolatable`
@@ -33,12 +33,12 @@ public protocol CompositeInterpolatable: UniformInterpolatable {
 public extension CompositeInterpolatable {
   
   static func lerp(
-    valueStart: Self,
-    valueEnd: Self,
+    valueStart: InterpolatableValue,
+    valueEnd: InterpolatableValue,
     percent: CGFloat,
     easingMap: EasingKeyPathMap,
     clampingMap: ClampingKeyPathMap
-  ) -> Self {
+  ) -> InterpolatableValue {
     
     var newValue = valueStart;
     
@@ -48,7 +48,8 @@ public extension CompositeInterpolatable {
       
       if let type = type as? any CompositeInterpolatable.Type,
          InterpolatorHelpers.rangedLerp(
-           type: type,
+           rootType: InterpolatableValue.self,
+           valueType: type,
            keyPath: partialKeyPath,
            valueStart: valueStart,
            valueEnd: valueEnd,
@@ -62,7 +63,8 @@ public extension CompositeInterpolatable {
       };
 
       if InterpolatorHelpers.rangedLerp(
-        type: type,
+        rootType: InterpolatableValue.self,
+        valueType: type,
         keyPath: partialKeyPath,
         valueStart: valueStart,
         valueEnd: valueEnd,
@@ -75,7 +77,7 @@ public extension CompositeInterpolatable {
       };
     
       switch partialKeyPath {
-        case let keyPath as WritableKeyPath<Self, CGFloat>:
+        case let keyPath as WritableKeyPath<InterpolatableValue, CGFloat>:
           let concreteValueStart = valueStart[keyPath: keyPath];
           let concreteValueEnd   = valueEnd  [keyPath: keyPath];
           
@@ -111,11 +113,11 @@ public extension CompositeInterpolatable {
 public extension CompositeInterpolatable {
   
   static func lerp(
-    valueStart: Self,
-    valueEnd: Self,
+    valueStart: InterpolatableValue,
+    valueEnd: InterpolatableValue,
     percent: CGFloat,
     easing: InterpolationEasing? = nil
-  ) -> Self {
+  ) -> InterpolatableValue {
     
     var easingMap: EasingKeyPathMap = [:];
     
@@ -144,11 +146,11 @@ public extension CompositeInterpolatable {
     inputValue: CGFloat,
     inputValueStart: CGFloat,
     inputValueEnd: CGFloat,
-    outputValueStart: Self,
-    outputValueEnd: Self,
+    outputValueStart: InterpolatableValue,
+    outputValueEnd: InterpolatableValue,
     easingMap: EasingKeyPathMap,
     clampingMap: ClampingKeyPathMap
-  ) -> Self {
+  ) -> InterpolatableValue {
   
     let inputValueAdj   = inputValue    - inputValueStart;
     let inputRangeDelta = inputValueEnd - inputValueStart;
@@ -169,11 +171,11 @@ public extension CompositeInterpolatable {
     relativePercent: CGFloat,
     inputValueStart: CGFloat,
     inputValueEnd: CGFloat,
-    outputValueStart: Self,
-    outputValueEnd: Self,
+    outputValueStart: InterpolatableValue,
+    outputValueEnd: InterpolatableValue,
     easingMap: EasingKeyPathMap,
     clampingMap: ClampingKeyPathMap
-  ) -> Self {
+  ) -> InterpolatableValue {
     
     let rangeDelta = abs(inputValueStart - inputValueEnd);
     let inputValue = rangeDelta * relativePercent;

@@ -22,12 +22,12 @@ public protocol ConfigurableCompositeInterpolatable: CompositeInterpolatable {
 public extension ConfigurableCompositeInterpolatable {
 
   static func lerp(
-    valueStart: Self,
-    valueEnd: Self,
+    valueStart: Self.InterpolatableValue,
+    valueEnd: Self.InterpolatableValue,
     percent: CGFloat,
     easingMap: EasingElementMap,
     clampingMap: ClampingElementMap
-  ) -> Self {
+  ) -> Self.InterpolatableValue {
     
     var keyPathEasingMap: EasingKeyPathMap = [:];
     

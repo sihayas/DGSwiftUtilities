@@ -56,14 +56,19 @@ public struct InterpolatorHelpers {
     );
   };
   
-  public static func lerp<T: UniformInterpolatable, U>(
-    valueStart: T,
-    valueEnd: U,
+  public static func lerp<
+    T: UniformInterpolatable,
+    U: UniformInterpolatable
+  >(
+    valueStartType: T.Type = T.self,
+    valueEndType: U.Type = U.self,
+    valueStart: T.InterpolatableValue,
+    valueEnd: U.InterpolatableValue,
     percent: CGFloat,
     easing: InterpolationEasing
-  ) -> T? {
+  ) -> T.InterpolatableValue? {
   
-    guard let valueEnd = valueEnd as? T else {
+    guard let valueEnd = valueEnd as? T.InterpolatableValue else {
       return nil
     };
     
@@ -78,16 +83,23 @@ public struct InterpolatorHelpers {
   // MARK: - "Ranged Lerp"-Related
   // -----------------------------
   
-  public static func rangedLerp<T, U: UniformInterpolatable>(
-    type: U.Type = U.self,
-    keyPath: PartialKeyPath<T>,
-    valueStart: T,
-    valueEnd: T,
+  public static func rangedLerp<
+    T: UniformInterpolatable,
+    U: UniformInterpolatable
+  >(
+    valueType: T.Type = T.self,
+    returnType: U.Type = U.self,
+    keyPath: PartialKeyPath<T.InterpolatableValue>,
+    valueStart: T.InterpolatableValue,
+    valueEnd: T.InterpolatableValue,
     percent: CGFloat,
     easing: InterpolationEasing?
-  ) -> U? {
+  ) -> U.InterpolatableValue? {
   
-    guard let keyPath = keyPath as? KeyPath<T, U> else {
+    guard let keyPath = keyPath as? KeyPath<
+      T.InterpolatableValue,
+      U.InterpolatableValue
+    > else {
       return nil;
     };
     
@@ -102,8 +114,12 @@ public struct InterpolatorHelpers {
     );
   };
   
-  public static func rangedLerp<T, U: UniformInterpolatable>(
-    type: U.Type = U.self,
+  public static func rangedLerp<
+    T: UniformInterpolatable,
+    U: UniformInterpolatable
+  >(
+    rootType: T.Type = T.self,
+    valueType: U.Type = U.self,
     keyPath: PartialKeyPath<T>,
     valueStart: T,
     valueEnd: T,
@@ -113,7 +129,7 @@ public struct InterpolatorHelpers {
     writeTo target: inout T
   ) -> Bool {
   
-    guard let keyPath = keyPath as? WritableKeyPath<T, U> else {
+    guard let keyPath = keyPath as? WritableKeyPath<T, U.InterpolatableValue> else {
       return false;
     };
     
@@ -132,8 +148,12 @@ public struct InterpolatorHelpers {
     return true;
   };
   
-  public static func rangedLerp<T, U: CompositeInterpolatable>(
-    type: U.Type = U.self,
+  public static func rangedLerp<
+    T: UniformInterpolatable,
+    U: CompositeInterpolatable
+  >(
+    rootType: T.Type = T.self,
+    valueType: U.Type = U.self,
     keyPath: PartialKeyPath<T>,
     valueStart: T,
     valueEnd: T,
@@ -143,7 +163,7 @@ public struct InterpolatorHelpers {
     writeTo target: inout T
   ) -> Bool {
   
-    guard let keyPath = keyPath as? WritableKeyPath<T, U> else {
+    guard let keyPath = keyPath as? WritableKeyPath<T, U.InterpolatableValue> else {
       return false;
     };
     

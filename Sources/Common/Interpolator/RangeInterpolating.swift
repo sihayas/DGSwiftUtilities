@@ -10,13 +10,14 @@ import Foundation
 
 public protocol RangeInterpolating: AnyRangeInterpolating {
 
-  associatedtype InterpolatableValue: UniformInterpolatable;
+  associatedtype T: UniformInterpolatable;
+  typealias InterpolatableValue = T.InterpolatableValue;
   
   // MARK: - Embedded Types
   // ----------------------
 
-  typealias RangeItemOutput = IndexValuePair<InterpolatableValue>;
-  typealias OutputInterpolator = DGSwiftUtilities.Interpolator<InterpolatableValue>;
+  typealias RangeItemOutput = IndexValuePair<T.InterpolatableValue>;
+  typealias OutputInterpolator = DGSwiftUtilities.Interpolator<T>;
   
   typealias TargetBlock = (
     _ sender: Self,
@@ -71,7 +72,7 @@ public protocol RangeInterpolating: AnyRangeInterpolating {
   // MARK: - Property Requirements
   // -----------------------------
 
-  var rangeOutput: [InterpolatableValue] { get };
+  var rangeOutput: [T.InterpolatableValue] { get };
 
   var outputInterpolators: [OutputInterpolator] { get };
   var outputExtrapolatorLeft : OutputInterpolator { get };
@@ -282,7 +283,7 @@ public extension RangeInterpolating {
     easingMapProvider: EasingMapProviderBlock?,
     clampingMapProvider: ClampingMapProviderBlock?,
     targetBlock: TargetBlock? = nil
-  ) throws where InterpolatableValue: CompositeInterpolatable {
+  ) throws where T: CompositeInterpolatable {
     
     try Self.checkIfValid(
       rangeInput: rangeInput,
@@ -411,7 +412,7 @@ public extension RangeInterpolating {
     easingElementMapProvider: EasingElementMapProviderBlock<InterpolatableValue>?,
     clampingElementMapProvider: ClampingElementMapProviderBlock<InterpolatableValue>?,
     targetBlock: TargetBlock? = nil
-  ) throws where InterpolatableValue: ConfigurableCompositeInterpolatable {
+  ) throws where T: ConfigurableCompositeInterpolatable {
   
     var easingMapProvider: EasingMapProviderBlock?;
     var clampingMapProvider: ClampingMapProviderBlock?;
@@ -540,16 +541,19 @@ public extension RangeInterpolating {
       );
     };
     
-    // this shouldn't be called
-    let result = InterpolatableValue.rangedLerp(
-      inputValue: inputValue,
-      inputValueStart: self.rangeInput.first!,
-      inputValueEnd: self.rangeInput.last!,
-      outputValueStart: self.rangeOutput.first!,
-      outputValueEnd: self.rangeOutput.last!
-    );
+    let x = self.rangeOutput.first;
     
-    return (result, .interpolate(interpolatorIndex: 0));
+    // this shouldn't be called
+    fatalError();
+    //let result = InterpolatableValue.rangedLerp(
+    //  inputValue: inputValue,
+    //  inputValueStart: self.rangeInput.first!,
+    //  inputValueEnd: self.rangeInput.last!,
+    //  outputValueStart: self.rangeOutput.first!,
+    //  outputValueEnd: self.rangeOutput.last!
+    //);
+    //
+    //return (result, .interpolate(interpolatorIndex: 0));
   };
   
   func compute(

@@ -8,12 +8,12 @@
 import Foundation
 
 
-public struct RangeInterpolator<T: UniformInterpolatable>: RangeInterpolating, RangeInterpolatorStateTracking {
+public struct RangeInterpolator<U: UniformInterpolatable>: RangeInterpolating, RangeInterpolatorStateTracking {
 
-  public typealias InterpolatableValue = T;
+  public typealias T = U;
   
   public var rangeInput: [CGFloat];
-  public var rangeOutput: [T];
+  public var rangeOutput: [U.InterpolatableValue];
   
   public var rangeInputMin: RangeItem;
   public var rangeInputMax: RangeItem;
@@ -31,8 +31,8 @@ public struct RangeInterpolator<T: UniformInterpolatable>: RangeInterpolating, R
   public var inputValuePrev: CGFloat?
   public var inputValueCurrent: CGFloat?
   
-  public var outputValuePrev: T?
-  public var outputValueCurrent: T?
+  public var outputValuePrev: InterpolatableValue?
+  public var outputValueCurrent: InterpolatableValue?
   
   public var interpolationModePrevious: RangeInterpolationMode?
   public var interpolationModeCurrent: RangeInterpolationMode?
@@ -42,7 +42,7 @@ public struct RangeInterpolator<T: UniformInterpolatable>: RangeInterpolating, R
   
   public init(
     rangeInput: [CGFloat],
-    rangeOutput: [T],
+    rangeOutput: [InterpolatableValue],
     targetBlock: TargetBlock?,
     rangeInputMin: RangeItem,
     rangeInputMax: RangeItem,

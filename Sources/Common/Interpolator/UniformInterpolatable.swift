@@ -10,14 +10,16 @@ import Foundation
 
 public protocol UniformInterpolatable: Comparable {
 
+  associatedtype InterpolatableValue: UniformInterpolatable = Self;
+
   init();
   
   static func lerp(
-    valueStart: Self,
-    valueEnd: Self,
+    valueStart: InterpolatableValue,
+    valueEnd: InterpolatableValue,
     percent: CGFloat,
     easing: InterpolationEasing?
-  ) -> Self;
+  ) -> InterpolatableValue;
 };
 
 public extension UniformInterpolatable {
@@ -27,12 +29,12 @@ public extension UniformInterpolatable {
   typealias RangeInterpolator = DGSwiftUtilities.RangeInterpolator<Self>;
   
   static func lerp(
-    valueStart: Self,
-    valueEnd: Self,
+    valueStart: InterpolatableValue,
+    valueEnd: InterpolatableValue,
     percent: CGFloat,
     easing: InterpolationEasing? = nil,
     clampingOptions: ClampingOptions = .none
-  ) -> Self {
+  ) -> InterpolatableValue {
   
     let percentClamped = percent.clamped(
       min: clampingOptions.shouldClampLeft  ? 0 : nil,
@@ -51,11 +53,11 @@ public extension UniformInterpolatable {
     inputValue: CGFloat,
     inputValueStart: CGFloat,
     inputValueEnd: CGFloat,
-    outputValueStart: Self,
-    outputValueEnd: Self,
+    outputValueStart: InterpolatableValue,
+    outputValueEnd: InterpolatableValue,
     easing: InterpolationEasing? = nil,
     clampingOptions: ClampingOptions = .none
-  ) -> Self {
+  ) -> InterpolatableValue {
   
     let inputValueClamped = inputValue.clamped(
       min: clampingOptions.shouldClampLeft  ? inputValueStart : nil,
@@ -81,11 +83,11 @@ public extension UniformInterpolatable {
     relativePercent: CGFloat,
     inputValueStart: CGFloat,
     inputValueEnd: CGFloat,
-    outputValueStart: Self,
-    outputValueEnd: Self,
+    outputValueStart: InterpolatableValue,
+    outputValueEnd: InterpolatableValue,
     easing: InterpolationEasing? = nil,
     clampingOptions: ClampingOptions = .none
-  ) -> Self {
+  ) -> InterpolatableValue {
     
     let rangeDelta = abs(inputValueStart - inputValueEnd);
     let inputValue = rangeDelta * relativePercent;

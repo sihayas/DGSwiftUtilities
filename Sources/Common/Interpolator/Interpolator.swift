@@ -10,19 +10,28 @@ import Foundation
 
 public struct Interpolator<T: UniformInterpolatable>: AnyInterpolator  {
 
+  //public typealias InterpolatableValue = T.InterpolatableValue;
+
   public typealias TargetBlock = (
     _ sender: Self,
-    _ interpolatedValue: T
+    _ interpolatedValue: T.InterpolatableValue
   ) -> Void;
 
   public let inputValueStart: CGFloat;
   public let inputValueEnd: CGFloat;
   
-  public var outputValueStart: T;
-  public var outputValueEnd: T;
+  public var outputValueStart: T.InterpolatableValue;
+  public var outputValueEnd: T.InterpolatableValue;
   
-  private let interpolatorPercent: (_ self: Self, _ percent   : CGFloat) -> T;
-  private let interpolatorValue  : (_ self: Self, _ inputValue: CGFloat) -> T;
+  private let interpolatorPercent: (
+    _ self: Self,
+    _ percent: CGFloat
+  ) -> T.InterpolatableValue;
+  
+  private let interpolatorValue: (
+    _ self: Self,
+    _ inputValue: CGFloat
+  ) -> T.InterpolatableValue;
   
   public var targetBlock: TargetBlock?;
   
@@ -30,8 +39,8 @@ public struct Interpolator<T: UniformInterpolatable>: AnyInterpolator  {
   // ------------------------------------
   
   public init(
-    valueStart: T,
-    valueEnd: T,
+    valueStart: T.InterpolatableValue,
+    valueEnd: T.InterpolatableValue,
     easing: InterpolationEasing? = nil,
     clampingOptions: ClampingOptions = .none
   ) {
@@ -65,8 +74,8 @@ public struct Interpolator<T: UniformInterpolatable>: AnyInterpolator  {
   public init(
     inputValueStart: CGFloat,
     inputValueEnd: CGFloat,
-    outputValueStart: T,
-    outputValueEnd: T,
+    outputValueStart: T.InterpolatableValue,
+    outputValueEnd: T.InterpolatableValue,
     easing: InterpolationEasing? = nil,
     clampingOptions: ClampingOptions = .none
   ) {
@@ -105,8 +114,8 @@ public struct Interpolator<T: UniformInterpolatable>: AnyInterpolator  {
   // --------------------------------------
   
   public init(
-    valueStart: T,
-    valueEnd: T,
+    valueStart: T.InterpolatableValue,
+    valueEnd: T.InterpolatableValue,
     easingMap: T.EasingKeyPathMap,
     clampingMap: T.ClampingKeyPathMap
   ) where T: CompositeInterpolatable {
@@ -140,8 +149,8 @@ public struct Interpolator<T: UniformInterpolatable>: AnyInterpolator  {
   public init(
     inputValueStart: CGFloat,
     inputValueEnd: CGFloat,
-    outputValueStart: T,
-    outputValueEnd: T,
+    outputValueStart: T.InterpolatableValue,
+    outputValueEnd: T.InterpolatableValue,
     easingMap: T.EasingKeyPathMap,
     clampingMap: T.ClampingKeyPathMap
   ) where T: CompositeInterpolatable {
@@ -180,8 +189,8 @@ public struct Interpolator<T: UniformInterpolatable>: AnyInterpolator  {
   // --------------------------------------------------
   
   public init(
-    valueStart: T,
-    valueEnd: T,
+    valueStart: T.InterpolatableValue,
+    valueEnd: T.InterpolatableValue,
     easingElementMap: T.EasingElementMap,
     clampingElementMap: T.ClampingElementMap
   ) where T: ConfigurableCompositeInterpolatable {
@@ -203,8 +212,8 @@ public struct Interpolator<T: UniformInterpolatable>: AnyInterpolator  {
   public init(
     inputValueStart: CGFloat,
     inputValueEnd: CGFloat,
-    outputValueStart: T,
-    outputValueEnd: T,
+    outputValueStart: T.InterpolatableValue,
+    outputValueEnd: T.InterpolatableValue,
     easingElementMap: T.EasingElementMap,
     clampingElementMap: T.ClampingElementMap
   ) where T: ConfigurableCompositeInterpolatable {
@@ -228,11 +237,11 @@ public struct Interpolator<T: UniformInterpolatable>: AnyInterpolator  {
   // MARK: - Functions
   // -----------------
   
-  public func compute(usingPercentValue percent: CGFloat) -> T {
+  public func compute(usingPercentValue percent: CGFloat) -> T.InterpolatableValue {
     self.interpolatorPercent(self, percent);
   };
   
-  public func compute(usingInputValue inputValue: CGFloat) -> T {
+  public func compute(usingInputValue inputValue: CGFloat) -> T.InterpolatableValue {
     self.interpolatorValue(self, inputValue);
   };
     

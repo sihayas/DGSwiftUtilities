@@ -8,12 +8,12 @@
 import Foundation
 
 
-public struct RangeInterpolatorStateless<T: UniformInterpolatable>: RangeInterpolating {
-
-  public typealias InterpolatableValue = T;
+public struct RangeInterpolatorStateless<U: UniformInterpolatable>: RangeInterpolating {
+  
+  public typealias T = U;
   
   private(set) public var rangeInput: [CGFloat];
-  private(set) public var rangeOutput: [T];
+  private(set) public var rangeOutput: [InterpolatableValue];
   
   private(set) public var rangeInputMin: RangeItem;
   private(set) public var rangeInputMax: RangeItem;
@@ -33,7 +33,7 @@ public struct RangeInterpolatorStateless<T: UniformInterpolatable>: RangeInterpo
   
   public init(
     rangeInput: [CGFloat],
-    rangeOutput: [T],
+    rangeOutput: [InterpolatableValue],
     targetBlock: TargetBlock?,
     rangeInputMin: RangeItem,
     rangeInputMax: RangeItem,
