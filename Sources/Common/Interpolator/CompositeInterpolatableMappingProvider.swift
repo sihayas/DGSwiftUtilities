@@ -7,13 +7,22 @@
 
 import Foundation
 
-public enum CompositeInterpolatableMappingProvider<T: CompositeInterpolatable, U> {
+public enum CompositeInterpolatableMappingProvider<T, U> {
    
   case returnOnly(() -> U);
   
-  case rangeIndex((Int) -> U);
+  case rangeIndex((
+    _ rangeIndex: Int
+  ) -> U);
   
-  case interpolatorType((RangeInterpolationMode) -> U);
+  case interpolatorType((
+    _ interpolatorType: RangeInterpolationMode
+  ) -> U);
+  
+  case rangeIndexAndInterpolatorType((
+    _ rangeIndex: Int,
+    _ interpolatorType: RangeInterpolationMode
+  ) -> U);
 
   case inputRange((
     _ inputValueStart: CGFloat,
@@ -59,6 +68,9 @@ public enum CompositeInterpolatableMappingProvider<T: CompositeInterpolatable, U
   
       case let .interpolatorType(providerBlock):
         return providerBlock(interpolatorType);
+        
+      case let .rangeIndexAndInterpolatorType(providerBlock):
+        return providerBlock(rangeIndex, interpolatorType);
 
       case let .inputRange(providerBlock):
         return providerBlock(
