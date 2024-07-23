@@ -1,5 +1,5 @@
 //
-//  RGBColor.swift
+//  ColorRGBA.swift
 //  
 //
 //  Created by Dominic Go on 10/23/23.
@@ -7,7 +7,8 @@
 
 import Foundation
 
-public struct RGBColor {
+
+public struct ColorRGBA {
 
   public var r: CGFloat;
   public var g: CGFloat;
