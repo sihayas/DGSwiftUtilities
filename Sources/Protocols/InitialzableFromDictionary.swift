@@ -8,18 +8,7 @@
 import Foundation
 
 
-// TODO: Move to `DGSwiftUtilities`
 public protocol InitializableFromDictionary {
   
   init(fromDict dict: Dictionary<String, Any>) throws;
-};
-
-public extension InitializableFromDictionary {
-  
-  // For backwards compatibility
-  @available(*, deprecated, message: "Please use init(fromDict:) instead...")
-  init?(dict: Dictionary<String, Any>){
-    guard let value = try? Self.init(fromDict: dict) else { return nil };
-    self = value;
-  };
 };
