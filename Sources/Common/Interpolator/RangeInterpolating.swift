@@ -31,7 +31,7 @@ public protocol RangeInterpolating: AnyRangeInterpolating {
     _ inputValueEnd: CGFloat,
     _ outputValueStart: InterpolatableValue,
     _ outputValueEnd: InterpolatableValue
-  ) -> InterpolationEasing;
+  ) -> InterpolationEasing?;
   
   typealias EasingMapProviderBlock = (
     _ rangeIndex: Int,
@@ -40,7 +40,7 @@ public protocol RangeInterpolating: AnyRangeInterpolating {
     _ inputValueEnd: CGFloat,
     _ outputValueStart: InterpolatableValue,
     _ outputValueEnd: InterpolatableValue
-  ) -> CompositeInterpolatable.EasingKeyPathMap;
+  ) -> CompositeInterpolatable.EasingKeyPathMap?;
   
   typealias ClampingMapProviderBlock = (
     _ rangeIndex: Int,
@@ -49,7 +49,7 @@ public protocol RangeInterpolating: AnyRangeInterpolating {
     _ inputValueEnd: CGFloat,
     _ outputValueStart: InterpolatableValue,
     _ outputValueEnd: InterpolatableValue
-  ) -> CompositeInterpolatable.ClampingKeyPathMap;
+  ) -> CompositeInterpolatable.ClampingKeyPathMap?;
   
   typealias EasingElementMapProviderBlock<T: ConfigurableCompositeInterpolatable> = (
     _ rangeIndex: Int,
@@ -58,7 +58,7 @@ public protocol RangeInterpolating: AnyRangeInterpolating {
     _ inputValueEnd: CGFloat,
     _ outputValueStart: InterpolatableValue,
     _ outputValueEnd: InterpolatableValue
-  ) -> T.EasingElementMap;
+  ) -> T.EasingElementMap?;
   
   typealias ClampingElementMapProviderBlock<T: ConfigurableCompositeInterpolatable> = (
     _ rangeIndex: Int,
@@ -67,7 +67,7 @@ public protocol RangeInterpolating: AnyRangeInterpolating {
     _ inputValueEnd: CGFloat,
     _ outputValueStart: InterpolatableValue,
     _ outputValueEnd: InterpolatableValue
-  ) -> T.ClampingElementMap;
+  ) -> T.ClampingElementMap?;
   
   // MARK: - Property Requirements
   // -----------------------------
@@ -430,7 +430,7 @@ public extension RangeInterpolating {
         
         return .init(
           type: InterpolatableValue.self,
-          easingElementMap: easingElementMap
+          easingElementMap: easingElementMap ?? [:]
         );
       };
     };
@@ -448,7 +448,7 @@ public extension RangeInterpolating {
         
         return .init(
           type: InterpolatableValue.self,
-          clampingElementMap: clampingElementMap
+          clampingElementMap: clampingElementMap ?? [:]
         );
       };
     };
