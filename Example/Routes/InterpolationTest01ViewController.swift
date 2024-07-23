@@ -399,15 +399,8 @@ class InterpolationTest01ViewController: UIViewController {
               var rangedInterpolator = try! RangeInterpolator<CGFloat>(
                 rangeInput: sharedRangeInputValues,
                 rangeOutput: sharedRangeOutputValues,
-                easingProvider: {
-                  rangeIndex,
-                  interpolatorType,
-                  inputValueStart,
-                  inputValueEnd,
-                  outputValueStart,
-                  outputValueEnd in
-                  
-                  switch interpolatorType {
+                easingProvider: .rangeIndexAndInterpolatorType {
+                  switch $1 {
                     case .extrapolateLeft:
                       return .easeOutCubic;
                       
@@ -418,7 +411,7 @@ class InterpolationTest01ViewController: UIViewController {
                       break;
                   };
                   
-                  return (rangeIndex % 2 == 0)
+                  return ($0 % 2 == 0)
                     ? .easeInCubic
                     : .easeOutCubic;
                 }
@@ -489,15 +482,8 @@ class InterpolationTest01ViewController: UIViewController {
                 rangeOutput: sharedRangeOutputValues.map {
                   .init(x: $0, y: $0, width: $0, height: $0)
                 },
-                easingMapProvider: {
-                  rangeIndex,
-                  interpolatorType,
-                  inputValueStart,
-                  inputValueEnd,
-                  outputValueStart,
-                  outputValueEnd in
-                  
-                  return (rangeIndex % 2 == 0) ? [
+                easingMapProvider: .rangeIndex {
+                  return ($0 % 2 == 0) ? [
                     \CGPoint.x: .easeInQuad,
                     \CGPoint.y: .easeInCubic,
                     \CGSize.width: .easeInQuart,
@@ -547,14 +533,7 @@ class InterpolationTest01ViewController: UIViewController {
                   .init(x: $0, y: $0, width: $0, height: $0)
                 },
                 easingMapProvider: nil,
-                clampingMapProvider: {
-                  rangeIndex,
-                  interpolatorType,
-                  inputValueStart,
-                  inputValueEnd,
-                  outputValueStart,
-                  outputValueEnd in
-                  
+                clampingMapProvider: .returnOnly {
                   return [
                     \CGPoint.x: .left,
                     \CGPoint.y: .right,
@@ -595,15 +574,8 @@ class InterpolationTest01ViewController: UIViewController {
                 rangeOutput: sharedRangeOutputValues.map {
                   .init(x: $0, y: $0, width: $0, height: $0)
                 },
-                easingElementMapProvider: {
-                  rangeIndex,
-                  interpolatorType,
-                  inputValueStart,
-                  inputValueEnd,
-                  outputValueStart,
-                  outputValueEnd in
-                  
-                  return (rangeIndex % 2 == 0) ? [
+                easingElementMapProvider: .rangeIndex {
+                  return ($0 % 2 == 0) ? [
                     .x: .easeOutQuad,
                     .y: .easeInOutCubic,
                     .width: .easeOutQuart,
@@ -686,15 +658,8 @@ class InterpolationTest01ViewController: UIViewController {
                     alpha: $0/255
                   )
                 },
-                easingProvider: {
-                  rangeIndex,
-                  interpolatorType,
-                  inputValueStart,
-                  inputValueEnd,
-                  outputValueStart,
-                  outputValueEnd in
-                  
-                  switch interpolatorType {
+                easingProvider: .rangeIndexAndInterpolatorType {
+                  switch $1 {
                     case .extrapolateLeft:
                       return .easeOutCubic;
                       
@@ -705,7 +670,7 @@ class InterpolationTest01ViewController: UIViewController {
                       break;
                   };
                   
-                  return (rangeIndex % 2 == 0)
+                  return ($0 % 2 == 0)
                     ? .easeInCubic
                     : .easeOutCubic;
                 }

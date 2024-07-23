@@ -16,58 +16,46 @@ public protocol RangeInterpolating: AnyRangeInterpolating {
   // MARK: - Embedded Types
   // ----------------------
 
-  typealias RangeItemOutput = IndexValuePair<InterpolatableType.InterpolatableValue>;
-  typealias OutputInterpolator = DGSwiftUtilities.Interpolator<InterpolatableType>;
+  typealias RangeItemOutput =
+    IndexValuePair<InterpolatableType.InterpolatableValue>;
+    
+  typealias OutputInterpolator =
+    DGSwiftUtilities.Interpolator<InterpolatableType>;
   
   typealias TargetBlock = (
     _ sender: Self,
     _ interpolatedValue: InterpolatableValue
   ) -> Void;
-
-  typealias EasingProviderBlock = (
-    _ rangeIndex: Int,
-    _ interpolatorType: RangeInterpolationMode,
-    _ inputValueStart: CGFloat,
-    _ inputValueEnd: CGFloat,
-    _ outputValueStart: InterpolatableValue,
-    _ outputValueEnd: InterpolatableValue
-  ) -> InterpolationEasing?;
   
-  typealias EasingMapProviderBlock = (
-    _ rangeIndex: Int,
-    _ interpolatorType: RangeInterpolationMode,
-    _ inputValueStart: CGFloat,
-    _ inputValueEnd: CGFloat,
-    _ outputValueStart: InterpolatableValue,
-    _ outputValueEnd: InterpolatableValue
-  ) -> CompositeInterpolatable.EasingKeyPathMap?;
+  // TODO: Remove "Block" suffix in providers
+  typealias EasingProviderBlock = CompositeInterpolatableMappingProvider<
+    InterpolatableValue,
+    InterpolationEasing?
+  >;
   
-  typealias ClampingMapProviderBlock = (
-    _ rangeIndex: Int,
-    _ interpolatorType: RangeInterpolationMode,
-    _ inputValueStart: CGFloat,
-    _ inputValueEnd: CGFloat,
-    _ outputValueStart: InterpolatableValue,
-    _ outputValueEnd: InterpolatableValue
-  ) -> CompositeInterpolatable.ClampingKeyPathMap?;
+  typealias EasingMapProviderBlock = CompositeInterpolatableMappingProvider<
+    InterpolatableValue,
+    CompositeInterpolatable.EasingKeyPathMap?
+  >;
   
-  typealias EasingElementMapProviderBlock<T: ConfigurableCompositeInterpolatable> = (
-    _ rangeIndex: Int,
-    _ interpolatorType: RangeInterpolationMode,
-    _ inputValueStart: CGFloat,
-    _ inputValueEnd: CGFloat,
-    _ outputValueStart: InterpolatableValue,
-    _ outputValueEnd: InterpolatableValue
-  ) -> T.EasingElementMap?;
+  typealias ClampingMapProviderBlock = CompositeInterpolatableMappingProvider<
+    InterpolatableValue,
+    CompositeInterpolatable.ClampingKeyPathMap?
+  >;
   
-  typealias ClampingElementMapProviderBlock<T: ConfigurableCompositeInterpolatable> = (
-    _ rangeIndex: Int,
-    _ interpolatorType: RangeInterpolationMode,
-    _ inputValueStart: CGFloat,
-    _ inputValueEnd: CGFloat,
-    _ outputValueStart: InterpolatableValue,
-    _ outputValueEnd: InterpolatableValue
-  ) -> T.ClampingElementMap?;
+  typealias EasingElementMapProviderBlock<
+    T: ConfigurableCompositeInterpolatable
+  > = CompositeInterpolatableMappingProvider<
+    InterpolatableValue,
+    T.EasingElementMap?
+  >;
+  
+  typealias ClampingElementMapProviderBlock<
+    T: ConfigurableCompositeInterpolatable
+  > = CompositeInterpolatableMappingProvider<
+    InterpolatableValue,
+    T.ClampingElementMap?
+  >;
   
   // MARK: - Property Requirements
   // -----------------------------
@@ -197,13 +185,13 @@ public extension RangeInterpolating {
       let outputStart = rangeOutput[index];
       let outputEnd   = rangeOutput[index + 1];
       
-      let easing = easingProvider?(
-        /* rangeIndex      : */ index,
-        /* interpolatorType: */ .interpolate(interpolatorIndex: index),
-        /* inputValueStart : */ inputStart,
-        /* inputValueEnd   : */ inputEnd,
-        /* outputValueStart: */ outputStart,
-        /* outputValueEnd  : */ outputEnd
+      let easing = easingProvider?.invoke(
+        rangeIndex: index,
+        interpolatorType: .interpolate(interpolatorIndex: index),
+        inputValueStart: inputStart,
+        inputValueEnd: inputEnd,
+        outputValueStart: outputStart,
+        outputValueEnd: outputEnd
       );
       
       let outputInterpolator: OutputInterpolator = .init(
@@ -223,13 +211,13 @@ public extension RangeInterpolating {
       let outputStart = rangeOutput[1];
       let outputEnd   = rangeOutput[0];
     
-      let easing = easingProvider?(
-        /* rangeIndex      : */ -1,
-        /* interpolatorType: */ .extrapolateLeft,
-        /* inputValueStart : */ inputStart,
-        /* inputValueEnd   : */ inputEnd,
-        /* outputValueStart: */ outputStart,
-        /* outputValueEnd  : */ outputEnd
+      let easing = easingProvider?.invoke(
+        rangeIndex: -1,
+        interpolatorType: .extrapolateLeft,
+        inputValueStart: inputEnd,
+        inputValueEnd: inputEnd,
+        outputValueStart: outputStart,
+        outputValueEnd: outputEnd
       );
       
       return .init(
@@ -247,14 +235,14 @@ public extension RangeInterpolating {
       let inputEnd    = rangeInput.last!;
       let outputStart = rangeOutput.secondToLast!;
       let outputEnd   = rangeOutput.last!;
-    
-      let easing = easingProvider?(
-        /* rangeIndex      : */ -1,
-        /* interpolatorType: */ .extrapolateRight,
-        /* inputValueStart : */ inputStart,
-        /* inputValueEnd   : */ inputEnd,
-        /* outputValueStart: */ outputStart,
-        /* outputValueEnd  : */ outputEnd
+      
+      let easing = easingProvider?.invoke(
+        rangeIndex: rangeInput.count,
+        interpolatorType: .extrapolateRight,
+        inputValueStart: inputStart,
+        inputValueEnd: inputEnd,
+        outputValueStart: outputStart,
+        outputValueEnd: outputEnd
       );
       
       return .init(
@@ -299,14 +287,15 @@ public extension RangeInterpolating {
       let outputStart = rangeOutput[index];
       let outputEnd   = rangeOutput[index + 1];
       
-      let easingMap = easingMapProvider?(
-        /* rangeIndex      : */ index,
-        /* interpolatorType: */ .interpolate(interpolatorIndex: index),
-        /* inputValueStart : */ inputStart,
-        /* inputValueEnd   : */ inputEnd,
-        /* outputValueStart: */ outputStart,
-        /* outputValueEnd  : */ outputEnd
+      let easingMap = easingMapProvider?.invoke(
+        rangeIndex: index,
+        interpolatorType: .interpolate(interpolatorIndex: index),
+        inputValueStart: inputStart,
+        inputValueEnd: inputEnd,
+        outputValueStart: outputStart,
+        outputValueEnd: outputEnd
       );
+      
 
       let outputInterpolator: OutputInterpolator = .init(
         inputValueStart: inputStart,
@@ -325,23 +314,23 @@ public extension RangeInterpolating {
       let inputEnd    = rangeInput [0];
       let outputStart = rangeOutput[1];
       let outputEnd   = rangeOutput[0];
-    
-      let easingMap = easingMapProvider?(
-        /* rangeIndex      : */ -1,
-        /* interpolatorType: */ .extrapolateLeft,
-        /* inputValueStart : */ inputStart,
-        /* inputValueEnd   : */ inputEnd,
-        /* outputValueStart: */ outputStart,
-        /* outputValueEnd  : */ outputEnd
+      
+      let easingMap = easingMapProvider?.invoke(
+        rangeIndex: -1,
+        interpolatorType: .extrapolateLeft,
+        inputValueStart: inputStart,
+        inputValueEnd: inputEnd,
+        outputValueStart: outputStart,
+        outputValueEnd: outputEnd
       );
       
-      let clampingMap = clampingMapProvider?(
-        /* rangeIndex      : */ -1,
-        /* interpolatorType: */ .extrapolateLeft,
-        /* inputValueStart : */ inputStart,
-        /* inputValueEnd   : */ inputEnd,
-        /* outputValueStart: */ outputStart,
-        /* outputValueEnd  : */ outputEnd
+      let clampingMap = clampingMapProvider?.invoke(
+        rangeIndex: -1,
+        interpolatorType: .extrapolateLeft,
+        inputValueStart: inputStart,
+        inputValueEnd: inputEnd,
+        outputValueStart: outputStart,
+        outputValueEnd: outputEnd
       );
       
       let clampingMapAdj = clampingMap?.mapValues {
@@ -363,23 +352,23 @@ public extension RangeInterpolating {
       let inputEnd    = rangeInput.last!;
       let outputStart = rangeOutput.secondToLast!;
       let outputEnd   = rangeOutput.last!;
-    
-      let easingMap = easingMapProvider?(
-        /* rangeIndex      : */ -1,
-        /* interpolatorType: */ .extrapolateRight,
-        /* inputValueStart : */ inputStart,
-        /* inputValueEnd   : */ inputEnd,
-        /* outputValueStart: */ outputStart,
-        /* outputValueEnd  : */ outputEnd
+      
+      let easingMap = easingMapProvider?.invoke(
+        rangeIndex: rangeInput.count,
+        interpolatorType: .extrapolateRight,
+        inputValueStart: inputStart,
+        inputValueEnd: inputEnd,
+        outputValueStart: outputStart,
+        outputValueEnd: outputEnd
       );
       
-      let clampingMap = clampingMapProvider?(
-        /* rangeIndex      : */ -1,
-        /* interpolatorType: */ .extrapolateRight,
-        /* inputValueStart : */ inputStart,
-        /* inputValueEnd   : */ inputEnd,
-        /* outputValueStart: */ outputStart,
-        /* outputValueEnd  : */ outputEnd
+      let clampingMap = clampingMapProvider?.invoke(
+        rangeIndex: rangeInput.count,
+        interpolatorType: .extrapolateRight,
+        inputValueStart: inputStart,
+        inputValueEnd: inputEnd,
+        outputValueStart: outputStart,
+        outputValueEnd: outputEnd
       );
       
       let clampingMapAdj = clampingMap?.mapValues {
@@ -418,14 +407,14 @@ public extension RangeInterpolating {
     var clampingMapProvider: ClampingMapProviderBlock?;
 
     if let easingElementMapProvider = easingElementMapProvider {
-      easingMapProvider = {
-        let easingElementMap = easingElementMapProvider(
-          /* rangeIndex      : */ $0,
-          /* interpolatorType: */ $1,
-          /* inputValueStart : */ $2,
-          /* inputValueEnd   : */ $3,
-          /* outputValueStart: */ $4,
-          /* outputValueEnd  : */ $5
+      easingMapProvider = .verbose {
+        let easingElementMap = easingElementMapProvider.invoke(
+          rangeIndex      : $0,
+          interpolatorType: $1,
+          inputValueStart : $2,
+          inputValueEnd   : $3,
+          outputValueStart: $4,
+          outputValueEnd  : $5
         );
         
         return .init(
@@ -436,14 +425,14 @@ public extension RangeInterpolating {
     };
     
     if let clampingElementMapProvider = clampingElementMapProvider {
-      clampingMapProvider = {
-        let clampingElementMap = clampingElementMapProvider(
-          /* rangeIndex      : */ $0,
-          /* interpolatorType: */ $1,
-          /* inputValueStart : */ $2,
-          /* inputValueEnd   : */ $3,
-          /* outputValueStart: */ $4,
-          /* outputValueEnd  : */ $5
+      clampingMapProvider = .verbose {
+        let clampingElementMap = clampingElementMapProvider.invoke(
+          rangeIndex      : $0,
+          interpolatorType: $1,
+          inputValueStart : $2,
+          inputValueEnd   : $3,
+          outputValueStart: $4,
+          outputValueEnd  : $5
         );
         
         return .init(
