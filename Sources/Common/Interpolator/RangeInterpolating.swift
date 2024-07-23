@@ -27,30 +27,29 @@ public protocol RangeInterpolating: AnyRangeInterpolating {
     _ interpolatedValue: InterpolatableValue
   ) -> Void;
   
-  // TODO: Remove "Block" suffix in providers
-  typealias EasingProviderBlock = CompositeInterpolatableMappingProvider<
+  typealias EasingProvider = CompositeInterpolatableMappingProvider<
     InterpolatableValue,
     InterpolationEasing?
   >;
   
-  typealias EasingMapProviderBlock = CompositeInterpolatableMappingProvider<
+  typealias EasingMapProvider = CompositeInterpolatableMappingProvider<
     InterpolatableValue,
     CompositeInterpolatable.EasingKeyPathMap?
   >;
   
-  typealias ClampingMapProviderBlock = CompositeInterpolatableMappingProvider<
+  typealias ClampingMapProvider = CompositeInterpolatableMappingProvider<
     InterpolatableValue,
     CompositeInterpolatable.ClampingKeyPathMap?
   >;
   
-  typealias EasingElementMapProviderBlock<
+  typealias EasingElementMapProvider<
     T: ConfigurableCompositeInterpolatable
   > = CompositeInterpolatableMappingProvider<
     InterpolatableValue,
     T.EasingElementMap?
   >;
   
-  typealias ClampingElementMapProviderBlock<
+  typealias ClampingElementMapProvider<
     T: ConfigurableCompositeInterpolatable
   > = CompositeInterpolatableMappingProvider<
     InterpolatableValue,
@@ -166,7 +165,7 @@ public extension RangeInterpolating {
   init(
     rangeInput: [CGFloat],
     rangeOutput: [InterpolatableValue],
-    easingProvider: EasingProviderBlock?,
+    easingProvider: EasingProvider?,
     clampingOptions: ClampingOptions = .none,
     targetBlock: TargetBlock? = nil
   ) throws {
@@ -268,8 +267,8 @@ public extension RangeInterpolating {
   init(
     rangeInput: [CGFloat],
     rangeOutput: [InterpolatableValue],
-    easingMapProvider: EasingMapProviderBlock?,
-    clampingMapProvider: ClampingMapProviderBlock?,
+    easingMapProvider: EasingMapProvider?,
+    clampingMapProvider: ClampingMapProvider?,
     targetBlock: TargetBlock? = nil
   ) throws where InterpolatableType: CompositeInterpolatable {
     
@@ -398,13 +397,13 @@ public extension RangeInterpolating {
   init(
     rangeInput: [CGFloat],
     rangeOutput: [InterpolatableValue],
-    easingElementMapProvider: EasingElementMapProviderBlock<InterpolatableValue>?,
-    clampingElementMapProvider: ClampingElementMapProviderBlock<InterpolatableValue>?,
+    easingElementMapProvider: EasingElementMapProvider<InterpolatableValue>?,
+    clampingElementMapProvider: ClampingElementMapProvider<InterpolatableValue>?,
     targetBlock: TargetBlock? = nil
   ) throws where InterpolatableType: ConfigurableCompositeInterpolatable {
   
-    var easingMapProvider: EasingMapProviderBlock?;
-    var clampingMapProvider: ClampingMapProviderBlock?;
+    var easingMapProvider: EasingMapProvider?;
+    var clampingMapProvider: ClampingMapProvider?;
 
     if let easingElementMapProvider = easingElementMapProvider {
       easingMapProvider = .verbose {
