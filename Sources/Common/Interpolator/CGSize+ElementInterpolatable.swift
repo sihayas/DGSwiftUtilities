@@ -1,6 +1,6 @@
 //
-//  CGPoint+ConfigurableCompositeInterpolatable.swift
-//
+//  CGSize+ElementInterpolatable.swift
+//  
 //
 //  Created by Dominic Go on 7/17/24.
 //
@@ -9,29 +9,29 @@ import Foundation
 import CoreGraphics
 
 
-extension CGPoint: ConfigurableCompositeInterpolatable {
+extension CGSize: ElementInterpolatable {
 
   public struct InterpolatableElements: OptionSet, CompositeInterpolatableElements {
     public let rawValue: Int;
     
-    public static let x = Self(rawValue: 1 << 2);
-    public static let y = Self(rawValue: 1 << 3);
+    public static let width  = Self(rawValue: 1 << 0);
+    public static let height = Self(rawValue: 1 << 1);
     
     public var associatedAnyKeyPaths: [AnyKeyPath] {
       guard !self.isEmpty else {
         return [];
       };
       
-      var keyPaths: [PartialKeyPath<CGPoint>] = [];
+      var keyPaths: [PartialKeyPath<CGSize>] = [];
       
-      if self.contains(.x) {
-        keyPaths.append(\.x);
+      if self.contains(.height) {
+        keyPaths.append(\.height);
       };
       
-      if self.contains(.y) {
-        keyPaths.append(\.y);
+      if self.contains(.width) {
+        keyPaths.append(\.width);
       };
-
+      
       return keyPaths;
     };
     
@@ -39,9 +39,9 @@ extension CGPoint: ConfigurableCompositeInterpolatable {
       self.rawValue = rawValue;
     };
   };
-
+  
   public static var interpolatablePropertiesMap: InterpolatableValuesMap = [
-    \.x: CGFloat.self,
-    \.y: CGFloat.self,
+    \.width: CGFloat.self,
+    \.height: CGFloat.self,
   ];
 };

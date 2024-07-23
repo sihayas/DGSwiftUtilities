@@ -201,7 +201,7 @@ extension Dictionary where Self == CompositeInterpolatable.EasingKeyPathMap {
   init<T>(
     type: T.Type = T.self,
     easingElementMap: T.EasingElementMap
-  ) where T: ConfigurableCompositeInterpolatable {
+  ) where T: ElementInterpolatable {
   
     self = easingElementMap.reduce(into: [:]) {
       for keyPath in  $1.key.associatedAnyKeyPaths {
@@ -219,7 +219,7 @@ extension Dictionary where Self == CompositeInterpolatable.ClampingKeyPathMap {
   init<T>(
     type: T.Type = T.self,
     clampingElementMap: T.ClampingElementMap
-  ) where T: ConfigurableCompositeInterpolatable {
+  ) where T: ElementInterpolatable {
   
     self = clampingElementMap.reduce(into: [:]) {
       for keyPath in  $1.key.associatedAnyKeyPaths {

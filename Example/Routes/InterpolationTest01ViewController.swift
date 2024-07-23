@@ -385,7 +385,7 @@ class InterpolationTest01ViewController: UIViewController {
       ];
       
       return .init(
-        title: "Basic Tests for ConfigurableCompositeInterpolatable",
+        title: "Basic Tests for ElementInterpolatable",
         desc: [],
         content: [
           .filledButton(

@@ -1,5 +1,5 @@
 //
-//  ConfigurableCompositeInterpolatable.swift
+//  ElementInterpolatable.swift
 //  
 //
 //  Created by Dominic Go on 7/18/24.
@@ -11,7 +11,7 @@ import Foundation
 /// In other words, custom easing + clamping for each "interpolatable" property
 /// (e.g. `size`, etc).
 /// 
-public protocol ConfigurableCompositeInterpolatable: CompositeInterpolatable {
+public protocol ElementInterpolatable: CompositeInterpolatable {
   
   associatedtype InterpolatableElements: CompositeInterpolatableElements;
   
@@ -19,7 +19,7 @@ public protocol ConfigurableCompositeInterpolatable: CompositeInterpolatable {
   typealias ClampingElementMap = [InterpolatableElements: ClampingOptions];
 };
 
-public extension ConfigurableCompositeInterpolatable {
+public extension ElementInterpolatable {
 
   static func lerp(
     valueStart: Self.InterpolatableValue,

@@ -43,14 +43,14 @@ public protocol RangeInterpolating: AnyRangeInterpolating {
   >;
   
   typealias EasingElementMapProvider<
-    T: ConfigurableCompositeInterpolatable
+    T: ElementInterpolatable
   > = CompositeInterpolatableMappingProvider<
     InterpolatableValue,
     T.EasingElementMap?
   >;
   
   typealias ClampingElementMapProvider<
-    T: ConfigurableCompositeInterpolatable
+    T: ElementInterpolatable
   > = CompositeInterpolatableMappingProvider<
     InterpolatableValue,
     T.ClampingElementMap?
@@ -400,7 +400,7 @@ public extension RangeInterpolating {
     easingElementMapProvider: EasingElementMapProvider<InterpolatableValue>?,
     clampingElementMapProvider: ClampingElementMapProvider<InterpolatableValue>?,
     targetBlock: TargetBlock? = nil
-  ) throws where InterpolatableType: ConfigurableCompositeInterpolatable {
+  ) throws where InterpolatableType: ElementInterpolatable {
   
     var easingMapProvider: EasingMapProvider?;
     var clampingMapProvider: ClampingMapProvider?;

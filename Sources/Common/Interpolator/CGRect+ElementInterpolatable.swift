@@ -1,5 +1,5 @@
 //
-//  CGRect+ConfigurableCompositeInterpolatable.swift
+//  CGRect+ElementInterpolatable.swift
 //
 //
 //  Created by Dominic Go on 7/16/24.
@@ -9,7 +9,7 @@ import Foundation
 import CoreGraphics
 
 
-extension CGRect: ConfigurableCompositeInterpolatable {
+extension CGRect: ElementInterpolatable {
   
   public struct InterpolatableElements: OptionSet, CompositeInterpolatableElements {
     public let rawValue: Int;

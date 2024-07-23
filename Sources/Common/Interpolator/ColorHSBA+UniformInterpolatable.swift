@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension ColorHSBA: ConfigurableCompositeInterpolatable {
+extension ColorHSBA: ElementInterpolatable {
 
   public struct InterpolatableElements: OptionSet, CompositeInterpolatableElements {
     public let rawValue: Int;

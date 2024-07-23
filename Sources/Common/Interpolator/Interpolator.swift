@@ -185,7 +185,7 @@ public struct Interpolator<T: UniformInterpolatable>: AnyInterpolator  {
     };
   };
   
-  // MARK: - Init - ConfigurableCompositeInterpolatable
+  // MARK: - Init - ElementInterpolatable
   // --------------------------------------------------
   
   public init(
@@ -193,7 +193,7 @@ public struct Interpolator<T: UniformInterpolatable>: AnyInterpolator  {
     valueEnd: InterpolatableValue,
     easingElementMap: T.EasingElementMap,
     clampingElementMap: T.ClampingElementMap
-  ) where T: ConfigurableCompositeInterpolatable {
+  ) where T: ElementInterpolatable {
   
     let easingMap: T.EasingKeyPathMap =
       .init(type: T.self, easingElementMap: easingElementMap);
@@ -216,7 +216,7 @@ public struct Interpolator<T: UniformInterpolatable>: AnyInterpolator  {
     outputValueEnd: InterpolatableValue,
     easingElementMap: T.EasingElementMap,
     clampingElementMap: T.ClampingElementMap
-  ) where T: ConfigurableCompositeInterpolatable {
+  ) where T: ElementInterpolatable {
     
     let easingMap: T.EasingKeyPathMap =
       .init(type: T.self, easingElementMap: easingElementMap);
