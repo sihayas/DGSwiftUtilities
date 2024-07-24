@@ -617,7 +617,7 @@ class InterpolationTest01ViewController: UIViewController {
     
     cardConfig.append({
       let sharedRangeInputValues: [CGFloat] = [-100, -1, 0, 1, 100];
-      let sharedRangeOutputValues: [CGFloat] = [100, 0, 200, 50, 255];
+      let rangeOutputValues: [CGFloat] = [100, 0, 200, 50, 255];
       
       let sharedInputValues: [CGFloat] = [
         // exact
@@ -635,6 +635,15 @@ class InterpolationTest01ViewController: UIViewController {
         0.25, 0.5, 0.75,
         10, 20, 25, 40, 50, 75, 80,
       ];
+      
+      let sharedRangeOutputItems: [UIColor] = rangeOutputValues.map {
+        .init(
+          red: $0/255,
+          green: $0/255,
+          blue: $0/255,
+          alpha: $0/255
+        )
+      };
       
       return .init(
         title: "Basic Tests for Interpolating UIColor",
@@ -650,14 +659,7 @@ class InterpolationTest01ViewController: UIViewController {
             handler: { _,_ in
               var rangedInterpolator = try! RangeInterpolator<UIColor>(
                 rangeInput: sharedRangeInputValues,
-                rangeOutput: sharedRangeOutputValues.map {
-                  .init(
-                    red: $0/255,
-                    green: $0/255,
-                    blue: $0/255,
-                    alpha: $0/255
-                  )
-                },
+                rangeOutput: sharedRangeOutputItems,
                 easingProvider: .rangeIndexAndInterpolatorType {
                   switch $1 {
                     case .extrapolateLeft:
@@ -697,54 +699,13 @@ class InterpolationTest01ViewController: UIViewController {
               );
             }
           ),
-          
-          .filledButton(
-            title: [
-              .init(text: "RangeInterpolator<UIColor>"),
-            ],
-            subtitle: [
-              .init(text: "Test uniform clamping via clampingOptions")
-            ],
-            handler: { _,_ in
-              var rangedInterpolator = try! RangeInterpolator<UIColor>(
-                rangeInput: sharedRangeInputValues,
-                rangeOutput: sharedRangeOutputValues.map {
-                  .init(
-                    red: $0/255,
-                    green: $0/255,
-                    blue: $0/255,
-                    alpha: $0/255
-                  );
-                },
-                easingProvider: nil,
-                clampingOptions: .leftAndRight
-              );
-              
-              var results: [AttributedStringConfig] = [
-                .init(text: "RangeInterpolator<UIColor>"),
-                .newLine,
-                .init(text: "clampingOptions = leftAndRight "),
-                .newLines(2),
-              ];
-              
-              results += Helpers.invokeRangedInterpolatorAndGetResults(
-                with: sharedInputValues,
-                rangedInterpolator: &rangedInterpolator
-              );
-              
-              Helpers.logAndPresent(
-                textItems: results,
-                parentVC: self
-              );
-            }
-          ),
         ]
       );
     }());
     
     cardConfig.append({
-      let sharedRangeInputValues : [CGFloat] = [-100 , -1  , 0, 1  , 100 ];
-      let sharedRangeOutputValues: [CGFloat] = [-1000, -100, 0, 100, 1000];
+      let sharedRangeInputValues: [CGFloat] = [-100 , -1  , 0, 1  , 100 ];
+      let rangeOutputValues     : [CGFloat] = [-1000, -100, 0, 100, 1000];
       
       let sharedInputValues: [CGFloat] = [
         // exact
@@ -762,6 +723,10 @@ class InterpolationTest01ViewController: UIViewController {
         0.25, 0.5, 0.75,
         10, 20, 25, 40, 50, 75, 80,
       ];
+      
+      let sharedRangeOutputValues: [Angle<CGFloat>] = rangeOutputValues.map {
+        .degrees($0);
+      };
       
       return .init(
         title: "Basic Tests for Interpolating Angle",
@@ -777,9 +742,7 @@ class InterpolationTest01ViewController: UIViewController {
             handler: { _,_ in
               var rangedInterpolator = try! RangeInterpolator<Angle<CGFloat>>(
                 rangeInput: sharedRangeInputValues,
-                rangeOutput: sharedRangeOutputValues.map {
-                  .degrees($0)
-                },
+                rangeOutput: sharedRangeOutputValues,
                 easingProvider: .rangeIndexAndInterpolatorType {
                   switch $1 {
                     case .extrapolateLeft:
@@ -830,9 +793,7 @@ class InterpolationTest01ViewController: UIViewController {
             handler: { _,_ in
               var rangedInterpolator = try! RangeInterpolator<Angle<CGFloat>>(
                 rangeInput: sharedRangeInputValues,
-                rangeOutput: sharedRangeOutputValues.map {
-                  .degrees($0)
-                },
+                rangeOutput: sharedRangeOutputValues,
                 easingProvider: nil,
                 clampingOptions: .leftAndRight
               );
@@ -861,7 +822,7 @@ class InterpolationTest01ViewController: UIViewController {
     
     cardConfig.append({
       let sharedRangeInputValues : [CGFloat] = [-100 , -1  , 0, 1  , 100 ];
-      let sharedRangeOutputValues: [CGFloat] = [-1000, -100, 0, 100, 1000];
+      let rangeOutputValues: [CGFloat] = [-1000, -100, 0, 100, 1000];
       
       let sharedInputValues: [CGFloat] = [
         // exact
@@ -880,6 +841,22 @@ class InterpolationTest01ViewController: UIViewController {
         10, 20, 25, 40, 50, 75, 80,
       ];
       
+      let sharedRangeOutputValues: [Transform3D] = rangeOutputValues.map {
+        .init(
+          translateX: $0,
+          translateY: $0,
+          translateZ: $0,
+          scaleX: $0,
+          scaleY: $0,
+          rotateX: .degrees($0),
+          rotateY: .degrees($0),
+          rotateZ: .degrees($0),
+          perspective: $0,
+          skewX: $0,
+          skewY: $0
+        );
+      };
+      
       return .init(
         title: "Basic Tests for Interpolating Transform3D",
         desc: [],
@@ -894,21 +871,7 @@ class InterpolationTest01ViewController: UIViewController {
             handler: { _,_ in
               var rangedInterpolator = try! RangeInterpolator<Transform3D>(
                 rangeInput: sharedRangeInputValues,
-                rangeOutput: sharedRangeOutputValues.map {
-                  .init(
-                    translateX: $0,
-                    translateY: $0,
-                    translateZ: $0,
-                    scaleX: $0,
-                    scaleY: $0,
-                    rotateX: .degrees($0),
-                    rotateY: .degrees($0),
-                    rotateZ: .degrees($0),
-                    perspective: $0,
-                    skewX: $0,
-                    skewY: $0
-                  );
-                },
+                rangeOutput: sharedRangeOutputValues,
                 easingProvider: .rangeIndexAndInterpolatorType {
                   switch $1 {
                     case .extrapolateLeft:
@@ -959,21 +922,7 @@ class InterpolationTest01ViewController: UIViewController {
             handler: { _,_ in
               var rangedInterpolator = try! RangeInterpolator<Transform3D>(
                 rangeInput: sharedRangeInputValues,
-                rangeOutput: sharedRangeOutputValues.map {
-                  .init(
-                    translateX: $0,
-                    translateY: $0,
-                    translateZ: $0,
-                    scaleX: $0,
-                    scaleY: $0,
-                    rotateX: .degrees($0),
-                    rotateY: .degrees($0),
-                    rotateZ: .degrees($0),
-                    perspective: $0,
-                    skewX: $0,
-                    skewY: $0
-                  );
-                },
+                rangeOutput: sharedRangeOutputValues,
                 easingProvider: nil,
                 clampingOptions: .leftAndRight
               );
@@ -982,6 +931,227 @@ class InterpolationTest01ViewController: UIViewController {
                 .init(text: "RangeInterpolator<Transform3D>"),
                 .newLine,
                 .init(text: "clampingOptions = leftAndRight "),
+                .newLines(2),
+              ];
+              
+              results += Helpers.invokeRangedInterpolatorAndGetResults(
+                with: sharedInputValues,
+                rangedInterpolator: &rangedInterpolator
+              );
+              
+              Helpers.logAndPresent(
+                textItems: results,
+                parentVC: self
+              );
+            }
+          ),
+          
+          .filledButton(
+            title: [
+              .init(text: "RangeInterpolator<Transform3D>"),
+            ],
+            subtitle: [
+              .init(text: "Test composite easing via Transform3D")
+            ],
+            handler: { _,_ in
+              var rangedInterpolator = try! RangeInterpolator<Transform3D>(
+                rangeInput: sharedRangeInputValues,
+                rangeOutput: sharedRangeOutputValues,
+                easingMapProvider: .rangeIndex {
+                  return ($0 % 2 == 0) ? [
+                    \Transform3D.translateX : .easeInQuad ,
+                    \Transform3D.translateY : .easeInCubic,
+                    \Transform3D.translateZ : .easeInQuart,
+                    \Transform3D.scaleX     : .easeInQuint,
+                    \Transform3D.scaleY     : .easeInQuad ,
+                    \Transform3D.rotateX    : .easeInCubic,
+                    \Transform3D.rotateY    : .easeInQuart,
+                    \Transform3D.rotateZ    : .easeInQuint,
+                    \Transform3D.perspective: .easeInQuad ,
+                    \Transform3D.skewX      : .easeInCubic,
+                    \Transform3D.skewY      : .easeInQuart,
+                  ] : [
+                    \Transform3D.translateX : .easeOutQuad ,
+                    \Transform3D.translateY : .easeOutCubic,
+                    \Transform3D.translateZ : .easeOutQuart,
+                    \Transform3D.scaleX     : .easeOutQuint,
+                    \Transform3D.scaleY     : .easeOutQuad ,
+                    \Transform3D.rotateX    : .easeOutCubic,
+                    \Transform3D.rotateY    : .easeOutQuart,
+                    \Transform3D.rotateZ    : .easeOutQuint,
+                    \Transform3D.perspective: .easeOutQuad ,
+                    \Transform3D.skewX      : .easeOutCubic,
+                    \Transform3D.skewY      : .easeOutQuart,
+                  ];
+                },
+                clampingMapProvider: nil
+              );
+              
+              var results: [AttributedStringConfig] = [
+                .init(text: "When rangeIndex is even, then: "),
+                .init(text: "easeInQuad = translateX, "),
+                .init(text: "easeInCubic = translateY, "),
+                .init(text: "easeInQuart = translateZ, "),
+                .init(text: "easeInQuint = scaleX, "),
+                .init(text: "easeInQuad = scaleY, "),
+                .init(text: "easeInCubic = rotateX, "),
+                .init(text: "easeInQuart = rotateY, "),
+                .init(text: "easeInQuint = rotateZ, "),
+                .init(text: "easeInQuad = perspective, "),
+                .init(text: "easeInCubic = skewX, "),
+                .init(text: "easeInQuart = skewY."),
+                .newLines(2),
+                .init(text: "easeOutQuad = translateX, "),
+                .init(text: "easeOutCubic = translateY, "),
+                .init(text: "easeOutQuart = translateZ, "),
+                .init(text: "easeOutQuint = scaleX, "),
+                .init(text: "easeOutQuad = scaleY, "),
+                .init(text: "easeOutCubic = rotateX, "),
+                .init(text: "easeOutQuart = rotateY, "),
+                .init(text: "easeOutQuint = rotateZ, "),
+                .init(text: "easeOutQuad = perspective, "),
+                .init(text: "easeOutCubic = skewX, "),
+                .init(text: "easeOutQuart = skewY"),
+                .newLines(2),
+              ];
+              
+              results += Helpers.invokeRangedInterpolatorAndGetResults(
+                with: sharedInputValues,
+                rangedInterpolator: &rangedInterpolator
+              );
+              
+              Helpers.logAndPresent(
+                textItems: results,
+                parentVC: self
+              );
+            }
+          ),
+          
+          .filledButton(
+            title: [
+              .init(text: "RangeInterpolator<Transform3D>"),
+            ],
+            subtitle: [
+              .init(text: "Test composite clamping via clampingMap")
+            ],
+            handler: { _,_ in
+              var rangedInterpolator = try! RangeInterpolator<Transform3D>(
+                rangeInput: sharedRangeInputValues,
+                rangeOutput: sharedRangeOutputValues,
+                easingMapProvider: nil,
+                clampingMapProvider: .returnOnly {
+                  return [
+                    \Transform3D.translateX : .left,
+                    \Transform3D.translateY : .right,
+                    \Transform3D.translateZ : .leftAndRight,
+                    \Transform3D.scaleX     : .none,
+                    \Transform3D.scaleY     : .left,
+                    \Transform3D.rotateX    : .right,
+                    \Transform3D.rotateY    : .leftAndRight,
+                    \Transform3D.rotateZ    : .none,
+                    \Transform3D.perspective: .left,
+                    \Transform3D.skewX      : .right,
+                    \Transform3D.skewY      : .leftAndRight,
+                  ];
+                }
+              );
+              
+              var results: [AttributedStringConfig] = [
+                .init(text: "clamping: "),
+                .init(text: "left = translateX, "),
+                .init(text: "right = translateY, "),
+                .init(text: "leftAndRight = translateZ, "),
+                .init(text: "none = scaleX, "),
+                .init(text: "left = scaleY, "),
+                .init(text: "right = rotateX, "),
+                .init(text: "leftAndRight = rotateY, "),
+                .init(text: "none = rotateZ, "),
+                .init(text: "left = perspective, "),
+                .init(text: "right = skewX, "),
+                .init(text: "leftAndRight = skewY."),
+                .newLines(2),
+              ];
+              
+              results += Helpers.invokeRangedInterpolatorAndGetResults(
+                with: sharedInputValues,
+                rangedInterpolator: &rangedInterpolator
+              );
+              
+              Helpers.logAndPresent(
+                textItems: results,
+                parentVC: self
+              );
+            }
+          ),
+          
+          .filledButton(
+            title: [
+              .init(text: "RangeInterpolator<Transform3D>"),
+            ],
+            subtitle: [
+              .init(text: "Test composite easing via easingElementMap")
+            ],
+            handler: { _,_ in
+              var rangedInterpolator = try! RangeInterpolator<Transform3D>(
+                rangeInput: sharedRangeInputValues,
+                rangeOutput: sharedRangeOutputValues,
+                easingElementMapProvider: .rangeIndex {
+                  return ($0 % 2 == 0) ? [
+                    .translateX : .easeInQuad  ,
+                    .translateY : .easeOutQuad ,
+                    .translateZ : .easeInQuart ,
+                    .scaleX     : .easeOutQuart,
+                    .scaleY     : .easeInQuint ,
+                    .rotateX    : .easeOutQuint,
+                    .rotateY    : .easeInQuad  ,
+                    .rotateZ    : .easeOutQuad ,
+                    .perspective: .easeInCubic ,
+                    .skewX      : .easeOutCubic,
+                    .skewY      : .easeInQuart ,
+                  ] : [
+                    .translateX : .easeInOutQuad ,
+                    .translateY : .easeInOutCubic,
+                    .translateZ : .easeInOutQuart,
+                    .scaleX     : .easeInOutQuint,
+                    .scaleY     : .easeInOutQuad ,
+                    .rotateX    : .easeInOutCubic,
+                    .rotateY    : .easeInOutQuart,
+                    .rotateZ    : .easeInOutQuint,
+                    .perspective: .easeInOutQuad ,
+                    .skewX      : .easeInOutCubic,
+                    .skewY      : .easeInOutQuart,
+                  ];
+                },
+                clampingElementMapProvider: nil
+                
+              );
+              
+              var results: [AttributedStringConfig] = [
+                .init(text: "When rangeIndex is even, then: "),
+                .init(text: "translateX = easeInQuad, "),
+                .init(text: "translateY = easeOutQuad, "),
+                .init(text: "translateZ = easeInQuart, "),
+                .init(text: "scaleX = easeOutQuart, "),
+                .init(text: "scaleY = easeInQuint, "),
+                .init(text: "rotateX = easeOutQuint, "),
+                .init(text: "rotateY = easeInQuad, "),
+                .init(text: "rotateZ = easeOutQuad, "),
+                .init(text: "perspective = easeInCubic, "),
+                .init(text: "skewX = easeOutCubic, "),
+                .init(text: "skewY = easeInQuart,"),
+                .newLines(2),
+                .init(text: "When rangeIndex is odd, then: "),
+                .init(text: "translateX = easeInOutQuad, "),
+                .init(text: "translateY = easeInOutCubic, "),
+                .init(text: "translateZ = easeInOutQuart, "),
+                .init(text: "scaleX = easeInOutQuint, "),
+                .init(text: "scaleY = easeInOutQuad, "),
+                .init(text: "rotateX = easeInOutCubic, "),
+                .init(text: "rotateY = easeInOutQuart, "),
+                .init(text: "rotateZ = easeInOutQuint, "),
+                .init(text: "perspective = easeInOutQuad, "),
+                .init(text: "skewX = easeInOutCubic, "),
+                .init(text: "skewY = easeInOutQuart."),
                 .newLines(2),
               ];
               
@@ -1001,8 +1171,8 @@ class InterpolationTest01ViewController: UIViewController {
     }());
     
     cardConfig.append({
-      let sharedRangeInputValues : [CGFloat] = [-100 , -1  , 0, 1  , 100 ];
-      let sharedRangeOutputValues: [CGFloat] = [-1000, -100, 0, 100, 1000];
+      let sharedRangeInputValues: [CGFloat] = [-100 , -1  , 0, 1  , 100 ];
+      let rangeOutputValues     : [CGFloat] = [-1000, -100, 0, 100, 1000];
       
       let sharedInputValues: [CGFloat] = [
         // exact
@@ -1021,6 +1191,15 @@ class InterpolationTest01ViewController: UIViewController {
         10, 20, 25, 40, 50, 75, 80,
       ];
       
+      let sharedRangeOutputValues: [UIEdgeInsets] = rangeOutputValues.map {
+        .init(
+          top: $0,
+          left: $0,
+          bottom: $0,
+          right: $0
+        );
+      };
+      
       return .init(
         title: "Basic Tests for Interpolating UIEdgeInsets",
         desc: [],
@@ -1035,9 +1214,7 @@ class InterpolationTest01ViewController: UIViewController {
             handler: { _,_ in
               var rangedInterpolator = try! RangeInterpolator<UIEdgeInsets>(
                 rangeInput: sharedRangeInputValues,
-                rangeOutput: sharedRangeOutputValues.map {
-                  .init(top: $0, left: $0, bottom: $0, right: $0)
-                },
+                rangeOutput: sharedRangeOutputValues,
                 easingProvider: .rangeIndexAndInterpolatorType {
                   switch $1 {
                     case .extrapolateLeft:
@@ -1088,9 +1265,7 @@ class InterpolationTest01ViewController: UIViewController {
             handler: { _,_ in
               var rangedInterpolator = try! RangeInterpolator<UIEdgeInsets>(
                 rangeInput: sharedRangeInputValues,
-                rangeOutput: sharedRangeOutputValues.map {
-                  .init(top: $0, left: $0, bottom: $0, right: $0)
-                },
+                rangeOutput: sharedRangeOutputValues,
                 easingProvider: nil,
                 clampingOptions: .leftAndRight
               );
@@ -1099,6 +1274,157 @@ class InterpolationTest01ViewController: UIViewController {
                 .init(text: "RangeInterpolator<UIEdgeInsets>"),
                 .newLine,
                 .init(text: "clampingOptions = leftAndRight "),
+                .newLines(2),
+              ];
+              
+              results += Helpers.invokeRangedInterpolatorAndGetResults(
+                with: sharedInputValues,
+                rangedInterpolator: &rangedInterpolator
+              );
+              
+              Helpers.logAndPresent(
+                textItems: results,
+                parentVC: self
+              );
+            }
+          ),
+          
+          .filledButton(
+            title: [
+              .init(text: "RangeInterpolator<UIEdgeInsets>"),
+            ],
+            subtitle: [
+              .init(text: "Test composite easing via UIEdgeInsets")
+            ],
+            handler: { _,_ in
+              var rangedInterpolator = try! RangeInterpolator<UIEdgeInsets>(
+                rangeInput: sharedRangeInputValues,
+                rangeOutput: sharedRangeOutputValues,
+                easingMapProvider: .rangeIndex {
+                  return ($0 % 2 == 0) ? [
+                    \UIEdgeInsets.left  : .easeInQuad ,
+                    \UIEdgeInsets.right : .easeInCubic,
+                    \UIEdgeInsets.top   : .easeInQuart,
+                    \UIEdgeInsets.bottom: .easeInQuint,
+                  ] : [
+                    \UIEdgeInsets.left  : .easeOutQuad ,
+                    \UIEdgeInsets.right : .easeOutCubic,
+                    \UIEdgeInsets.top   : .easeOutQuart,
+                    \UIEdgeInsets.bottom: .easeOutQuint,
+                  ];
+                },
+                clampingMapProvider: nil
+              );
+              
+              var results: [AttributedStringConfig] = [
+                .init(text: "When rangeIndex is even, then: "),
+                .init(text: "easeInQuad = left, "),
+                .init(text: "easeInCubic = right, "),
+                .init(text: "easeInQuart = top, "),
+                .init(text: "easeInQuint = bottom."),
+                .newLines(2),
+                .init(text: "easeOutQuad = left, "),
+                .init(text: "easeOutCubic = right, "),
+                .init(text: "easeOutQuart = top, "),
+                .init(text: "easeOutQuint = bottom."),
+                .newLines(2),
+              ];
+              
+              results += Helpers.invokeRangedInterpolatorAndGetResults(
+                with: sharedInputValues,
+                rangedInterpolator: &rangedInterpolator
+              );
+              
+              Helpers.logAndPresent(
+                textItems: results,
+                parentVC: self
+              );
+            }
+          ),
+          
+          .filledButton(
+            title: [
+              .init(text: "RangeInterpolator<UIEdgeInsets>"),
+            ],
+            subtitle: [
+              .init(text: "Test composite clamping via clampingMap")
+            ],
+            handler: { _,_ in
+              var rangedInterpolator = try! RangeInterpolator<UIEdgeInsets>(
+                rangeInput: sharedRangeInputValues,
+                rangeOutput: sharedRangeOutputValues,
+                easingMapProvider: nil,
+                clampingMapProvider: .returnOnly {
+                  return [
+                    \UIEdgeInsets.left  : .left,
+                    \UIEdgeInsets.right : .right,
+                    \UIEdgeInsets.top   : .leftAndRight,
+                    \UIEdgeInsets.bottom: .none,
+                  ];
+                }
+              );
+              
+              var results: [AttributedStringConfig] = [
+                .init(text: "clamping: "),
+                .init(text: "left = left, "),
+                .init(text: "right = right, "),
+                .init(text: "leftAndRight = top, "),
+                .init(text: "none = bottom."),
+                .newLines(2),
+              ];
+              
+              results += Helpers.invokeRangedInterpolatorAndGetResults(
+                with: sharedInputValues,
+                rangedInterpolator: &rangedInterpolator
+              );
+              
+              Helpers.logAndPresent(
+                textItems: results,
+                parentVC: self
+              );
+            }
+          ),
+          
+          .filledButton(
+            title: [
+              .init(text: "RangeInterpolator<UIEdgeInsets>"),
+            ],
+            subtitle: [
+              .init(text: "Test composite easing via easingElementMap")
+            ],
+            handler: { _,_ in
+              var rangedInterpolator = try! RangeInterpolator<UIEdgeInsets>(
+                rangeInput: sharedRangeInputValues,
+                rangeOutput: sharedRangeOutputValues,
+                easingElementMapProvider: .rangeIndex {
+                  return ($0 % 2 == 0) ? [
+                    .left  : .easeInQuad  ,
+                    .right : .easeOutQuad ,
+                    .top   : .easeInQuart ,
+                    .bottom: .easeOutQuart,
+                  ] : [
+                    .left  : .easeInOutQuad ,
+                    .right : .easeInOutCubic,
+                    .top   : .easeInOutQuart,
+                    .bottom: .easeInOutQuint,
+                  ];
+                },
+                clampingElementMapProvider: nil
+                
+              );
+              
+              var results: [AttributedStringConfig] = [
+                .init(text: "When rangeIndex is even, then: "),
+                .init(text: "left = easeInQuad, "),
+                .init(text: "right = easeOutQuad, "),
+                .init(text: "top = easeInQuart, "),
+                .init(text: "bottom = easeOutQuart, "),
+                .newLines(2),
+                .init(text: "When rangeIndex is odd, then: "),
+                .init(text: "left = easeInOutQuad, "),
+                .init(text: "right = easeInOutCubic, "),
+                .init(text: "top = easeInOutQuart, "),
+                .init(text: "bottom = easeInOutQuint, "),
                 .newLines(2),
               ];
               
