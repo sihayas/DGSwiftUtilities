@@ -741,6 +741,123 @@ class InterpolationTest01ViewController: UIViewController {
         ]
       );
     }());
+    
+    cardConfig.append({
+      let sharedRangeInputValues : [CGFloat] = [-100 , -1  , 0, 1  , 100 ];
+      let sharedRangeOutputValues: [CGFloat] = [-1000, -100, 0, 100, 1000];
+      
+      let sharedInputValues: [CGFloat] = [
+        // exact
+        -100, -1, 0, 1, 100,
+        
+        // extrapolate left
+        -1000, -500, -200,
+        
+        // extrapolate right
+        200, 500, 1000,
+        
+        // interpolate
+        -80, -40, -50, -20, -10,
+        -0.75, -0.5, -0.3,
+        0.25, 0.5, 0.75,
+        10, 20, 25, 40, 50, 75, 80,
+      ];
+      
+      return .init(
+        title: "Basic Tests for Interpolating Angle",
+        desc: [],
+        content: [
+          .filledButton(
+            title: [
+              .init(text: "RangeInterpolator<Angle>"),
+            ],
+            subtitle: [
+              .init(text: "Test uniform easing via easingProvider")
+            ],
+            handler: { _,_ in
+              var rangedInterpolator = try! RangeInterpolator<Angle<CGFloat>>(
+                rangeInput: sharedRangeInputValues,
+                rangeOutput: sharedRangeOutputValues.map {
+                  .degrees($0)
+                },
+                easingProvider: .rangeIndexAndInterpolatorType {
+                  switch $1 {
+                    case .extrapolateLeft:
+                      return .easeOutCubic;
+                      
+                    case .extrapolateRight:
+                      return .easeInCubic;
+                      
+                    case .interpolate:
+                      break;
+                  };
+                  
+                  return ($0 % 2 == 0)
+                    ? .easeInCubic
+                    : .easeOutCubic;
+                }
+              );
+              
+              var results: [AttributedStringConfig] = [
+                .init(text: "RangeInterpolator<Angle<CGFloat>>"),
+                .newLine,
+                .init(text: "Extrapolator left = .easeOutCubic, "),
+                .init(text: "extrapolator right = .easeInCubic, "),
+                .init(text: "interpolator = .easeInCubic when odd position,"),
+                .init(text: "interpolator = .easeOutCubic when even position,"),
+                .newLines(2),
+              ];
+              
+              results += Helpers.invokeRangedInterpolatorAndGetResults(
+                with: sharedInputValues,
+                rangedInterpolator: &rangedInterpolator
+              );
+              
+              Helpers.logAndPresent(
+                textItems: results,
+                parentVC: self
+              );
+            }
+          ),
+          
+          .filledButton(
+            title: [
+              .init(text: "RangeInterpolator<Angle>"),
+            ],
+            subtitle: [
+              .init(text: "Test uniform clamping via clampingOptions")
+            ],
+            handler: { _,_ in
+              var rangedInterpolator = try! RangeInterpolator<Angle<CGFloat>>(
+                rangeInput: sharedRangeInputValues,
+                rangeOutput: sharedRangeOutputValues.map {
+                  .degrees($0)
+                },
+                easingProvider: nil,
+                clampingOptions: .leftAndRight
+              );
+              
+              var results: [AttributedStringConfig] = [
+                .init(text: "RangeInterpolator<Angle<CGFloat>>"),
+                .newLine,
+                .init(text: "clampingOptions = leftAndRight "),
+                .newLines(2),
+              ];
+              
+              results += Helpers.invokeRangedInterpolatorAndGetResults(
+                with: sharedInputValues,
+                rangedInterpolator: &rangedInterpolator
+              );
+              
+              Helpers.logAndPresent(
+                textItems: results,
+                parentVC: self
+              );
+            }
+          ),
+        ]
+      );
+    }());
         
     cardConfig.forEach {
       let cardView = $0.createCardView();
