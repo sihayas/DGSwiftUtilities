@@ -10,12 +10,14 @@ import Foundation
 
 extension CGFloat: UniformInterpolatable {
 
+  public typealias InterpolatableValue = Self;
+
   public static func lerp(
-    valueStart: Self,
-    valueEnd: Self,
+    valueStart: InterpolatableValue,
+    valueEnd: InterpolatableValue,
     percent: CGFloat,
     easing: InterpolationEasing?
-  ) -> Self {
+  ) -> InterpolatableValue {
     
     return InterpolatorHelpers.lerp(
       valueStart: valueStart,
