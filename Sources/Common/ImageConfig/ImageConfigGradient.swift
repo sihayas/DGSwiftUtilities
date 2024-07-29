@@ -7,7 +7,9 @@
 
 import UIKit
 
-public struct ImageConfigGradient {
+public struct ImageConfigGradient: ImageConfig {
+  
+  public static let imageType = "imageGradient";
 
   // MARK: Properties
   // ----------------
@@ -22,6 +24,9 @@ public struct ImageConfigGradient {
   public var size: CGSize;
   
   public var cornerRadius: CGFloat;
+  
+  public var isImageLoading = false;
+  public var cachedImage: UIImage?;
   
   // MARK: - Computed Properties
   // ---------------------------
@@ -98,7 +103,7 @@ public struct ImageConfigGradient {
     self.size = CGSize(width : nextWidth, height: nextHeight);
   };
   
-  public func makeImage() -> UIImage {
+  public func makeImage() throws -> UIImage {
     return UIGraphicsImageRenderer(size: self.size).image { context in
       let rect = CGRect(origin: .zero, size: self.size);
       

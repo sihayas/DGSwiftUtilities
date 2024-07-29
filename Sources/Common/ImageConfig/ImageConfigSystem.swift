@@ -7,8 +7,12 @@
 
 import UIKit
 
+
 @available(iOS 13.0, *)
-public struct ImageConfigSystem {
+public struct ImageConfigSystem: ImageConfig {
+
+  public static let imageType = "imageSystem";
+
   public enum ColorType {
     case hierarchicalColor(UIColor);
     case paletteColors([UIColor]);
@@ -22,6 +26,9 @@ public struct ImageConfigSystem {
   public var scale: UIImage.SymbolScale?;
   
   public var color: ColorType?;
+  
+  public var isImageLoading: Bool = false;
+  public var cachedImage: UIImage?;
   
   // MARK: - Computed Properties
   // ---------------------------
@@ -89,23 +96,6 @@ public struct ImageConfigSystem {
     return UIImage(systemName: self.systemName);
   };
   
-  public var image: UIImage? {
-    guard let image = self.baseImage else {
-      return nil;
-    };
-    
-    switch self.color {
-      case let .tintColor(color):
-        return image.withTintColor(
-          color,
-          renderingMode: .alwaysOriginal
-        );
-        
-      default:
-        return image;
-    };
-  };
-  
   init(
     systemName: String,
     pointSize: CGFloat? = 16,
@@ -119,4 +109,24 @@ public struct ImageConfigSystem {
     self.scale = scale;
     self.color = color;
   };
+  
+  public func makeImage() throws -> UIImage {
+    guard let image = self.baseImage else {
+      throw GenericError(
+        errorCode: .unexpectedNilValue,
+        description: "Unable to create baseImage"
+      );
+    };
+    
+    switch self.color {
+      case let .tintColor(color):
+        return image.withTintColor(
+          color,
+          renderingMode: .alwaysOriginal
+        );
+        
+      default:
+        return image;
+    };
+  }
 };

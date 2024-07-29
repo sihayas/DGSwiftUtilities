@@ -7,7 +7,10 @@
 
 import UIKit
 
-public struct ImageConfigSolid {
+  
+public struct ImageConfigSolid: ImageConfig {
+  
+  public static let imageType = "imageSolid";
 
   // MARK: - Properties
   // ------------------
@@ -15,6 +18,9 @@ public struct ImageConfigSolid {
   public var size: CGSize;
   public var fillColor: UIColor;
   public var borderRadius: CGFloat;
+  
+  public var isImageLoading: Bool = false;
+  public var cachedImage: UIImage?;
   
   // MARK: - Init
   // ------------
