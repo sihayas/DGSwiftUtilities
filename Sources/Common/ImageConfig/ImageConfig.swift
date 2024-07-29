@@ -9,13 +9,14 @@ import UIKit
 
 
 public protocol ImageConfig {
+
+  static var imageType: String { get };
   
-  var shouldCacheCreatedImage: Bool { get set };
-  var state: ImageConfigState { get };
+  var isImageLoading: Bool { get set };
   
-  var cachedImage: UIImage? { get };
+  var cachedImage: UIImage? { get set };
   
-  func preloadImage() throws;
+  mutating func preloadImageIfNeeded() throws;
   
   func makeImage() throws -> UIImage;
 };
@@ -26,7 +27,7 @@ public protocol ImageConfig {
 public extension ImageConfig {
 
   var isImageLoaded: Bool {
-    self.state == .loaded;
+    self.cachedImage != nil;
   };
   
   mutating func makeImageIfNeeded() throws -> UIImage {
@@ -34,7 +35,37 @@ public extension ImageConfig {
       return cachedImage;
     };
     
-    return try self.makeImage();
+    self.isImageLoading = true;
+    
+    defer {
+      self.isImageLoading = false;
+    };
+    
+    let image = try self.makeImage();
+    self.cachedImage = image;
+    
+    return image;
+  };
+  
+  mutating func preloadImageIfNeeded() throws {
+    guard self.cachedImage == nil else {
+      self.isImageLoading = false;
+      return;
+    };
+    
+    self.isImageLoading = true;
+    
+    defer {
+      self.isImageLoading = false;
+    };
+    
+    do {
+      let image = try self.makeImage();
+      self.cachedImage = image;
+    
+    } catch {
+      throw error;
+    };
   };
 };
 
