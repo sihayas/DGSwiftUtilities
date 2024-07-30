@@ -46,6 +46,12 @@ public extension ImageConfig {
     
     return image;
   };
+};
+
+// MARK: - ImageConfig+Default
+// ---------------------------
+
+public extension ImageConfig {
   
   mutating func preloadImageIfNeeded() throws {
     guard self.cachedImage == nil else {
@@ -68,4 +74,3 @@ public extension ImageConfig {
     };
   };
 };
-
