@@ -185,8 +185,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       let x = b.rangeInput;
     };
     
-    
-    
+    self.testClassRegistry();
   };
   
   func sceneDidDisconnect(_ scene: UIScene) {
@@ -228,5 +227,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     // Use this method to save data, release shared resources, and store enough
     // scene-specific state information to restore the scene back to its
     // current state.
+  };
+  
+  // MARK: - Tests
+  // -------------
+  
+  func testClassRegistry(){
+    for index in 0..<100 {
+      ClassRegistry.shared.loadClasses() { sender, allClasses in
+        print(
+          "SceneDelegate.testClassRegistry",
+          "\n - invocationCount:", index + 1,
+          "\n - _debugTimesLoaded:", sender._debugTimesLoaded,
+          "\n - allClasses count:", allClasses.count,
+          "\n"
+        );
+      };
+    };
   };
 };
