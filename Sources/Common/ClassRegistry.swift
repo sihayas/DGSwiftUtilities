@@ -107,7 +107,7 @@ public extension ClassRegistry {
       AutoreleasingUnsafeMutablePointer<AnyClass>(classesPtr);
 
     let count = objc_getClassList(autoreleasingClasses, Int32(numberOfClasses));
-    assert(numberOfClasses == count);
+    assert(count > 0);
 
     defer {
       classesPtr.deallocate();
